@@ -158,6 +158,266 @@ $$\Leftrightarrow$$ `(x.equals(y))`
        tener que cambiar los módulos ya escritos
 
 
+# Caso práctico 1
+<a id="junit"></a>
+## Framework jUnit
+
+-   JUnit es un framework en Java que sirve para diseñar, construir y
+    ejecutar **pruebas unitarias**
+-   Una prueba unitaria comprueba la corrección de un
+    _módulo_ de software en cuanto a funcionalidades
+    que ofrece.
+-   En el caso de Java, las pruebas unitarias comprueban la corrección
+    de cada uno de los métodos de _cada clase_.
+-   ¿Cómo funciona?
+
+
+### ¿Cómo probar `Saludo.java`?
+
+Incluir un método `main` que pruebe la funcionalidad de la clase:
+
+```java
+class Saludo {	/**	* Imprime "Hola Mundo!"	*/	void saludar() {		System.out.println("Hola Mundo!");	}
+	/**	* Imprime un mensaje	*/	void saludar(String mensaje) {		System.out.println(mensaje);	}		/**	* Tests	*/	public static void main( String[] args ) {		Saludo saludo1 = new Saludo();		saludo1.saludar();
+		
+		Saludo saludo2 = new Saludo("Hola caracola!");		saludo2.saludar();	}}
+```
+
+### Pegas
+
+-   Cuanto más grande sea la interfaz de la clase, mayor será el main
+
+-   El tamaño del código de la clase crece por las pruebas
+
+-   Poco fiable, porque main forma parte de la misma clase y tiene
+    acceso a los elementos privados
+
+-   Difícil de automatizar las pruebas, incluso pasando argumentos a
+    main
+
+### Diseño del framework jUnit
+
+####Estructura de clases:
+
+![Clases del framework jUnit](./figuras/junit-design-1.png)
+
+####Ejecución de casos de prueba:
+
+![Clases del framework jUnit](./figuras/junit-design-2.png)
+
+
+### Ejemplo: Caso de prueba jUnit 4
+
+```java
+  import org.junit.*;
+  import static org.junit.Assert.*;
+
+  public class SaludoTest {
+    public static void main(String args[]) {
+      junit.textui.TestRunner.run(SaludoTest.class);
+    }
+    @Test
+    public void saludar() {
+      Saludo hola = new Saludo();
+      assert( hola!=null );
+      assertEquals("Hola Mundo!", hola.saludar() );
+    }
+  }
+```
+
+¿De qué están hechas las anotaciones como `@Test`?
+Veamos una versión anterior de jUnit, que expone más claramente las _tripas_ del framework
+
+### Ejemplo: Caso de prueba jUnit 3
+
+```java
+import junit.framework.TestCase;
+import junit.framework.Assert;
+  
+public class SaludoTest extends TestCase {
+    public SaludoTest(String nombre) {
+      super(nombre);
+    }
+    public void testSaludar() {
+      Saludo hola = new Saludo();
+      assert( hola!=null );
+      assertEquals("Hola Mundo!", hola.saludar() );
+    }
+    public static void main(String args[]) {
+      junit.textui.TestRunner.run(SaludoTest.class);
+    }
+}
+```
+
+### Ejemplo: software _cliente_ del framework
+
+Diseño de una aplicación de comercio electrónico.
+
+Módulos: ShoppingCart (carrito de la compra), CreditCard (tarjeta de crédito), etc.
+
+Pruebas unitarias para:
+-   Probar carrito de la compra
+-   Probar validación de tarjetas de crédito
+-   Probar manejo de varias monedas
+-   Etc.
+
+Diseño de una prueba unitaria de `ShoppingCart' haciendo uso del framework jUnit:
+
+#### ShoppingCart
+
+```java
+public class ShoppingCart {
+  private ArrayList items;
+  public ShoppingCart() { ... }
+  public double getBalance() { ... }
+  public void addItem(Product p) { ... }
+  public void removeItem(Product p)
+      throws ProductNotFoundException { ... }
+  public int getItemCount() { ... }
+  public void empty() { ... }
+  public boolean isEmpty() { ... }
+}
+```      
+
+
+#### ShoppingCartTestCase con jUnit 3
+
+```java
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import junit.framework.Assert;
+
+public class ShoppingCartTest extends TestCase {
+  private ShoppingCart bookCart;
+  private Product defaultBook;
+  //...
+  protected void setUp() {
+      bookCart = new ShoppingCart();
+      defaultBook = new Product("Extreme Programming", 23.95);
+      bookCart.addItem(defaultBook);
+  }
+  protected void tearDown() {
+      bookCart = null;
+  }  
+  public void testEmpty() {
+      bookCart.empty();
+      assertTrue(bookCart.isEmpty());
+  }
+  public void testProductAdd() {
+      Product book = new Product("Refactoring", 53.95);
+      bookCart.addItem(book);
+      double expectedBalance = defaultBook.getPrice() + book.getPrice();
+      assertEquals(expectedBalance, bookCart.getBalance(), 0.0);
+      assertEquals(2, bookCart.getItemCount());
+  }
+  public void testProductRemove() throws ProductNotFoundException {
+      bookCart.removeItem(defaultBook);
+      assertEquals(0, bookCart.getItemCount());
+      assertEquals(0.0, bookCart.getBalance(), 0.0);
+  }
+  public void testProductNotFound() {
+      try {
+          Product book = new Product("Ender's Game", 4.95);
+          bookCart.removeItem(book);
+          fail("Should raise a ProductNotFoundException");
+      } catch(ProductNotFoundException success) {
+          ...
+      }
+  }
+  public static Test suite() {
+      // Use reflection to add all testXXX() methods
+         TestSuite suite = new TestSuite(ShoppingCartTest.class);
+      // Alternatively, but prone to error when adding more
+      // test case methods...
+      // TestSuite suite = new TestSuite();
+      // suite.addTest(new ShoppingCartTest("testProductAdd"));
+      // suite.addTest(new ShoppingCartTest("testEmpty"));
+      // suite.addTest(new ShoppingCartTest("testProductRemove"));
+      // suite.addTest(new ShoppingCartTestCase("testProductNotFound"));
+         return suite;
+  }
+}
+```      
+
+Ahora agrupamos varios casos de prueba en una misma _suite_:
+
+#### EcommerceTestSuite con jUnit 3
+
+```java
+  public class EcommerceTestSuite extends TestSuite {
+      //...
+      public static Test suite() {
+          TestSuite suite = new TestSuite();
+          suite.addTest(ShoppingCartTest.suite());
+          suite.addTest(CreditCardTest.suite());
+          // etc.
+          return suite;
+      }
+      public static void main(String args[]) {
+          junit.textui.TestRunner.run(suite());
+      }
+  }
+```      
+
+### Arquitectura del framework
+
+![Clases del framework jUnit](./figuras/junit-patterns.png)
+
+En la arquitectura del framework se observan diversos patrones: Composite, Command, Adapter, Factory, Decorator, etc.
+
+
+#### ShoppingCartTestCase con jUnit 4
+
+```java
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ShoppingCartTest {
+  private ShoppingCart bookCart;
+  private Product defaultBook;
+  //...
+  @Before
+  protected void setUp() {
+      bookCart = new ShoppingCart();
+      defaultBook = new Product("Extreme Programming", 23.95);
+      bookCart.addItem(defaultBook);
+  }
+  @After
+  protected void tearDown() {
+      bookCart = null;
+  }
+  @Test
+  public void testEmpty() {
+      bookCart.empty();
+      assertTrue(bookCart.isEmpty());
+  }
+  @Test
+  public void testProductAdd() {
+      Product book = new Product("Refactoring", 53.95);
+      bookCart.addItem(book);
+      double expectedBalance = defaultBook.getPrice() + book.getPrice();
+      assertEquals(expectedBalance, bookCart.getBalance(), 0.0);
+      assertEquals(2, bookCart.getItemCount());
+  }
+  @Test
+  public void testProductRemove() {
+      bookCart.removeItem(defaultBook);
+      assertEquals(0, bookCart.getItemCount());
+      assertEquals(0.0, bookCart.getBalance(), 0.0);
+  }
+  @Test(expected = ProductNotFoundException.class)
+  public void testProductNotFound() {
+      Product book = new Product("Ender's Game", 4.95);
+      bookCart.removeItem(book);
+      fail("Should raise a ProductNotFoundException");
+  }
+}
+```    
+
 ## Bibliotecas y frameworks
 
 ### Biblioteca
@@ -217,175 +477,9 @@ $$\Leftrightarrow$$ `(x.equals(y))`
     -   Principio de Hollywood
 
 
-# Caso práctico
-<a id="junit"></a>
-## Framework jUnit
-
--   JUnit es un framework en Java que sirve para diseñar, construir y
-    ejecutar **pruebas unitarias**
--   Una prueba unitaria comprueba la corrección de un
-    _módulo_ de software en cuanto a funcionalidades
-    que ofrece.
--   En el caso de Java, las pruebas unitarias comprueban la corrección
-    de cada uno de los métodos de _cada clase_.
--   ¿Cómo funciona?
-
-
-### ¿Cómo probar `Saludo.java`?
-
-Incluir un método `main` que pruebe la funcionalidad de la clase:
-
-```java
-class Saludo {	/**	* Imprime "Hola Mundo!"	*/	void saludar() {		System.out.println("Hola Mundo!");	}
-	/**	* Imprime un mensaje	*/	void saludar(String mensaje) {		System.out.println(mensaje);	}		/**	* Tests	*/	public static void main( String[] args ) {		Saludo saludo1 = new Saludo();		saludo1.saludar();
-		
-		Saludo saludo2 = new Saludo("Hola caracola!");		saludo2.saludar();	}}
-```
-
-### Pegas
-
--   Cuanto más grande sea la interfaz de la clase, mayor será el main
-
--   El tamaño del código de la clase crece por las pruebas
-
--   Poco fiable, porque main forma parte de la misma clase y tiene
-    acceso a los elementos privados
-
--   Difícil de automatizar las pruebas, incluso pasando argumentos a
-    main
-
-
-### Saludo: Caso de prueba jUnit
-
-      import junit.framework.*;
-      /**
-      * Caso de prueba de JUnit para Saludo
-      */
-      public class SaludoTest extends TestCase {
-        public SaludoTest(String nombre) {
-          super(nombre);
-        }
-        public static void main(String args[]) {
-          junit.textui.TestRunner.run(HolaMundoTest.class);
-        }
-        public void testSaludar() {
-          Saludo hola = new Saludo();
-          assert( hola!=null );
-          assertEquals("Hola Mundo!", hola.saludar() );
-        }
-      }
-     
-
-### Ejemplo: Prueba unitaria de ShoppingCart
-
--   Probar Carrito de la compra
-
--   Probar validación de tarjetas de crédito
-
--   Probar manejo de varias monedas
-
--   Etc.
-
-#### ShoppingCart
-
-```java
-  public class ShoppingCart {
-      private ArrayList items;
-      public ShoppingCart() { ... }
-      public double getBalance() { ... }
-      public void addItem(Product p) { ... }
-      public void removeItem(Product p)
-          throws ProductNotFoundException { ... }
-      public int getItemCount() { ... }
-      public void empty() { ... }
-      public boolean isEmpty() { ... }
-  }
-```      
-
-#### ShoppingCartTestCase
-
-```java
-public class ShoppingCartTestCase extends TestCase {
-  private ShoppingCart bookCart;
-  private Product defaultBook;
-  //...
-  protected void setUp() {
-      bookCart = new ShoppingCart();
-      defaultBook = new Product("Extreme Programming", 23.95);
-      bookCart.addItem(defaultBook);
-  }
-  protected void tearDown() {
-      bookCart = null;
-  }  
-  public void testEmpty() {
-      bookCart.empty();
-      assertTrue(bookCart.isEmpty());
-  }
-  public void testProductAdd() {
-      Product book = new Product("Refactoring", 53.95);
-      bookCart.addItem(book);
-      double expectedBalance = defaultBook.getPrice() + book.getPrice();
-      assertEquals(expectedBalance, bookCart.getBalance(), 0.0);
-      assertEquals(2, bookCart.getItemCount());
-  }
-  public void testProductRemove() throws ProductNotFoundException {
-      bookCart.removeItem(defaultBook);
-      assertEquals(0, bookCart.getItemCount());
-      assertEquals(0.0, bookCart.getBalance(), 0.0);
-  }
-  public void testProductNotFound() {
-      try {
-          Product book = new Product("Ender's Game", 4.95);
-          bookCart.removeItem(book);
-          fail("Should raise a ProductNotFoundException");
-      } catch(ProductNotFoundException success) {
-          ...
-      }
-  }
-  public static Test suite() {
-      // Reflection is used here to add all
-      // the testXXX() methods to the suite.
-         TestSuite suite = new TestSuite(ShoppingCartTestCase.class);
-      // Alternatively, but prone to error when adding more
-      // test case methods...
-      // TestSuite suite = new TestSuite();
-      // suite.addTest(new ShoppingCartTestCase("testProductAdd"));
-      // suite.addTest(new ShoppingCartTestCase("testEmpty"));
-      // suite.addTest(new ShoppingCartTestCase("testProductRemove"));
-      // suite.addTest(new ShoppingCartTestCase("testProductNotFound"));
-         return suite;
-  }
-}
-```      
-
-#### EcommerceTestSuite
-
-```java
-  public class EcommerceTestSuite extends TestSuite {
-      //...
-      public static Test suite() {
-          TestSuite suite = new TestSuite();
-          suite.addTest(ShoppingCartTestSuite.suite());
-          suite.addTest(CreditCardTestSuite.suite());
-          // etc.
-          return suite;
-      }
-      public static void main(String args[]) {
-          junit.textui.TestRunner.run(suite());
-      }
-  }
-```      
-
-### Arquitectura del framework
-
-![Clases del framework jUnit](./figuras/junit-patterns.png)
-
-En la arquitectura del framework se observan diversos patrones: Composite, Command, Adapter, etc.
-
-
-# Caso práctico
+# Caso práctico 2
 <a id="caballeros"></a>
-### Ejemplo: Caballeros de la mesa redonda
+## Ejemplo: Caballeros de la mesa redonda
 
 Añadir pruebas unitarias a la solución siguiente:
 
@@ -416,16 +510,14 @@ public class HolyGrailQuest {
 }  
 ```      
 
-### Pruebas unitarias
+### Diseño de pruebas con jUnit 3
 
 ¿Dónde está el acoplamiento?
 
 ```java
 import junit.framework.TestCase;
-public class KnightOfTheRoundTableTest
-       extends TestCase {
-  public void testEmbarkOnQuest()
-         throws GrailNotFoundException {
+public class KnightOfTheRoundTableTest extends TestCase {
+  public void testEmbarkOnQuest() throws GrailNotFoundException {
     KnightOfTheRoundTable knight =
         new KnightOfTheRoundTable("CruzadoMagico");
     HolyGrail grail = knight.embarkOnQuest();
@@ -444,26 +536,21 @@ public class KnightOfTheRoundTableTest
     forma (v.g. devolver null o elevar una excepción)
 
 
-### Ejemplo: Caballeros de la mesa redonda
-
 Ocultar la implementación detrás de una interfaz:
 
 ```java
 public interface Knight {
-  Object embarkOnQuest()
-    throws QuestFailedException;
+  Object embarkOnQuest() throws QuestFailedException;
 }
     
-public class KnightOfTheRoundTable
-       implements Knight {
+public class KnightOfTheRoundTable implements Knight {
   private String name;
   private Quest quest;
   public KnightOfTheRoundTable(String name) {
     this.name = name;
     quest = new HolyGrailQuest();
   }
-  public Object embarkOnQuest()
-       throws QuestFailedException {
+  public Object embarkOnQuest() throws QuestFailedException {
     return quest.embark();
   }
 }    
@@ -475,30 +562,25 @@ public interface Quest {
     
 public class HolyGrailQuest implements Quest {
   public HolyGrailQuest() {}
-  public Object embark()
-       throws QuestFailedException {
+  public Object embark() throws QuestFailedException {
     // Do whatever it means to embark on a quest
     return new HolyGrail();
   }
 }
 ```  
 
--   El Knight aún recibe un tipo específico de Quest
+-   El `Knight` aún recibe un tipo específico de `Quest`
 -   ¿Debe ser el caballero responsable de obtener un desafío?
 
 
-### Ejemplo: Caballeros de la mesa redonda
-
 ```java
-public class KnightOfTheRoundTable
-       implements Knight {
+public class KnightOfTheRoundTable implements Knight {
   private String name;
   private Quest quest;
   public KnightOfTheRoundTable(String name) {
     this.name = name;
   }
-  public Object embarkOnQuest()
-       throws QuestFailedException {
+  public Object embarkOnQuest() throws QuestFailedException {
     return quest.embark();
   }
   public void setQuest(Quest quest) {
