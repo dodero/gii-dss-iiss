@@ -13,10 +13,6 @@ E. Gamma, R. Helm, R. Johnson & J. Vlissides. <a id="gamma">Design Patterns.
 
 B. McLaughlin, G. Pollice & D. West. <a id="headfirst-ooad">Head First Object-Oriented Analysis and Design.</a> O'Reilly, 2006.
 
-<<<<<<< HEAD
 B. Meyer. <a id="meyer">Object-Oriented Software Construction.</a> Prentice-Hall, 2nd edition, 1997.
 
 C. Walls & R. Breidenbach. <a id="spring">Spring in Action.</a> Manning Publications, 2005.
-=======
-B. Meyer. <a id="meyer">Object-Oriented Software Construction.</a> Prentice-Hall, 2nd edition, 1997.
->>>>>>> b89a8d676a1acc0351e0653edb05d9c729dd5848
