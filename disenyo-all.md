@@ -108,9 +108,9 @@
       String toString();
       int compareTo(Handler otro);
   }
-  class Identificador implements Handler {
+  class IdentificadorNumerico implements Handler {
     private int id;
-    Identificador (String id) throws NumberFormatException {
+    IdentificadorNumerico (String id) throws NumberFormatException {
       this.id = new Integer(id).intValue();
     }
     public String toString() {
@@ -137,9 +137,11 @@ __Métodos de la interfaz__:
 
 __Invariantes:__
 
-`sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`\
+`sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`
+
 `(x.compareTo(y)>0 and y.compareTo(z)>0)` $$\Rightarrow$$
-`x.compareTo(z)>0`\
+`x.compareTo(z)>0`
+
 `x.compareTo(y)=0` $$\Rightarrow$$
 `sgn(x.compareTo(z))=sgn(y.compareTo(z))` $$\forall$$ `z`
 
@@ -195,18 +197,9 @@ class Saludo {	/**	* Imprime "Hola Mundo!"	*/	void saludar() {		System.out.
 -   Difícil de automatizar las pruebas, incluso pasando argumentos a
     main
 
-### Diseño del framework jUnit
+### Ejemplo: software _cliente_ del framework
 
-####Estructura de clases:
-
-![Clases del framework jUnit](./figuras/junit-design-1.png)
-
-####Ejecución de casos de prueba:
-
-![Clases del framework jUnit](./figuras/junit-design-2.png)
-
-
-### Ejemplo: Caso de prueba jUnit 4
+#### Caso de prueba con jUnit 4
 
 ```java
   import org.junit.*;
@@ -225,10 +218,27 @@ class Saludo {	/**	* Imprime "Hola Mundo!"	*/	void saludar() {		System.out.
   }
 ```
 
+Ejecución de los tests:
+
+```java
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+
+public class MyTestRunner {
+  public static void main(String[] args) {
+    Result result = JUnitCore.runClasses(SaludoTest.class);
+    for (Failure failure : result.getFailures()) {
+      System.out.println(failure.toString());
+    }
+  }
+}
+```
+
 ¿De qué están hechas las anotaciones como `@Test`?
 Veamos una versión anterior de jUnit, que expone más claramente las _tripas_ del framework
 
-### Ejemplo: Caso de prueba jUnit 3
+#### Caso de prueba con jUnit 3
 
 ```java
 import junit.framework.TestCase;
@@ -243,25 +253,37 @@ public class SaludoTest extends TestCase {
       assert( hola!=null );
       assertEquals("Hola Mundo!", hola.saludar() );
     }
-    public static void main(String args[]) {
-      junit.textui.TestRunner.run(SaludoTest.class);
-    }
 }
 ```
 
-### Ejemplo: software _cliente_ del framework
 
-Diseño de una aplicación de comercio electrónico.
+### Diseño del framework jUnit
 
-Módulos: ShoppingCart (carrito de la compra), CreditCard (tarjeta de crédito), etc.
+####Estructura de clases:
 
-Pruebas unitarias para:
--   Probar carrito de la compra
--   Probar validación de tarjetas de crédito
--   Probar manejo de varias monedas
--   Etc.
+![Clases del framework jUnit](./figuras/junit-design-1.png)
 
-Diseño de una prueba unitaria de `ShoppingCart' haciendo uso del framework jUnit:
+####Ejecución de casos de prueba:
+
+![Clases del framework jUnit](./figuras/junit-design-2.png)
+
+
+
+### Ejemplo: aplicación de comercio electrónico
+
+Diseño de una aplicación de comercio electrónico:
+
+  - `ShoppingCart` - carrito de la compra
+  - `CreditCard` - tarjeta de crédito
+  - `Product`- artículos
+  - Etc.
+
+Diseño de pruebas unitarias de `ShoppingCart` para:
+
+  -   Probar carrito de la compra (añadir/eliminar artículos)
+  -   Probar validación de tarjetas de crédito
+  -   Probar manejo de varias monedas
+  -   Etc.
 
 #### ShoppingCart
 
@@ -278,7 +300,6 @@ public class ShoppingCart {
   public boolean isEmpty() { ... }
 }
 ```      
-
 
 #### ShoppingCartTestCase con jUnit 3
 
@@ -341,30 +362,20 @@ public class ShoppingCartTest extends TestCase {
 
 Ahora agrupamos varios casos de prueba en una misma _suite_:
 
-#### EcommerceTestSuite con jUnit 3
-
 ```java
-  public class EcommerceTestSuite extends TestSuite {
-      //...
-      public static Test suite() {
-          TestSuite suite = new TestSuite();
-          suite.addTest(ShoppingCartTest.suite());
-          suite.addTest(CreditCardTest.suite());
-          // etc.
-          return suite;
-      }
-      public static void main(String args[]) {
-          junit.textui.TestRunner.run(suite());
-      }
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+
+public class MyTestRunner {
+  public static void main(String[] args) {
+    Result result = JUnitCore.runClasses(EcommerceTestSuite.class);
+    for (Failure failure : result.getFailures()) {
+      System.out.println(failure.toString());
+    }
   }
-```      
-
-### Arquitectura del framework
-
-![Clases del framework jUnit](./figuras/junit-patterns.png)
-
-En la arquitectura del framework se observan diversos patrones: Composite, Command, Adapter, Factory, Decorator, etc.
-
+}
+```
 
 #### ShoppingCartTestCase con jUnit 4
 
@@ -416,7 +427,42 @@ public class ShoppingCartTest {
       fail("Should raise a ProductNotFoundException");
   }
 }
+```  
+
+#### EcommerceTestSuite con jUnit 3
+
+```java
+  public class EcommerceTestSuite extends TestSuite {
+      //...
+      public static Test suite() {
+          TestSuite suite = new TestSuite();
+          suite.addTest(ShoppingCartTest.suite());
+          suite.addTest(CreditCardTest.suite());
+          // etc.
+          return suite;
+      }
+  }
+```      
+
+#### EcommerceTestSuite con jUnit 4
+
+```java
+  @RunWith(Suite.class)
+  @SuiteClasses({ ShoppingCartTest.class,
+                  CreditCardTest.class })
+  public class EcommerceTestSuite {
+      //...
+  }
 ```    
+
+
+### Arquitectura del framework
+
+![Clases del framework jUnit](./figuras/junit-patterns.png)
+
+En la arquitectura del framework se observan diversos patrones: Composite, Command, Adapter, Factory, Decorator, etc.
+
+  
 
 ## Bibliotecas y frameworks
 
@@ -432,9 +478,9 @@ public class ShoppingCartTest {
 > 
 > -- <cite>[E. Gamma et al.](#gamma)</cite>
 
--   El framework proporciona unas guías arquitectónicas (diseño empaquetado): para dividir el diseño en clases abstractas y definir sus responsabilidades y colaboraciones.
+-   El framework proporciona unas guías arquitectónicas (diseño empaquetado) para dividir el diseño en clases abstractas y definir sus _responsabilidades_ y _colaboraciones_.
 -   El framework se debe personalizar definiendo subclases y combinando
-    instancias
+    instancias, o bien configurando valores que definen el comportamiento por defecto
 
 
 #### Principios de diseño
@@ -461,25 +507,25 @@ public class ShoppingCartTest {
 ![Flujo de control en una framework](./figuras/framework.png)
 
 
-### Principios de diseño de un framework
+### Principios y técnicas de un framework
 
 -   Abstracción
-    -   Clases y componentes abstractos
-    -   Interfaces abiertas
-    -   Uso de patrones de diseño
+    -  Clases y componentes abstractos
+    -  Interfaces abiertas
+    -  Uso de patrones de diseño
+    -  Componentes de un dominio específico
 
 -   Máxima cohesión, mínimo acoplamiento
-    -   Componentes de un dominio específico
-    -   Minimizar dependencias
-    -   Inyección de dependencias
+    -  Minimizar dependencias: Una clase presenta una dependencia con otra clase si la primera usa una instancia de la segunda.
+    -  Cuando no se pueden eliminar las dependencias, mantener las abstractas e _inyectar_ las concretas.
+    -  **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
 
--   Inversión de control
-    -   Principio de Hollywood
 
 
 # Caso práctico 2
 <a id="caballeros"></a>
 ## Ejemplo: Caballeros de la mesa redonda
+### Tomado de <a id="bibliografia#spring">Spring in Action</a>
 
 Añadir pruebas unitarias a la solución siguiente:
 
@@ -601,18 +647,19 @@ public class KnightOfTheRoundTable implements Knight {
 
 ![](./figuras/dep-injection.png)
 
--   Se basa en la inversión del control
--   M. Fowler (2004): ¿Qué aspecto del control se invierte? La
-    adquisición de dependencias
+-   Inversión de control: base de la inyección de dependencias
+
+> The question is: "what aspect of control are they inverting?" [...] Early user interfaces were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With graphical (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework
+> 
+> <cite> Martin Fowler</cite>, http://martinfowler.com/articles/injection.html  
+
 -   Una aplicación son dos o más clases que colaboran.
--   Los objetos deben recibir las dependencias en su creación, por parte
-    de una entidad externa que coordina los objetos.
+-   Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa que coordina los objetos.
 -   Inversión de la responsabilidad de cómo un objeto obtiene
     referencias a los objetos con los que colabora
--   Bajo acoplamiento: un objeto sólo sabe de sus dependencias por su
-    interfaz, no por su implementación ni por cómo fueron instanciados.
-    Entonces la dependencia puede cambiarse por una implementación
-    distinta
+-   Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su
+    interfaz, no por su implementación, ni por cómo fueron instanciados. Entonces la dependencia puede cambiarse por una implementación distinta (incluso en tiempo de ejecución)
+- _Hollywood Principle: Don't call us, we'll call you"._
 
 
 # Discusión sobre la reutilización

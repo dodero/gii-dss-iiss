@@ -12,3 +12,7 @@ B. Eckel. <a id="eckel">Thinking in Java | C++.</a> Prentice-Hall, 4th | 2nd edi
 E. Gamma, R. Helm, R. Johnson & J. Vlissides. <a id="gamma">Design Patterns. Elements of Reusable Object-Oriented Software.</a> Addison-Wesley, 1995.
 
 B. McLaughlin, G. Pollice & D. West. <a id="headfirst-ooad">Head First Object-Oriented Analysis and Design.</a> O'Reilly, 2006.
+
+B. Meyer. <a id="meyer">Object-Oriented Software Construction.</a> Prentice-Hall, 2nd edition, 1997.
+
+C. Walls & R. Breidenbach. <a id="spring">Spring in Action.</a> Manning Publications, 2005.

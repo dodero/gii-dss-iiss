@@ -624,15 +624,574 @@ Delegación _en horizontal_ hacia otras clases cuya interfaz es bien conocida
        (que pueda cambiarse en tiempo de ejecución).
     -   Permite re-interpretar el tipo de un objeto en tiempo
         de ejecución.
-     
+
+
+### Ejemplo: implementación de identificadores
+
+#### Handler en Java
+
+```java
+  interface Handler{
+      String toString();
+      int compareTo(Handler otro);
+  }
+  class IdentificadorNumerico implements Handler {
+    private int id;
+    IdentificadorNumerico (String id) throws NumberFormatException {
+      this.id = new Integer(id).intValue();
+    }
+    public String toString() {
+      return new Integer(id).toString();
+    }
+    public int compareTo(Handler otro) {
+      return toString().compareTo(otro.toString());
+    }
+  }
+```
+
+####Implementación utilizando `Comparable`
+
+`java.lang.Comparable` es una interfaz implementada por `String`, `File`, `Date`, etc. y todas las llamadas _clases de envoltura_ del JDK (i.e. `Integer`, `Long`, etc.)
+
+__Métodos de la interfaz__
+
+(JDK 1.4):
+
+```java
+public interface Comparable {
+  public int compareTo(Object o); //throws ClassCastException
+}  
+```
+
+(JDK 1.5):
+
+```java
+public interface Comparable<T> {
+  public int compareTo(T o); //throws ClassCastException
+}  
+```
+
+
+__Invariantes:__
+
+ - Anticonmutativa: `sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`
+
+ - Transitividad: `(x.compareTo(y)>0 and y.compareTo(z)>0)` $$\Rightarrow$$
+`x.compareTo(z)>0`
+
+ - `x.compareTo(y)=0` $$\Rightarrow$$ 
+   `sgn(x.compareTo(z))=sgn(y.compareTo(z))` $$\forall$$ `z`
+
+ - Consistencia con `equals` (no obligatoria): `(x.compareTo(y)=0)`
+     $$\Leftrightarrow$$ `(x.equals(y))`
+
+ - Cuando una clase hereda de una clase concreta que implementa Comparable y le añade un campo significativo para la comparación, no se puede construir una implementación correcta de `compareTo`. La única alternativa entonces es la composición en lugar de la herencia.
+
+ - Una alternativa a implementar `Comparable`es pasar un `Comparator` como parámetro.
+
+__Implementación en Java 1.5__:
+
+ - Utilizando _templates_
+ - Delegar en `compareTo` y `equals` del tipo de id _envuelto_ (e.g. `String`)
+  
+```java
+import java.util.*;
+import java.io.*;
+  
+public final class BankAccount implements Comparable<BankAccount> {
+    private String id;
+    public BankAccount (String number)  {
+      this.id = number;
+    }
+    @Override
+    public int compareTo(BankAccount other) {
+      if (this == other) return 0;
+      assert this.equals(other) : "compareTo inconsistent with equals.";
+      return this.id.compareTo(other.getId());
+    }
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof BankAccount)) return false;
+		that = (BankAccount)other:
+		return	( this.id.equals((that.getId()) );
+   }
+	@Override
+	public int hashCode() {
+		int result = HashCodeUtil.SEED;
+		result = HashCodeUtil.hash( result, id );
+		return result;
+   }   
+    @Override
+    public String toString() {
+      return id.toString();
+    }
+}
+```
+
+__Implementación en Java 1.4__:
+
+ - No hay plantillas. La genericidad se consigue con `Object`. Hay que hacer casting.
+ - Cuidado con `Boolean` que no implementa `Comparable` en JDK 1.4
+
+
+```java
+import java.util.*;
+import java.io.*;
+  
+public final class BankAccount implements Comparable {
+    private String id;
+    public BankAccount (String number)  {
+      this.id = number;
+    }
+    public int compareTo(Object other) {
+      if (this == other) return 0;
+      that = (BankAccount)other:
+      assert this.equals(that) : "compareTo inconsistent with equals.";
+      return this.id.compareTo(that.getId());
+    }
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof BankAccount)) return false;
+		that = (BankAccount)other:
+		return	( this.id.equals(that.getId()) );
+   }
+	public int hashCode() {
+		int result = HashCodeUtil.SEED;
+		result = HashCodeUtil.hash( result, id );
+		return result;
+   }   
+   public String toString() {
+      return id.toString();
+   }
+}
+```
+
+## Inyección de dependencias
+
+### Ejemplo: Caballeros de la mesa redonda
+#### Tomado de <a id="bibliografia#spring">Spring in Action</a>
+
+
+#### Diseño
+
+Ocultando la implementación con interfaces:
+
+```java
+public interface Knight {
+  Object embarkOnQuest() throws QuestFailedException;
+}
+
+public class KnightOfTheRoundTable implements Knight {
+  private String name;
+  private Quest quest;
+  public KnightOfTheRoundTable(String name) {
+    this.name = name;
+  }
+  public Object embarkOnQuest() throws QuestFailedException {
+    return quest.embark();
+  }
+  public void setQuest(Quest quest) {
+    this.quest = quest;
+  }
+}
+    
+public interface Quest {
+  abstract Object embark()
+    throws QuestFailedException;
+}
+    
+public class HolyGrailQuest implements Quest {
+  public HolyGrailQuest() {}
+  public Object embark() throws QuestFailedException {
+    // Do whatever it means to embark on a quest
+    return new HolyGrail();
+  }
+}
+```  
+
+-   El caballero no es el responsable de averiguar su misión.
+-   El caballero sólo sabe de su misión a través de la interfaz `Quest`.
+-   El caballero recibe la misión (se le inyecta) a través de `setQuest()`
+-   Puede asignársele cualquier implementación de `Quest`
+    (`HolyGrailQuest`, `RescueDamselQuest`, etc.)
+
+#### Construcción con spring
+
+A través de un fichero de configuración XML le indicamos los valores inyectables:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"	"http://www.springframework.org/dtd/spring-beans.dtd"><beans>	<bean id="quest"		class="HolyGrailQuest"/>	<bean id="knight"		class="KnightOfTheRoundTable">		<constructor-arg>			<value>CruzadoMagico</value>		</constructor-arg>		<property name="quest">			<ref bean="quest"/>		</property>	</bean></beans>
+```
+
+La inyección de la dependencia concreta la hace el contenedor (_spring_ en este ejemplo):
+
+```java
+import org.springframework.beans.factory.BeanFactory;import org.springframework.beans.factory.xml.XmlBeanFactory;public class KnightApp {	public static void main(String[] args) throws Exception {		BeanFactory factory =			new XmlBeanFactory(new FileInputStream("knight.xml"));		KnightOfTheRoundTable knight =			(KnightOfTheRoundTable) factory.getBean("knight");		knight.embarkOnQuest();	}}
+```
+
+
+### Ejemplo: Logger 
+
+```java
+import java.util.logging.Logger;
+
+public class MyClass {
+    private final static Logger logger;
+    public MyClass(Logger logger) {
+            this.logger = logger;
+            // write an info log message
+            logger.info("This is a log message.")
+    }
+}
+```
+
+Un _contenedor de dependencias_ en el framework debe responsabilizarse de crear las instancias de `Logger` e inyectarlas en su sitio (normalmente vía _reflexión_)
+
+### Dependencias en Java
+
+Estándar de Java (JSR 330) para describir las dependencias de una clase con anotaciones
+
+```java
+public class MyPart {
+    @Inject private Logger logger;
+    // inject class for database access
+    @Inject private DatabaseAccessClass dao;
+    @Inject
+    public void createControls(Composite parent) {
+        logger.info("UI will start to build");
+        Label label = new Label(parent, SWT.NONE);
+        label.setText("Eclipse 4");
+        Text text = new Text(parent, SWT.NONE);
+        text.setText(dao.getNumber());
+    }
+}
+```
+
+Esta clase sigue usando `new` para ciertos elementos de la interfaz.
+Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
+      
      
 ##Refactoring
 
 
 > Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior [@Refactoring]
 > 
-> —- <cite>M. Fowler,  www.refactoring.com</cite>
+> —- <cite>[M. Fowler](www.refactoring.com), www.refactoring.com</cite>
 
 -   Pequeñas transformaciones
 -   Mantienen el sistema funcional
    
+
+## Código duplicado
+
+###¿Por qué no?
+
+-   Mantenimiento
+-   Cambios (no sólo a nivel de código)
+-   Trazabilidad
+
+###Causas de la duplicación
+
+-   __Impuesta__: No hay elección
+-   __Inadvertida__: No me he dado cuenta
+-   __Impaciencia__: No puedo esperar
+-   __Simultaneidad__: Ha sido otro
+
+
+###Principio DRY
+
+**D**on't **R**epeat **Y**ourself!
+
+###Duplicación impuesta
+
+La gestión del proyecto así nos lo exige:
+
+-   Representaciones múltiples de la información
+-   Documentación del código
+-   Casos de prueba
+-   Características del lenguaje (v.g. C/C++ header files, IDL specs)
+
+####Técnicas de solución
+
+-   Generadores de código: para evitar duplicar representaciones múltiples de la información
+-   Herramientas de ingeniería inversa: para generar código a partir de un esquema de BD
+-   Plantillas: Java, C++, etc.
+-   Metadatos: En Java, anotaciones @
+-   [Programación literaria](http://www.literateprogramming.com/)
+-   Ayuda del IDE
+
+
+####Ejemplo
+
+```java
+  public class Line {
+    public Point start;
+    public Point end;
+    public double length;
+  }
+```      
+
+¿Dónde está la duplicación?
+
+```java
+  public class Line {
+    public Point start;
+    public Point end;
+    public double length() {
+       return start.distanceTo(end);
+    }
+  }
+```  
+
+A veces se puede optar por violar DRY por razones de rendimiento. 
+
+
+####Ejemplo 2
+
+```java
+  public class Line {
+    private boolean changed;
+    private double length;
+    private Point start;
+    private Point end;
+
+    public void setStart(Point p) { start = p; changed = true; }
+    public void setEnd(Point p)   { end   = p; changed = true; }
+    public Point getStart() { return start; }
+    public Point getEnd() { return end; }
+    public double getLength() {
+       if (changed) {
+          length = start.distanceTo(end);
+          changed = false;
+       }
+       return length;
+    }
+  }
+```  
+
+Menos problemático si queda dentro de los límites de la clase/módulo.
+
+Otras veces no merece la pena violar DRY por rendimiento: ¡las cachés y los optimizadores de código también hacen su labor!
+
+
+###Principio de acceso uniforme
+
+> All services offered by a module should be available through a uniform notation, which does not betray whether they are implemented through storage or through computation
+>
+> <cite>[B. Meyer](#meyer)</cite>
+
+
+### Otros motivos de duplicación
+
+__Impaciencia__
+
+- Los peligros del *copy&paste*
+- *Vísteme despacio que tengo prisa*
+- v.g. Fiasco del año 2000
+
+__Simultaneidad__
+
+-   No resoluble a nivel de construcción
+-   Gestión de equipos + herramientas de comunicación
+
+
+## Ortogonalidad
+
+<span>Ortogonalidad</span> En computación, dos o más componentes son
+ortogonales si los cambios[^1] en uno no afectan a los otros\
+$\Rightarrow$ independencia, desacoplamiento
+
+-   La base de datos debe ser ortogonal a la interfaz de usuario
+
+-   En aviónica, los mandos de control no suelen ser ortogonales
+
+<span>Beneficios</span>
+
+-   Mayor <span>**productividad**</span>. Si $A \perp B$, componente A
+    sirve para $m$ propósitos y B para $n$, $A \cup B$ sirve para
+    $m \times n$
+
+-   Menor <span>**riesgo**</span>. Defectos aislados. Menor fragilidad.
+    Más fácil de probar
+
+
+### Implementación
+
+Aplicable en gestión del proyecto, diseño, codificación, pruebas y
+documentación
+
+<span>Codificación</span>
+
+-   Evitar datos globales: v.g. ¿y si hay que hacer una versión
+    <span>*multithreaded*</span>
+
+-   Usar métodos plantilla y estrategias [@GoF] —aplicar DRY
+
+-   Desacoplar: Ley de <span>*Demeter*</span>—No hables con extraños
+
+-   Pasar el contexto como parámetro a los constructores
+
+<span>Toolkits y bibliotecas</span>
+
+-   v.g. Enterprise Java Beans (EJB): @tags para persistencia de
+    objetos, transacciones, …
+
+-   Aspect-Oriented Programming (AOP)
+
+
+### Ejemplo: criticar la implementación
+
+      public class Empleado {
+        Comparable id;
+        String name;
+        public Empleado(String id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        public void print() {
+            System.out.println(id+" "+name);
+        }
+      }
+      public class Autonomo extends Empleado {
+        String vatCode;
+        public Autonomo(String id, String name, String vat) {
+            this.id = id;
+            this.name = name;
+            this.vatCode = vat;
+        }
+        public void print() {
+            System.out.println(id+" "+name+" "+vatCode);
+        }
+      }
+      public class Prueba {
+        public static void main(String[] args) {
+          Empleado e = new Empleado("0001","Enrique");
+          Empleado a = new Autonomo("0002","Ana","12345-A");
+          e.print();  
+          a.print();  
+        }
+      }
+      
+
+### Ejemplo refactorizado
+
+      public class Empleado {
+        Comparable id;
+        String name;
+        public Empleado(String id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        public void print() {
+            System.out.print(id+" "+name);
+        }
+      }
+      public class Autonomo extends Empleado {
+        String vatCode;
+        public Autonomo(String id, String name, String vat) {
+            super(id,name);
+            this.vatCode = vat;
+        }
+        @Override
+        public void print() {
+            super.print();
+            System.out.print(" "+vatCode);
+        }
+      }
+      public class Prueba {
+        public static void main(String[] args) {
+          Empleado e = new Empleado("0001", "Enrique");
+          Empleado a = new Autonomo("0001", "Ana", "12345-A");
+          e.print();  System.out.println();
+          a.print();  System.out.println();
+        }
+      }
+      
+
+### Ejemplo v0.2 – Criticar la implementación
+
+      public abstract class Empleado {
+        /* ... */
+        public abstract float computeMonthlySalary();
+      }
+      public class Plantilla extends Empleado {
+        float yearlyGrossSalary;
+        /* ... */ 
+        float setSalary( float s ) { yearlyGrossSalary=s; }
+        public float computeMonthlySalary() {
+            return yearlyGrossSalary/12;
+        }
+      }
+      public class Autonomo extends Empleado {
+        String vatCode;
+        float workingHours;
+        /* ... */ 
+        public float computeMonthlySalary() {
+            return workingHours*Company.getHourlyRate()*(1.0+Company.getVatRate());
+        }
+      }
+      public class Prueba {
+        public static void main(String[] args) {
+          Empleado e = new Plantilla("0001", "Pepe");
+          e.setSalary(25000.0);
+          Empleado a = new Autonomo("0001", "Ana", "12345-A");
+          a.addWorkingHours(30.0);
+          e.print(); System.out.println(" Salario: "+e.computeMonthlySalary()+" EUR"); 
+          a.print(); System.out.println(" Salario: "+a.computeMonthlySalary()+" EUR");
+        }
+      }
+      
+
+### Acoplamiento
+
+<span>Regla de delegación</span> Al pedir un servicio a un objeto, el
+servicio debe ser realizado de parte nuestra, no que nos devuelva un
+tercero con el que tratar para realizarlo
+
+Pintar un grafo con los datos registrados por una serie de grabadoras
+dispersas por el mundo
+
+      public void plotDate(Date aDate, Selection aSelection) {
+        TimeZone tz = aSelection.getRecorder().getLocation().getZone();
+      }
+      
+
+<span>Críticas</span>
+`plotDate \dashrightarrow Selection, Recorder, Location, TimeZone`
+
+      public void plotDate(Date aDate, TimeZone tz) { /* ... */ }
+      plotDate(someDate, someSelection.getTimeZone());
+      
+
+### Ley de Demeter
+
+<span>Ley de Demeter para funciones</span>
+
+<span>Críticas</span>
+
+-   ¿Realmente ayuda a crear código más mantenible?
+
+-   Coste de métodos <span>*wrapper*</span> que reenvían la petición
+    al delegado.
+
+-   Violar la ley para mejorar el rendimiento
+
+
+
+# Bibliografía
+
+A. Hunt & D. Thomas. <a id="pragmatic">The Pragmatic Programmer.</a> Addison-Wesley, 1999.
+
+M. Fowler, K. Beck, J. Brant, W. Opdyke & D. Roberts. <a id="refactoring">Refactoring. Improving the Design of Existing Code.</a> Addison-Wesley,
+2008.
+
+E. Yourdon & L. Constantine. <a id="yourdon">Structured Design: Fundamentals of a Discipline of Computer Program and Systems Design.</a> Prentice Hall, 2nd edition, 1986.
+
+B. Eckel. <a id="eckel">Thinking in Java | C++.</a> Prentice-Hall, 4th | 2nd edition, 2006 | 2003.
+
+E. Gamma, R. Helm, R. Johnson & J. Vlissides. <a id="gamma">Design Patterns. Elements of Reusable Object-Oriented Software.</a> Addison-Wesley, 1995.
+
+B. McLaughlin, G. Pollice & D. West. <a id="headfirst-ooad">Head First Object-Oriented Analysis and Design.</a> O'Reilly, 2006.
+
+B. Meyer. <a id="meyer">Object-Oriented Software Construction.</a> Prentice-Hall, 2nd edition, 1997.
