@@ -970,7 +970,7 @@ A veces se puede optar por violar DRY por razones de rendimiento.
   }
 ```  
 
-Menos problemático si queda dentro de los límites de la clase/módulo.
+Es menos problemático si queda dentro de los límites de la clase/módulo.
 
 Otras veces no merece la pena violar DRY por rendimiento: ¡las cachés y los optimizadores de código también hacen su labor!
 
@@ -992,51 +992,49 @@ __Impaciencia__
 
 __Simultaneidad__
 
--   No resoluble a nivel de construcción
--   Gestión de equipos + herramientas de comunicación
+-   No resoluble a nivel de técnicas de construcción
+-   Hace falta metodología, gestión de equipos + herramientas de comunicación
 
 
 ## Ortogonalidad
 
-<span>Ortogonalidad</span> En computación, dos o más componentes son
-ortogonales si los cambios[^1] en uno no afectan a los otros\
-$\Rightarrow$ independencia, desacoplamiento
+Dos componentes A y B son ortogonales ($$A \perp B$$) si los cambios en uno no afectan al otro. Suponen más independencia, menos acoplamiento. Por ejemplo:
 
--   La base de datos debe ser ortogonal a la interfaz de usuario
-
--   En aviónica, los mandos de control no suelen ser ortogonales
-
-<span>Beneficios</span>
-
--   Mayor <span>**productividad**</span>. Si $A \perp B$, componente A
-    sirve para $m$ propósitos y B para $n$, $A \cup B$ sirve para
-    $m \times n$
-
--   Menor <span>**riesgo**</span>. Defectos aislados. Menor fragilidad.
-    Más fácil de probar
+  -   La base de datos debe ser ortogonal a la interfaz de usuario
+  -   En un helicóptero, los mandos de control no suelen ser ortogonales
 
 
-### Implementación
+###Beneficios
 
-Aplicable en gestión del proyecto, diseño, codificación, pruebas y
-documentación
+Mayor **productividad**:
 
-<span>Codificación</span>
+ -  Es más fácil escribir un componente pequeño y auto-contenido que un bloque muy grande de código. El tiempo de desarrollo y pruebas se reduce
+ -  Se puede combinar unos componentes con otros más fácilmente. Mayor reutilización.
+ -  Si $$A \perp B$$, el componente A sirve para $$m$$ propósitos y B sirve para $$n$$, entonces $$A \cup B$$ sirve para $$m \times n$$ propósitos.
 
--   Evitar datos globales: v.g. ¿y si hay que hacer una versión
-    <span>*multithreaded*</span>
+Menor <span>**riesgo**</span>:
 
--   Usar métodos plantilla y estrategias [@GoF] —aplicar DRY
+ -  Defectos aislados. Menor fragilidad del sistema global
+ -  Más fácil de probar, pues será más fácil construir pruebas individuales de cada uno de sus componentes (e.g. _mocking_ es más sencillo)
 
+
+La ortogonalidad es aplicable a la gestión de proyectos, el diseño, la codificación, las pruebas y la documentación.
+
+A nivel de diseño, patrones y arquitecturas como MVC facilitan la construcción de componentes ortogonales.
+
+###Codificación
+
+Técnicas de codificación para fomentar la ortogonalidad:
+
+-   Evitar datos globales y _singletons_: v.g. ¿y si hay que hacer una versión
+    *multithreaded* de una aplicación?
+-   Usar métodos plantilla y estrategias — Aplicar DRY
 -   Desacoplar: Ley de <span>*Demeter*</span>—No hables con extraños
+-   Inyectar: pasar explícitamente el contexto (dependencia) como parámetro a los constructores
 
--   Pasar el contexto como parámetro a los constructores
+###Toolkits y bibliotecas
 
-<span>Toolkits y bibliotecas</span>
-
--   v.g. Enterprise Java Beans (EJB): @tags para persistencia de
-    objetos, transacciones, …
-
+-   Usar metadatos (@tag) para propósitos específicos: e.g. persistencia de objetos, transacciones, etc.
 -   Aspect-Oriented Programming (AOP)
 
 
@@ -1143,37 +1141,65 @@ documentación
       }
       
 
-### Acoplamiento
+### Regla de delegación
 
-<span>Regla de delegación</span> Al pedir un servicio a un objeto, el
-servicio debe ser realizado de parte nuestra, no que nos devuelva un
-tercero con el que tratar para realizarlo
+Al pedir un servicio a un objeto, el servicio debe ser realizado de parte nuestra, no que nos devuelva un tercero con el que tratar para realizarlo
 
-Pintar un grafo con los datos registrados por una serie de grabadoras
-dispersas por el mundo
+####Ejemplo:
 
-      public void plotDate(Date aDate, Selection aSelection) {
-        TimeZone tz = aSelection.getRecorder().getLocation().getZone();
-      }
-      
+Pintar un grafo con los datos registrados por una serie de grabadoras (_recorder_) dispersas por el mundo
 
-<span>Críticas</span>
-`plotDate \dashrightarrow Selection, Recorder, Location, TimeZone`
+```java
+  public void plotDate(Date aDate, Selection aSelection) {
+    TimeZone tz = aSelection.getRecorder().getLocation().getZone();
+  }
+```      
 
-      public void plotDate(Date aDate, TimeZone tz) { /* ... */ }
-      plotDate(someDate, someSelection.getTimeZone());
+####Críticas
+
+  -  Multiplicidad de dependencias: `plotDate` $$\dashrightarrow$$ `Selection`, `Recorder`, `Location`, `TimeZone`
+  - Mejor así: `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`. 
+   
+
+  - ```java
+	  public void plotDate(Date aDate, TimeZone tz) {
+	     /* ... */
+	  }
+	  plotDate(someDate, someSelection.getTimeZone());
+	```     
+     
       
 
 ### Ley de Demeter
 
-<span>Ley de Demeter para funciones</span>
+_Funciones_: Los métodos de un objeto solo deben hacer llamadas a métodos...
 
-<span>Críticas</span>
+  1. propios  
+  2. de objetos pasados como parámetros
+  3. de objetos creados por ellos mismos
+  4. de objetos declarados en el mismo método
+  
+```java
+class Demeter {
+  private A a;
+  private int func();
+  public void example (B b);
+  
+  void example(B b) {
+    C c;
+    int f = func();     // (1)
+    b.invert();			// (2)
+    a = new A();
+    a.setActive();      // (3)
+    c.print();	        // (4)
+}
+```
 
--   ¿Realmente ayuda a crear código más mantenible?
 
--   Coste de métodos <span>*wrapper*</span> que reenvían la petición
-    al delegado.
 
--   Violar la ley para mejorar el rendimiento
+####Críticas
+
+ -   ¿Realmente ayuda a crear código más mantenible?
+ -   Costes de espacio y ejecución de métodos <span>*wrapper*</span> que reenvían la petición al objeto delegado.
+ -   Violar la ley para mejorar el rendimiento
 
