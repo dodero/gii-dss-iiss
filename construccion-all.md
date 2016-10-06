@@ -30,10 +30,13 @@
 
 ## Casos prácticos
 
-1. [Recorrido de una lista](#recorridolista)
-2. [Implementación de una orquesta](#orquesta)
+1. Ocultación de la implementación - [Recorrido de una lista](#recorridolista)
+2. Delegación - [Implementación de una orquesta](#orquesta)
+3. Inyección de dependencias - [Caballeros de la mesa redonda](#knights)
+4. Código duplicado - [Cálculo de nóminas](#nominas)
+ 
 
-# Caso 1
+# Caso 1 - Ocultación de la implementación
 <a id="recorridolista"></a>
 ## Recorrido de una lista
 
@@ -308,7 +311,7 @@ El polimorfismo se basa en:
 
 
 
-# Caso 2
+# Caso 2 - Delegación
 <a id="orquesta"></a>
 ## Implementación de una orquesta
 
@@ -767,13 +770,13 @@ public final class BankAccount implements Comparable {
 }
 ```
 
-## Inyección de dependencias
+# Caso 3 - Inyección de dependencias 
+## Caballeros de la mesa redonda
+<a id="knights"></a>
 
-### Ejemplo: Caballeros de la mesa redonda
-#### Tomado de <a id="bibliografia#spring">Spring in Action</a>
+### Tomado de <a id="bibliografia#spring">Spring in Action</a>
 
-
-#### Diseño
+### Diseño
 
 Ocultando la implementación con interfaces:
 
@@ -816,7 +819,7 @@ public class HolyGrailQuest implements Quest {
 -   Puede asignársele cualquier implementación de `Quest`
     (`HolyGrailQuest`, `RescueDamselQuest`, etc.)
 
-#### Construcción con spring
+### Construcción con spring
 
 A través de un fichero de configuración XML le indicamos los valores inyectables:
 
@@ -871,7 +874,138 @@ public class MyPart {
 Esta clase sigue usando `new` para ciertos elementos de la interfaz.
 Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
       
-     
+
+#Caso 4 - código duplicado
+##Cálculo de nóminas
+<a id="nominas"></a>
+
+### Implementación de nóminas v0.1
+
+ - ¿Dónde hay código duplicado?
+  
+```java
+  public class Empleado {
+    Comparable id;
+    String name;
+    public Empleado(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    public void print() {
+        System.out.println(id+" "+name);
+    }
+  }
+  public class Autonomo extends Empleado {
+    String vatCode;
+    public Autonomo(String id, String name, String vat) {
+        this.id = id;
+        this.name = name;
+        this.vatCode = vat;
+    }
+    public void print() {
+        System.out.println(id+" "+name+" "+vatCode);
+    }
+  }
+  public class Prueba {
+    public static void main(String[] args) {
+      Empleado e = new Empleado("0001","Enrique");
+      Empleado a = new Autonomo("0002","Ana","12345-A");
+      e.print();  
+      a.print();  
+    }
+  }
+```
+
+- Código duplicado en los constructores de las clases y subclases
+- Refactorizar delegando hacia la superclase
+- Ahora incluimos un método para el cálculo de la nómina mensual...      
+      
+### Nóminas v0.2
+
+- ¿Están descohesionadas las clases?
+
+```java
+  public class Empleado {
+    Comparable id;
+    String name;
+    float yearlyGrossSalary;
+    public Empleado(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    float setSalary( float s ) { yearlyGrossSalary=s; }   
+    public void print() {
+        System.out.print(id+" "+name);
+    }
+    public float computeMonthlySalary() {
+        return yearlyGrossSalary/12;
+    }
+  }
+  public class Autonomo extends Empleado {
+    String vatCode;
+    float workingHours;
+    public Autonomo(String id, String name, String vat) {
+        super(id,name);
+        this.vatCode = vat;
+    }
+    public float computeMonthlySalary() {
+        return workingHours*Company.getHourlyRate()*(1.0+Company.getVatRate());
+    }    
+    @Override
+    public void print() {
+        super.print();
+        System.out.print(" "+vatCode);
+    }
+  }
+  public class Prueba {
+    public static void main(String[] args) {
+      Empleado e = new Empleado("0001", "Enrique");
+      Empleado a = new Autonomo("0001", "Ana", "12345-A");
+      e.print();  System.out.println();
+      a.print();  System.out.println();
+    }
+  }
+```      
+
+- El método de cálculo del salario está descohesionado
+ 
+
+### Nóminas v0.3
+
+```java
+  public abstract class Empleado {
+    /* ... */
+    public abstract float computeMonthlySalary();
+  }
+  public class Plantilla extends Empleado {
+    float yearlyGrossSalary;
+    /* ... */ 
+    float setSalary( float s ) { yearlyGrossSalary=s; }
+    public float computeMonthlySalary() {
+        return yearlyGrossSalary/12;
+    }
+  }
+  public class Autonomo extends Empleado {
+    String vatCode;
+    float workingHours;
+    /* ... */ 
+    public float computeMonthlySalary() {
+        return workingHours*Company.getHourlyRate()*(1.0+Company.getVatRate());
+    }
+  }
+  public class Prueba {
+    public static void main(String[] args) {
+      Empleado e = new Plantilla("0001", "Pepe");
+      e.setSalary(25000.0);
+      Empleado a = new Autonomo("0001", "Ana", "12345-A");
+      a.addWorkingHours(30.0);
+      e.print(); System.out.println(" Salario: "+e.computeMonthlySalary()+" EUR"); 
+      a.print(); System.out.println(" Salario: "+a.computeMonthlySalary()+" EUR");
+    }
+  }
+```      
+
+
 ##Refactoring
 
 
@@ -885,7 +1019,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 
 ## Código duplicado
 
-###¿Por qué no?
+####¿Por qué no?
 
 -   Mantenimiento
 -   Cambios (no sólo a nivel de código)
@@ -901,7 +1035,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 
 ###Principio DRY
 
-**D**on't **R**epeat **Y**ourself!
+> **D**on't **R**epeat **Y**ourself!
 
 ###Duplicación impuesta
 
@@ -1011,6 +1145,7 @@ Mayor **productividad**:
  -  Es más fácil escribir un componente pequeño y auto-contenido que un bloque muy grande de código. El tiempo de desarrollo y pruebas se reduce
  -  Se puede combinar unos componentes con otros más fácilmente. Mayor reutilización.
  -  Si $$A \perp B$$, el componente A sirve para $$m$$ propósitos y B sirve para $$n$$, entonces $$A \cup B$$ sirve para $$m \times n$$ propósitos.
+ -  La falta de cohesión perjudica la reutilización. v.g. ¿y si hay que hacer una nueva versión gráfica de una aplicación de línea de comandos? (los `System.out.println` pueden descohesionar)
 
 Menor <span>**riesgo**</span>:
 
@@ -1032,122 +1167,22 @@ Técnicas de codificación para fomentar la ortogonalidad:
 -   Desacoplar: Ley de <span>*Demeter*</span>—No hables con extraños
 -   Inyectar: pasar explícitamente el contexto (dependencia) como parámetro a los constructores
 
-###Toolkits y bibliotecas
-
--   Usar metadatos (@tag) para propósitos específicos: e.g. persistencia de objetos, transacciones, etc.
--   Aspect-Oriented Programming (AOP)
-
-
-### Ejemplo: criticar la implementación
-
-      public class Empleado {
-        Comparable id;
-        String name;
-        public Empleado(String id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-        public void print() {
-            System.out.println(id+" "+name);
-        }
-      }
-      public class Autonomo extends Empleado {
-        String vatCode;
-        public Autonomo(String id, String name, String vat) {
-            this.id = id;
-            this.name = name;
-            this.vatCode = vat;
-        }
-        public void print() {
-            System.out.println(id+" "+name+" "+vatCode);
-        }
-      }
-      public class Prueba {
-        public static void main(String[] args) {
-          Empleado e = new Empleado("0001","Enrique");
-          Empleado a = new Autonomo("0002","Ana","12345-A");
-          e.print();  
-          a.print();  
-        }
-      }
-      
-
-### Ejemplo refactorizado
-
-      public class Empleado {
-        Comparable id;
-        String name;
-        public Empleado(String id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-        public void print() {
-            System.out.print(id+" "+name);
-        }
-      }
-      public class Autonomo extends Empleado {
-        String vatCode;
-        public Autonomo(String id, String name, String vat) {
-            super(id,name);
-            this.vatCode = vat;
-        }
-        @Override
-        public void print() {
-            super.print();
-            System.out.print(" "+vatCode);
-        }
-      }
-      public class Prueba {
-        public static void main(String[] args) {
-          Empleado e = new Empleado("0001", "Enrique");
-          Empleado a = new Autonomo("0001", "Ana", "12345-A");
-          e.print();  System.out.println();
-          a.print();  System.out.println();
-        }
-      }
-      
-
-### Ejemplo v0.2 – Criticar la implementación
-
-      public abstract class Empleado {
-        /* ... */
-        public abstract float computeMonthlySalary();
-      }
-      public class Plantilla extends Empleado {
-        float yearlyGrossSalary;
-        /* ... */ 
-        float setSalary( float s ) { yearlyGrossSalary=s; }
-        public float computeMonthlySalary() {
-            return yearlyGrossSalary/12;
-        }
-      }
-      public class Autonomo extends Empleado {
-        String vatCode;
-        float workingHours;
-        /* ... */ 
-        public float computeMonthlySalary() {
-            return workingHours*Company.getHourlyRate()*(1.0+Company.getVatRate());
-        }
-      }
-      public class Prueba {
-        public static void main(String[] args) {
-          Empleado e = new Plantilla("0001", "Pepe");
-          e.setSalary(25000.0);
-          Empleado a = new Autonomo("0001", "Ana", "12345-A");
-          a.addWorkingHours(30.0);
-          e.print(); System.out.println(" Salario: "+e.computeMonthlySalary()+" EUR"); 
-          a.print(); System.out.println(" Salario: "+a.computeMonthlySalary()+" EUR");
-        }
-      }
-      
-
-### Regla de delegación
+#### Desacoplar - ley de Demeter
 
 Al pedir un servicio a un objeto, el servicio debe ser realizado de parte nuestra, no que nos devuelva un tercero con el que tratar para realizarlo
 
+__Ejemplo__:
+
+```java
+	public boolean canWrite(User user) {		if (user.isAnonymous())			return false;		else {			return user.getGroup().hasPermission(Permission.WRITE);		}	}
+```
+
+- Definir un método `User.hasPermission()`
+
+<!--
 ####Ejemplo:
 
-Pintar un grafo con los datos registrados por una serie de grabadoras (_recorder_) dispersas por el mundo
+Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recorder_) dispersas por el mundo. Cada grabadora está en una ubicación (_Location_) y una zona horaria (_TimeZone_). Los usuarios seleccionan una grabadora y pintan sus datos etiquetados con la zona horaria correcta...
 
 ```java
   public void plotDate(Date aDate, Selection aSelection) {
@@ -1157,8 +1192,9 @@ Pintar un grafo con los datos registrados por una serie de grabadoras (_recorder
 
 ####Críticas
 
-  -  Multiplicidad de dependencias: `plotDate` $$\dashrightarrow$$ `Selection`, `Recorder`, `Location`, `TimeZone`
-  - Mejor así: `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`. 
+  -  Multiplicidad de dependencias: `plotDate` $$\dashrightarrow$$ `Selection`, `Recorder`, `Location`, `TimeZone`. Si cambia la implementación de `Location` de forma que ya no incluye directaemnte una `TimeZone`, hay que cambiar `plotDate`
+    
+  - Añadir un método `getTimeZone` a `Selection`. Así `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`. 
    
 
   - ```java
@@ -1167,17 +1203,50 @@ Pintar un grafo con los datos registrados por una serie de grabadoras (_recorder
 	  }
 	  plotDate(someDate, someSelection.getTimeZone());
 	```     
-     
+-->     
       
 
-### Ley de Demeter
+#### Inyectar el contexto
 
-_Funciones_: Los métodos de un objeto solo deben hacer llamadas a métodos...
+Pasar explícitamente el contexto (dependencia) como parámetro a los constructores de la clase
 
-  1. propios  
-  2. de objetos pasados como parámetros
-  3. de objetos creados por ellos mismos
-  4. de objetos declarados en el mismo método
+__Ejemplo__:
+
+```java
+public interface Knight {
+  Object embarkOnQuest() throws QuestFailedException;
+}
+
+public class KnightOfTheRoundTable implements Knight {
+  private String name;
+  private Quest quest;
+  public KnightOfTheRoundTable(String name, Quest quest) {
+    this.name = name;
+    this.quest = quest;
+  }
+  public Object embarkOnQuest() throws QuestFailedException {
+    return quest.embark();
+  }
+  public void setQuest(Quest quest) {
+    this.quest = quest;
+  }
+}
+    
+public interface Quest {
+  abstract Object embark()
+    throws QuestFailedException;
+}
+``` 
+
+
+#### Ley de Demeter para funciones
+
+Los métodos de un objeto solo deben hacer llamadas a métodos...
+
+  1. _propios_  
+  2. de objetos pasados como _parámetros_
+  3. de objetos _creados_ por ellos mismos
+  4. de objetos _declarados_ en el mismo método
   
 ```java
 class Demeter {
@@ -1195,11 +1264,16 @@ class Demeter {
 }
 ```
 
-
-
 ####Críticas
 
  -   ¿Realmente ayuda a crear código más mantenible?
  -   Costes de espacio y ejecución de métodos <span>*wrapper*</span> que reenvían la petición al objeto delegado.
  -   Violar la ley para mejorar el rendimiento
+
+
+###Toolkits y bibliotecas
+
+-   Usar metadatos (@tag) para propósitos específicos: e.g. persistencia de objetos, transacciones, etc.
+-   Aspect-Oriented Programming (AOP)
+
 
