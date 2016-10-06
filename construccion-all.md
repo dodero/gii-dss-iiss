@@ -1,8 +1,6 @@
 # Construcción de Sistemas Software
 
-## Temas
-
-### __Problemáticas__
+## __Problemáticas__
  - <span style="color:blue;">Variabilidad</span>
  - <span style="color:blue;">Acoplamiento</span>
  - Complejidad
@@ -10,22 +8,29 @@
  - Reutilización
  - Flexibilidad
 
-### __Principios y técnicas__
+## __Principios__
  - <span style="color:blue;">Ocultación</span>
  - <span style="color:blue;">Cohesión</span>
  - <span style="color:blue;">Delegación</span>
- - <span style="color:blue;">Refactoring</span>
- - Bibliotecas
+
+
+## Técnicas
+ 
+ - [Herencia](#herencia), [polimorfismo](#polimorfismo), [composición](#compisicion), [inyección de dependencias](#inyeccion)
+ - [Refactoring](#refactoring): código duplicado, ortogonalidad
+ - Calidad: errores, depuración
+ - Bibliotecas y frameworks
  - Documentación 
  - Reflexión
  - Metaprogramación
 
-### __Paradigmas__
+## __Paradigmas__
  - <span style="color:blue;">Objetos</span>
  - Eventos
  - Aspectos
  - Funcional
  - Etc
+
 
 
 ## Casos prácticos
@@ -152,6 +157,7 @@ Delegar hacia otra clase
 
 
 ## Ocultar la implementación
+<a id="ocultacion"></a>
 
 -   __Cohesión__: módulos auto-contenidos, independientes y con un
     único propósito
@@ -183,6 +189,7 @@ Hay diversas técnicas para ocultar la implementación...
 
 
 ## Herencia: Generalización y especialización
+<a id="herencia"></a>
 
 -   **Reutilizar la interfaz**
     -   Clase base y derivada son del mismo tipo
@@ -293,6 +300,7 @@ Hay diversas técnicas para ocultar la implementación...
 ```      
 
 ##Polimorfismo
+<a id="polimorfismo"></a>
 
 Fenómeno por el que, cuando se llama a una operación de un objeto del que no se sabe su tipo específico, se ejecuta el método adecuado de acuerdo con su tipo.
 
@@ -601,6 +609,7 @@ Criticar...
 ```
 
 ## Composición
+<a id="composicion"></a>
 
 Delegación _en horizontal_ hacia otras clases cuya interfaz es bien conocida
 
@@ -1007,7 +1016,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 
 
 ##Refactoring
-
+<a id="refactoring"></a>
 
 > Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior [@Refactoring]
 > 
