@@ -1,8 +1,6 @@
 # Diseño de Sistemas Software
 
-## Temas
-
-### __Problemáticas__
+## Problemáticas
  - Variabilidad
  - Acoplamiento
  - Complejidad
@@ -10,20 +8,37 @@
  - <span style="color:blue;">Reutilización</span>
  - <span style="color:blue;">Flexibilidad</span>
 
-### __Principios y técnicas__
- - <span style="color:blue;">Ocultación</span>
- - <span style="color:blue;">Cohesión</span>
- - <span style="color:blue;">Delegación</span>
- - <span style="color:blue;">Refactoring</span>
- - Bibliotecas
+## Principios
+ - Ocultación: OCP, ISP, LSP
+ - Cohesión: SRP
+ - Ortogonalidad: ISP
+ - Delegación
 
-### __Paradigmas__
+## Técnicas
+
+ - Refactoring
+ - Bibliotecas y frameworks
+ - Contratos
+ - Inyección de dependencias
+ - 
+
+## Paradigmas
  - <span style="color:blue;">Objetos</span>
- - Aspectos
+ - Eventos
+ - Funcional
+ - <span style="color:blue;">Aspectos</span>
+ - Etc
+
+## Casos prácticos
+
+1. [Identificadores](#handler)
+2. [Framework de pruebas unitarias](#junit)
+3. [Caballeros de la mesa redonda](#knights)
+4. [Guitarras Paco](#guitarras)
+5. [Figuras geométricas](#figuras)
 
 
-
-# Caso práctico
+# Caso práctico 1
 <a id="handler"></a>
 ## Identificadores 
 
@@ -160,9 +175,9 @@ $$\Leftrightarrow$$ `(x.equals(y))`
        tener que cambiar los módulos ya escritos
 
 
-# Caso práctico 1
+# Caso práctico 2
 <a id="junit"></a>
-## Framework jUnit
+## Framework de pruebas unitarias
 
 -   JUnit es un framework en Java que sirve para diseñar, construir y
     ejecutar **pruebas unitarias**
@@ -522,8 +537,8 @@ En la arquitectura del framework se observan diversos patrones: Composite, Comma
 
 
 
-# Caso práctico 2
-<a id="caballeros"></a>
+# Caso práctico 3
+<a id="knights"></a>
 ## Ejemplo: Caballeros de la mesa redonda
 ### Tomado de <a id="bibliografia#spring">Spring in Action</a>
 
@@ -703,7 +718,7 @@ Aplicar el principio __YAGNI__: __You Ain't Gonna Need It__
 
 
 
-# Caso práctico
+# Caso práctico 4
 <a id="guitarras"></a>
 
 ## Guitarras Paco
@@ -861,3 +876,200 @@ Paco dice que:
 
 Hacer refactoring de la aplicación heredada de Guitarras Paco
 
+
+
+# Caso práctico 5:
+<a id="figuras"></a>
+## Figuras geométricas
+
+
+[Uncle Bob Martin principles](http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod)
+
+## Principio de responsabilidad única 
+
+__SRP: *Single responsibility Principle*__
+
+> A class should have onlye one reason to change
+> <cite>Uncle Bob Martin, </cite>
+
+-   Una clase que modela intereses múltiples genera acoplamiento entre
+    los intereses
+-   Un cambio en algún interés obligará a cambios accidentales en los
+    clientes que no dependen de dicho interés
+    
+<!-- -   Los módulos enmarañados que nunca cambian no son problemáticos-->
+
+SRP es lo mismo que el principio de __cohesión__ de [DeMarco](#demarco)
+
+
+###Ejemplo: Shapes v1 en Java
+
+¿Qué parte no cumple SRP en el ejemplo de las figuras? 
+
+¿Cuántas responsabilidades tienen las clases que implementan la interfaz `Shape`? ¿Cuáles son?
+ 
+```java
+package shapes;
+interface Shape {
+  double area();
+  void draw();
+}
+
+class Point {
+  double getX() {...}
+  double getY() {...}
+}
+
+abstract class Polygon implements Shape {
+  Point getVertex(index i) {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Triangle extends Polygon {
+  double area() {...}
+}
+
+abstract class RectParallelogram extends Polygon {
+  double area() {...}
+}
+
+class Square extends RectParallelogram {...}
+
+class Rectangle extends RectParallelogram {...}
+
+abstract class ClosedCurve implements Shape {...}
+
+class Circle
+    extends ClosedCurve {
+  double getRadius() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Ellipse extends ClosedCurve {
+  double getApogeeRadius() {...}
+  double getPerigeeRadius() {...}
+  Point getFocus1() {...}
+  Point getFocus2() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+```
+
+- Dos responsabilidades: geometría computacional + dibujo en pantalla
+- Todas las figuras tienen métodos `draw` y `toString` (dibujar en pantalla) además del método `area` que calcula el área (geometría computacional) $$\rightarrow$$ Violación del SRP
+
+####Solución:
+
+Patrones de diseño: _visitor_
+
+####Otros ejemplos
+
+- ActiveRecord viola SRP. Sustituir por DAO
+- 
+     
+## Principio de Abierto-Cerrado
+
+__OCP: *Open-Closed Principle*__
+
+> Toda clase, módulo, aspecto o función debe quedar abierto para extensiones pero cerrado para modificaciones
+> 
+> <cite>B. Meyer, [Object Oriented Software Construction](#meyer)</cite>
+
+
+-   Si un cambio en un sitio origina una cascada de cambios en otros
+    puntos del sistema, el resultado es un sistema frágil y rígido
+
+-   Es difícil averiguar todos los puntos que requieren cambios
+
+-   Código cerrado para modificaciones, pero abierto para extensión
+    mediante delegación en vertical (subclases) u horizontal (composición)
+
+¿Qué parte no cumple OCP en el ejemplo? 
+
+### Ejemplo: versión 2 en C++
+
+```c++
+enum ShapeType {circle, square};
+
+struct Shape
+{
+  ShapeType itsType;
+};
+
+struct Circle
+{
+  ShapeType itsType;
+  double itsRadius;
+  Point itsCenter;
+};
+
+struct Square
+{
+  ShapeType itsType;
+  double itsSide;
+  Point itsTopLeft;
+};
+
+void DrawSquare(struct Square*)
+void DrawCircle(struct Circle*);
+typedef struct Shape *ShapePointer;
+
+void DrawAllShapes
+   (ShapePointer list[], int n)
+{
+  int i;
+  for (i=0; i<n; i++)
+  {
+    struct Shape* s = list[i];
+    switch (s->itsType)
+    {
+      case square:
+        DrawSquare((struct Square*)s);
+        break;
+      case circle:
+        DrawCircle((struct Circle*)s);
+        break;
+    }
+  }
+}
+```
+
+- `DrawAllShapes` no está cerrado para modificaciones cuando aparecen nuevos tipos de `Shape`
+
+####Solución
+
+- Abstracción (Ocultación de la implementación): clase abstracta y métodos polimórfico: patrones de diseño _template method_ y/o _strategy_
+
+Aplicando el OCP...
+
+```c++
+class Shape {
+  public:
+    virtual void Draw() const = 0;
+};
+class Square : public Shape {
+  public:
+    virtual void Draw() const;
+};
+class Circle : public Shape {
+  public:
+    virtual void Draw() const;
+};
+void DrawAllShapes(Set<Shape*>& list) {
+  for (Iterator<Shape*>i(list); i; i++)
+    (*i)->Draw();
+}
+```         
+
+- Si queremos ampliar el comportamiento de `DrawAllShapes`, solo tenemos que añadir una nueva clase derivada de `Shape`
+- Si se aplica bien OCP, los cambios de un cierto tipo obligan a añadir nuevo código, no a modificar el existente
+ 
+>  model is not natural in a system in which ordering is coupled to shape type. This leads us to a disturbing conclusion. In general, no matter how "closed" a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!> Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
+> 
+> Bob C. Martin

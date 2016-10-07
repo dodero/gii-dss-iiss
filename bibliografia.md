@@ -16,3 +16,5 @@ B. McLaughlin, G. Pollice & D. West. <a id="headfirst-ooad">Head First Object-Or
 B. Meyer. <a id="meyer">Object-Oriented Software Construction.</a> Prentice-Hall, 2nd edition, 1997.
 
 C. Walls & R. Breidenbach. <a id="spring">Spring in Action.</a> Manning Publications, 2005.
+
+T. DeMarco. <a id="demarco">Structured Analysis and System Specification</a>. Yourdon Press, 1979.

@@ -1,34 +1,37 @@
 # Construcción de Sistemas Software
 
-## __Problemáticas__
+## Problemáticas
  - <span style="color:blue;">Variabilidad</span>
  - <span style="color:blue;">Acoplamiento</span>
- - Complejidad
- - Robustez
+ - <span style="color:blue;">Complejidad</span>
+ - <span style="color:blue;">Robustez</span>
  - Reutilización
  - Flexibilidad
 
-## __Principios__
- - <span style="color:blue;">Ocultación</span>
- - <span style="color:blue;">Cohesión</span>
- - <span style="color:blue;">Delegación</span>
-
+## Principios
+ - Ocultación
+ - Cohesión
+ - Ortogonalidad
+ - Delegación
 
 ## Técnicas
  
- - [Herencia](#herencia), [polimorfismo](#polimorfismo), [composición](#compisicion), [inyección de dependencias](#inyeccion)
- - [Refactoring](#refactoring): código duplicado, ortogonalidad
+ - [Herencia](#herencia)
+ - [Polimorfismo](#polimorfismo)
+ - [Composición](#compisicion)
+ - [Inyección de dependencias](#inyeccion)
+ - [Refactoring](#refactoring): código duplicado, dependencias
  - Calidad: errores, depuración
  - Bibliotecas y frameworks
  - Documentación 
  - Reflexión
  - Metaprogramación
 
-## __Paradigmas__
+## Paradigmas
  - <span style="color:blue;">Objetos</span>
- - Eventos
+ - <span style="color:blue;">Eventos</span>
+ - <span style="color:blue;">Funcional</span>
  - Aspectos
- - Funcional
  - Etc
 
 
