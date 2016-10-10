@@ -571,7 +571,7 @@ Criticar...
 -   __Ocultación__: la interfaz del método `instrumentos()` sigue expuesta: el cliente sabe que devuelve una `List`.
 
 
-### Implementación final: Orquesta v0.6
+### Implementación alternativa: Orquesta v0.6
 
 ```java
   class Orquesta implements Iterable<Instrumento> {
@@ -610,6 +610,33 @@ Criticar...
      }
   }
 ```
+
+### Implementación final: Orquesta v0.7
+
+Los `new` de `PruebaOrquesta` siguen introduciendo dependencias de `PruebaOrquesta` con respecto a los tipos concretos de `Instrumento`.
+
+#### Construcción con spring
+
+A través de un fichero de configuración `orquesta.xml` le indicamos los valores inyectables:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"	"http://www.springframework.org/dtd/spring-beans.dtd"><beans>	<bean id="trompeta"		class="Viento"/>
+	<bean id="violin"		class="Cuerda"/>
+	<bean id="tambor"		class="Percusion"/>
+	<bean id="viola"		class="Cuerda"/>
+			<bean id="cuarteto"		class="Orquesta">		<property name="instrumento1">			<ref bean="trompeta"/>		</property>
+		<property name="instrumento2">			<ref bean="violin"/>		</property>		<property name="instrumento3">			<ref bean="viola"/>		</property>		<property name="instrumento4">			<ref bean="tambor"/>		</property>			</bean></beans>
+```
+
+La inyección de la dependencia concreta la hace el contenedor (_spring_ en este ejemplo):
+
+```java
+import org.springframework.beans.factory.BeanFactory;import org.springframework.beans.factory.xml.XmlBeanFactory;public class PruebaOrquesta {	public static void main(String[] args) throws Exception {		BeanFactory factory =			new XmlBeanFactory(new FileInputStream("orquesta.xml"));		Orquesta orquesta =			(Orquesta) factory.getBean("cuarteto");
+		for (Instrumento i: orquesta)
+           orquesta.afinar(i);		orquesta.tocar();	}}
+```
+
+
 
 ## Composición
 <a id="composicion"></a>
@@ -783,6 +810,7 @@ public final class BankAccount implements Comparable {
    }
 }
 ```
+
 
 # Caso 3 - Inyección de dependencias 
 ## Caballeros de la mesa redonda
