@@ -438,7 +438,7 @@ Delegar las altas/bajas de `Instrumento` en la colección (agregado) de `Orquest
 ```java
   class Orquesta {
 
-    private ArrayList<Instrumento> instrumentos;
+    protected ArrayList<Instrumento> instrumentos;
 
     public Orquesta {
         instrumentos = new ArrayList<Instrumento>(3);
@@ -530,7 +530,7 @@ Criticar...
 
 ```java
   class Orquesta {
-    private List<Instrumento> instrumentos;
+    protected List<Instrumento> instrumentos;
     public Orquesta {
        instrumentos = new ArrayList<Instrumento>(3);
     }
@@ -619,7 +619,7 @@ Delegación _en horizontal_ hacia otras clases cuya interfaz es bien conocida
 -   Los objetos miembro __delegados__ soon cambiables en tiempo de
     ejecución sin afectar al código cliente ya existente
 -   Alternativa más flexible que la herencia. Ejemplo: `Cola extends
-    ArrayList` implica que una cola va a implementarse como un ArrayList
+    ArrayList` implica que una cola va a implementarse como un `ArrayList`
     para toda la vida, sin posibilidad de cambio en ejecución
 
 ### Composición vs. Herencia
@@ -714,10 +714,11 @@ import java.util.*;
 import java.io.*;
   
 public final class BankAccount implements Comparable<BankAccount> {
-    private String id;
+    private final String id;
     public BankAccount (String number)  {
       this.id = number;
     }
+    String getId() { return id; }
     @Override
     public int compareTo(BankAccount other) {
       if (this == other) return 0;
@@ -728,7 +729,7 @@ public final class BankAccount implements Comparable<BankAccount> {
 	public boolean equals(Object other) {
 		if (this == other) return true;
 		if (!(other instanceof BankAccount)) return false;
-		that = (BankAccount)other:
+		BankAccount that = (BankAccount)other;
 		return	( this.id.equals((that.getId()) );
    }
 	@Override
@@ -755,13 +756,14 @@ import java.util.*;
 import java.io.*;
   
 public final class BankAccount implements Comparable {
-    private String id;
+    private final String id;
     public BankAccount (String number)  {
       this.id = number;
     }
+    String getId() { return id; }
     public int compareTo(Object other) {
       if (this == other) return 0;
-      that = (BankAccount)other:
+      BankAccount that = (BankAccount)other;
       assert this.equals(that) : "compareTo inconsistent with equals.";
       return this.id.compareTo(that.getId());
     }
