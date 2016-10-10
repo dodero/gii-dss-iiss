@@ -1130,7 +1130,7 @@ Otras veces no merece la pena violar DRY por rendimiento: ¡las cachés y los op
 
 **Ejemplo: versión 3 en C#**
 
-````csharp
+```csharp
 public class Line {	private Point Start;
 	private Point End;	private double Length;	public Point Start {		get { return Start; }		set { Start = value; }	}
 
