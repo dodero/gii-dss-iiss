@@ -691,14 +691,14 @@ __Invariantes:__
 
  - Anticonmutativa: `sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`
 
- - Transitividad: `(x.compareTo(y)>0 and y.compareTo(z)>0)` $$\Rightarrow$$
+ - Transitividad: `(x.compareTo(y)>0 and y.compareTo(z)>0)` $\Rightarrow$
 `x.compareTo(z)>0`
 
- - `x.compareTo(y)=0` $$\Rightarrow$$ 
-   `sgn(x.compareTo(z))=sgn(y.compareTo(z))` $$\forall$$ `z`
+ - `x.compareTo(y)=0` $\Rightarrow$ 
+   `sgn(x.compareTo(z))=sgn(y.compareTo(z))` $\forall$ `z`
 
  - Consistencia con `equals` (no obligatoria): `(x.compareTo(y)=0)`
-     $$\Leftrightarrow$$ `(x.equals(y))`
+     $\Leftrightarrow$ `(x.equals(y))`
 
  - Cuando una clase hereda de una clase concreta que implementa Comparable y le añade un campo significativo para la comparación, no se puede construir una implementación correcta de `compareTo`. La única alternativa entonces es la composición en lugar de la herencia.
 
@@ -1166,7 +1166,7 @@ Mayor **productividad**:
 
  -  Es más fácil escribir un componente pequeño y auto-contenido que un bloque muy grande de código. El tiempo de desarrollo y pruebas se reduce
  -  Se puede combinar unos componentes con otros más fácilmente. Mayor reutilización.
- -  Si $$A \perp B$$, el componente A sirve para $$m$$ propósitos y B sirve para $$n$$, entonces $$A \cup B$$ sirve para $$m \times n$$ propósitos.
+ -  Si $A \perp B$, el componente A sirve para $m$ propósitos y B sirve para $n$, entonces $A \cup B$ sirve para $m \times n$ propósitos.
  -  La falta de cohesión perjudica la reutilización. v.g. ¿y si hay que hacer una nueva versión gráfica de una aplicación de línea de comandos? (los `System.out.println` pueden descohesionar)
 
 Menor <span>**riesgo**</span>:
@@ -1214,7 +1214,7 @@ Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recor
 
 ####Críticas
 
-  -  Multiplicidad de dependencias: `plotDate` $$\dashrightarrow$$ `Selection`, `Recorder`, `Location`, `TimeZone`. Si cambia la implementación de `Location` de forma que ya no incluye directaemnte una `TimeZone`, hay que cambiar `plotDate`
+  -  Multiplicidad de dependencias: `plotDate` $\dashrightarrow$ `Selection`, `Recorder`, `Location`, `TimeZone`. Si cambia la implementación de `Location` de forma que ya no incluye directaemnte una `TimeZone`, hay que cambiar `plotDate`
     
   - Añadir un método `getTimeZone` a `Selection`. Así `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`. 
    
