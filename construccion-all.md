@@ -1154,7 +1154,7 @@ __Simultaneidad__
 
 ## Ortogonalidad
 
-Dos componentes A y B son ortogonales ($$A \perp B$$) si los cambios en uno no afectan al otro. Suponen más independencia, menos acoplamiento. Por ejemplo:
+Dos componentes A y B son ortogonales ($A \perp B$) si los cambios en uno no afectan al otro. Suponen más independencia, menos acoplamiento. Por ejemplo:
 
   -   La base de datos debe ser ortogonal a la interfaz de usuario
   -   En un helicóptero, los mandos de control no suelen ser ortogonales
