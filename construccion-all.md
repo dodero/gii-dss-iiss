@@ -1067,8 +1067,9 @@ La gestión del proyecto así nos lo exige:
 -   [Programación literaria](http://www.literateprogramming.com/)
 -   Ayuda del IDE
 
+#### ¿Siempre aplicar DRY?
 
-####Ejemplo
+**Ejemplo: versión 1**
 
 ```java
   public class Line {
@@ -1093,7 +1094,7 @@ La gestión del proyecto así nos lo exige:
 A veces se puede optar por violar DRY por razones de rendimiento. 
 
 
-####Ejemplo 2
+**Ejemplo: versión 2**
 
 ```java
   public class Line {
@@ -1127,6 +1128,15 @@ Otras veces no merece la pena violar DRY por rendimiento: ¡las cachés y los op
 >
 > <cite>[B. Meyer](#meyer)</cite>
 
+**Ejemplo: versión 3 en C#**
+
+````csharp
+public class Line {	private Point Start;
+	private Point End;	private double Length;	public Point Start {		get { return Start; }		set { Start = value; }	}
+
+	public Point End {		get { return End; }		set { Start = value; }	}
+		public double Length {		get { return Start.distanceTo(End); }	}}   
+```
 
 ### Otros motivos de duplicación
 
@@ -1287,5 +1297,4 @@ class Demeter {
 
 -   Usar metadatos (@tag) para propósitos específicos: e.g. persistencia de objetos, transacciones, etc.
 -   Aspect-Oriented Programming (AOP)
-
 

@@ -970,8 +970,8 @@ Patrones de diseño: _visitor_
 
 ####Otros ejemplos
 
-- ActiveRecord viola SRP. Sustituir por DAO
-- 
+  - ActiveRecord viola SRP. Sustituir por DAO
+   
      
 ## Principio de Abierto-Cerrado
 
@@ -992,7 +992,7 @@ __OCP: *Open-Closed Principle*__
 
 ¿Qué parte no cumple OCP en el ejemplo? 
 
-### Ejemplo: versión 2 en C++
+### Ejemplo: Shapes versión 2 en C++
 
 ```c++
 enum ShapeType {circle, square};
@@ -1044,7 +1044,7 @@ void DrawAllShapes
 
 ####Solución
 
-- Abstracción (Ocultación de la implementación): clase abstracta y métodos polimórfico: patrones de diseño _template method_ y/o _strategy_
+- __Abstracción__ (ocultación de la implementación): clase abstracta y métodos polimórfico: patrones de diseño _template method_ y/o _strategy_
 
 Aplicando el OCP...
 
@@ -1073,3 +1073,209 @@ void DrawAllShapes(Set<Shape*>& list) {
 >  model is not natural in a system in which ordering is coupled to shape type. This leads us to a disturbing conclusion. In general, no matter how "closed" a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!> Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
 > 
 > Bob C. Martin
+
+
+### Principo de segregación de interfaces
+
+__ISP: *Interface Segregation Principle*__
+
+> Los clientes no deben depender de métodos que no usan. 
+>
+> <cite>Bob C. Martin</cite>
+
+-   Las interfaces son para los clientes, no para hacer jerarquías
+-   Evitar interfaces gruesas con muchos métodos (descohesionadas)
+-   Los cambios en los métodos ignorados pueden provocar cambios en un
+    cliente que no los usa
+-   La interfaz de una clase puede dividirse en bloques de métodos relacionados. Unos clientes usan un bloque y otros clientes usan otro bloque. Si un cliente necesita conocer una interfaz no cohesionada, debe hacerlo combinando una o más clases (sus interfaces)
+-   ISP es a las interfaces lo que SRP es a clases y métodos
+-   Violar el ISP es muy común en lenguajes de tipos estáticos (C++, Java, C#). Los lenguajes dinámicos ayudan algo más a no violar el ISP (con los _mixins_)
+
+
+### Ejemplo:
+
+Una implementación de puertas de seguridad con temporizador (`TimedDoor`) que hace sonar una alarma cuando la puerta está abierta durante un cierto tiempo.
+
+`TimedDoor` se comunica con un `Timer` para registrar un temporizador que, cuando salta, avisa a un `TimerClient`.
+
+Con la siguiente solución un `TimerClient` puede registrarse a sí mismo  en un `Timer` y recibir un mensaje `Timeout()`.
+
+
+![Puertas de seguridad](./figuras/isp-timer-door.png)
+
+```csharp
+public class Timer {	public void Register(int timeout, TimerClient client)	{ /*code*/ }}public interface TimerClient {		void TimeOut();
+}
+```
+
+¿Problemas? ¿Qué pasa si cambia la implementación de `TimerClient`?
+
+Por ejemplo, en la implementación anterior, si se cierra la puerta antes de que venza el timeout y se vuelve a abrir, se registra el nuevo antes de que el antiguo haya expirado. Cuando el primero expira se produce la llamada a `Timeout()` de `TimedDoor` y no debería. Así que cambiamos la implementación:
+
+
+```csharp
+public class Timer {	public void Register(int timeout, int timeOutId, TimerClient client)		{/*code*/}}public interface TimerClient {	void TimeOut(int timeOutID);}
+```
+
+- El cambio afecta a los usuarios de `TimerClient`, pero también a `Door` y a los clientes de `Door` (y no debería)  
+ 
+- El problema es que `Door` depende de `TimerClient` y no todas las variedades de puerta son de seguridad (con temporizador)
+- Si hacen falta más variedades de puerta, todas ellas deberán implementar implementaciones degeneradas de `Timeout` 
+- Las interfaces empiezan a engrosarse. Esto puede acabar violando también el LSP
+
+
+####Solución
+
+- __Delegación__ a través del patrón adapter (de objetos o de clases)
+
+
+## Principio de sustitución de Liskov
+
+__LSP: *Liskov Substitution Principle*__
+
+> Un subtipo debe poder ser sustituible por sus tipos base
+> 
+> <cite>Barbara Liskov, </cite>
+
+-   Si una función $$f$$ depende de una clase base $$B$$ y hay una $$D$$ derivada de $$B$$, las instancias de $$D$$ no deben alterar el comportamiento definido por $$B$$ de modo que $$f$$ deje de funcionar
+
+<!--
+-   Posibilidad de sustitución depende del contexto: En otro programa
+    P2, los objetos D pueden no ser sustituibles por objetos B
+-->
+
+### Ejemplo: Shapes versión 3
+
+
+```csharp
+struct Point {double x, y;}public enum ShapeType {square, circle};public class Shape {	private ShapeType type;	public Shape(ShapeType t){type = t;}	public static void DrawShape(Shape s) {		if(s.type == ShapeType.square)			(s as Square).Draw();		else if(s.type == ShapeType.circle)			(s as Circle).Draw();	}}public class Circle : Shape {	private Point center;	private double radius;
+		public Circle() : base(ShapeType.circle) {}	public void Draw() {/* draws the circle */}}
+public class Square : Shape {	private Point topLeft;	private double side;	public Square() : base(ShapeType.square) {}
+	public void Draw() {/* draws the square */}}
+```
+
+- `DrawShape` viola claramente el OCP
+- Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` $$\rightarrow$$ violación de LSP
+
+- Violación más sutil de LSP...
+ 
+````csharp
+public class Rectangle {	private Point topLeft;	private double width;	private double height;	public double Width {		get { return width; }		set { width = value; }	}
+		public double Height {		get { return height; }		set { height = value; }	}}   
+```
+
+¿Cumple LSP? `Square` no es subclase de `Rectangle`, ni `Circle` es subclase de `Ellipse`. Un `Square` puede emplearse en cualquier lugar donde se necesite un `Rectangle`
+
+
+```csharp
+Square s;
+s.SetWidth(1);
+s.SetHeight(2);   
+void f(Rectangle r) {
+  r.SetWidth(32); // llama a Rectangle.SetWidth
+} 
+```      
+
+-   &lt;2-&gt;<span>`SetWidth` y `SetHeight` no se declararon
+    `virtual`</span>
+
+\[fragile\]
+
+### Ejemplo: atentado contra LSP
+
+        class Rectangle {
+          public:
+            virtual void SetWidth(double w) {itsWidth=w;}
+            virtual void SetHeight(double h) {itsHeight=h;}
+            double GetHeight() const {return itsHeight;}
+            double GetWidth() const {return itsWidth;}
+          private:
+            double itsHeight;
+            double itsWidth;
+        };
+        class Square : public Rectangle {
+          public:
+            virtual void SetWidth(double w);
+            virtual void SetHeight(double h);
+        };
+        void Square::SetWidth(double w) {
+          Rectangle::SetWidth(w);
+          Rectangle::SetHeight(w);
+        }
+        void Square::SetHeight(double h) {
+          Rectangle::SetHeight(h);
+          Rectangle::SetWidth(h);
+        }
+      
+
+\[fragile\]
+
+### Ejemplo: atentado contra LSP
+
+        void g(Rectangle& r) {
+          r.SetWidth(5);
+          r.SetHeight(4);
+          assert(r.GetWidth() * r.GetHeight()) == 20);
+        }
+      
+
+Problemas...
+
+-   &lt;2-&gt;
+
+-   &lt;2-&gt;<span>Un cuadrado podría ser un rectángulo, pero
+    definitivamente un objeto `Square` **no es un** objeto
+    `Rectangle`</span>
+
+-   &lt;2-&gt;<span>El comportamiento de un objeto `Square` no es
+    consistente con el de un objeto `Rectangle`</span>
+
+-   &lt;2-&gt;<span>El LSP pone en evidencia que la relación ES-UN tiene
+    que ver con el comportamiento público extrínseco, del que los
+    clientes dependen.</span>
+
+### Diseño por contrato
+
+Relación entre LSP y el **Design-By-Contract** (DBC) de *Bertrand
+Meyer*:
+
+-   Métodos de clases declaran *precondiciones* y *postcondiciones*: al
+    redefinir una operación \[en una subclase derivada\]…
+
+    -   las precondiciones sólo pueden sustituirse por otras más
+        débiles/laxas
+
+    -   las postcondiciones sólo pueden sustituirse por otras más
+        fuertes/estrictas
+
+-   Ejemplo:
+
+    -   Postcondición de `Rectangle::SetWidth(double w)`:
+        `assert((itsWidth==w) && (itsHeight==old.itsHeight));`
+
+    -   Postcondición de `Square::SetWidth(double w)`:
+        `assert((itsWidth==w);`
+
+-   La postcondición de `Square::SetWidth(double w)` viola el contrato
+    de la clase base porque es más débil que la de `Rectangle`
+
+DIP: Dependency Inversion Principle
+-----------------------------------
+
+### DIP: Dependency Inversion Principle
+
+**Principio de inversión de dependencias**
+
+*Los módulos de alto nivel no deben depender de módulos de bajo nivel.
+Ambos deben depender de abstracciones.*
+
+*Las abstracciones no deben depender de los detalles, sino los detalles
+de las abstracciones*
+
+-   Las dependencias son transitivas
+
+-   El cliente puede definir la abstracción que necesita (ISP)
+
+-   Cada nivel es intercambiable por un sustituto
+
+
