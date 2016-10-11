@@ -677,7 +677,7 @@ public class KnightOfTheRoundTable implements Knight {
 - _Hollywood Principle: Don't call us, we'll call you"._
 
 
-# Discusión sobre la reutilización
+## Discusión sobre la reutilización
 
 > We most likely would have been better off not attempting to create a reusable function in the first place 
 > 
@@ -693,7 +693,7 @@ public class KnightOfTheRoundTable implements Knight {
 
 ![Reutilización de una función](./figuras/misuse-reuse-2.png)
 
-#### Ventajas (supuestas) de reutilizar:
+### Ventajas (supuestas) de reutilizar:
 
 __Ahorro__: Si $\exists s$ sistemas $\wedge ~ coste(Function~1) = c$ €
 
@@ -701,7 +701,7 @@ $\Rightarrow$
 ahorro = $c \times (s-1)$ €
 
 
-#### Amenazas (reales):
+### Amenazas (reales):
 
 ![Reutilización de una función](./figuras/misuse-reuse-3.png)
 
@@ -710,7 +710,7 @@ ahorro = $c \times (s-1)$ €
 - La seguridad es inversamente proporcional a la complejidad del sistema.
 - Se incrementan los costes de llevar los sistemas a la nube.
 
-####Conclusión
+###Conclusión
 
 No crear funciones reutilizables en primer lugar
 
