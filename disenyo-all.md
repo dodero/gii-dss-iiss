@@ -154,16 +154,16 @@ __Invariantes:__
 
 `sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`
 
-`(x.compareTo(y)>0 and y.compareTo(z)>0)` $$\Rightarrow$$
+`(x.compareTo(y)>0 and y.compareTo(z)>0)` $\Rightarrow$
 `x.compareTo(z)>0`
 
-`x.compareTo(y)=0` $$\Rightarrow$$
-`sgn(x.compareTo(z))=sgn(y.compareTo(z))` $$\forall$$ `z`
+`x.compareTo(y)=0` $\Rightarrow$
+`sgn(x.compareTo(z))=sgn(y.compareTo(z))` $\forall$ `z`
 
 __Consistencia con `equals`__:
 
 `(x.compareTo(y)=0)`
-$$\Leftrightarrow$$ `(x.equals(y))`
+$\Leftrightarrow$ `(x.equals(y))`
 
 
 
@@ -695,10 +695,10 @@ public class KnightOfTheRoundTable implements Knight {
 
 #### Ventajas (supuestas) de reutilizar:
 
-__Ahorro__: Si $$\exists s$$ sistemas $$\wedge ~ coste(Function~1) = c$$ €
+__Ahorro__: Si $\exists s$ sistemas $\wedge ~ coste(Function~1) = c$ €
 
-$$\Rightarrow$$
-ahorro = $$c \times (s-1)$$ €
+$\Rightarrow$
+ahorro = $c \times (s-1)$ €
 
 
 #### Amenazas (reales):
@@ -962,7 +962,7 @@ class Ellipse extends ClosedCurve {
 ```
 
 - Dos responsabilidades: geometría computacional + dibujo en pantalla
-- Todas las figuras tienen métodos `draw` y `toString` (dibujar en pantalla) además del método `area` que calcula el área (geometría computacional) $$\rightarrow$$ Violación del SRP
+- Todas las figuras tienen métodos `draw` y `toString` (dibujar en pantalla) además del método `area` que calcula el área (geometría computacional) $\rightarrow$ Violación del SRP
 
 ####Solución:
 
@@ -992,52 +992,13 @@ __OCP: *Open-Closed Principle*__
 
 ¿Qué parte no cumple OCP en el ejemplo? 
 
-### Ejemplo: Shapes versión 2 en C++
+### Ejemplo: Shapes versión 2 en C# #
 
-```c++
-enum ShapeType {circle, square};
+Versión imperativa (sin objetos):
 
-struct Shape
-{
-  ShapeType itsType;
-};
-
-struct Circle
-{
-  ShapeType itsType;
-  double itsRadius;
-  Point itsCenter;
-};
-
-struct Square
-{
-  ShapeType itsType;
-  double itsSide;
-  Point itsTopLeft;
-};
-
-void DrawSquare(struct Square*)
-void DrawCircle(struct Circle*);
-typedef struct Shape *ShapePointer;
-
-void DrawAllShapes
-   (ShapePointer list[], int n)
-{
-  int i;
-  for (i=0; i<n; i++)
-  {
-    struct Shape* s = list[i];
-    switch (s->itsType)
-    {
-      case square:
-        DrawSquare((struct Square*)s);
-        break;
-      case circle:
-        DrawCircle((struct Circle*)s);
-        break;
-    }
-  }
-}
+```csharp
+enum ShapeType {circle, square};struct Shape{	ShapeType itsType;};struct Circle{	ShapeType itsType;	double itsRadius;	Point itsCenter;};void DrawCircle(struct Circle*);struct Square{	ShapeType itsType;
+	double itsSide;	Point itsTopLeft;};void DrawSquare(struct Square*);typedef struct Shape *ShapePointer;void DrawAllShapes(ShapePointer list[], int n){	int i;	for (i=0; i<n; i++)	{		struct Shape* s = list[i];		switch (s->itsType)		{			case square:				DrawSquare((struct Square*)s);				break;			case circle:				DrawCircle((struct Circle*)s);				break;		}	}}
 ```
 
 - `DrawAllShapes` no está cerrado para modificaciones cuando aparecen nuevos tipos de `Shape`
@@ -1048,29 +1009,16 @@ void DrawAllShapes
 
 Aplicando el OCP...
 
-```c++
-class Shape {
-  public:
-    virtual void Draw() const = 0;
-};
-class Square : public Shape {
-  public:
-    virtual void Draw() const;
-};
-class Circle : public Shape {
-  public:
-    virtual void Draw() const;
-};
-void DrawAllShapes(Set<Shape*>& list) {
-  for (Iterator<Shape*>i(list); i; i++)
-    (*i)->Draw();
-}
-```         
+```csharp
+public interface Shape{	void Draw();}
+public class Square : Shape{	public void Draw()	{		//draw a square	}}public class Circle : Shape{	public void Draw()	{		//draw a circle	}}public void DrawAllShapes(IList shapes){	foreach(Shape shape in shapes)		shape.Draw();}
+```
 
 - Si queremos ampliar el comportamiento de `DrawAllShapes`, solo tenemos que añadir una nueva clase derivada de `Shape`
 - Si se aplica bien OCP, los cambios de un cierto tipo obligan a añadir nuevo código, no a modificar el existente
  
->  model is not natural in a system in which ordering is coupled to shape type. This leads us to a disturbing conclusion. In general, no matter how "closed" a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!> Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
+>  In general, no matter how "closed" a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!
+> > Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
 > 
 > Bob C. Martin
 
@@ -1126,7 +1074,15 @@ public class Timer {	public void Register(int timeout, int timeOutId, TimerClie
 
 ####Solución
 
-- __Delegación__ a través del patrón adapter (de objetos o de clases)
+-   __Delegación__ a través del patrón adapter (de objetos o de clases)
+
+	-  Versión adaptador de clases (por herencia):
+
+		![Puertas de seguridad - adaptador de clases](./figuras/isp-timer-door-class-adapter.png)
+
+	-  Versión adaptador de objetos (por composición):
+
+		![Puertas de seguridad - adaptador de objetos](./figuras/isp-timer-door-object-adapter.png)	
 
 
 ## Principio de sustitución de Liskov
@@ -1137,7 +1093,7 @@ __LSP: *Liskov Substitution Principle*__
 > 
 > <cite>Barbara Liskov, </cite>
 
--   Si una función $$f$$ depende de una clase base $$B$$ y hay una $$D$$ derivada de $$B$$, las instancias de $$D$$ no deben alterar el comportamiento definido por $$B$$ de modo que $$f$$ deje de funcionar
+-   Si una función $f$ depende de una clase base $B$ y hay una $D$ derivada de $B$, las instancias de $D$ no deben alterar el comportamiento definido por $B$ de modo que $f$ deje de funcionar
 
 <!--
 -   Posibilidad de sustitución depende del contexto: En otro programa
@@ -1155,11 +1111,11 @@ struct Point {double x, y;}public enum ShapeType {square, circle};public clas
 ```
 
 - `DrawShape` viola claramente el OCP
-- Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` $$\rightarrow$$ violación de LSP
+- Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` $\rightarrow$ violación de LSP
 
 - Violación más sutil de LSP...
  
-````csharp
+```csharp
 public class Rectangle {	private Point topLeft;	private double width;	private double height;	public double Width {		get { return width; }		set { width = value; }	}
 		public double Height {		get { return height; }		set { height = value; }	}}   
 ```
@@ -1176,63 +1132,79 @@ void f(Rectangle r) {
 } 
 ```      
 
--   &lt;2-&gt;<span>`SetWidth` y `SetHeight` no se declararon
-    `virtual`</span>
-
-\[fragile\]
-
-### Ejemplo: atentado contra LSP
-
-        class Rectangle {
-          public:
-            virtual void SetWidth(double w) {itsWidth=w;}
-            virtual void SetHeight(double h) {itsHeight=h;}
-            double GetHeight() const {return itsHeight;}
-            double GetWidth() const {return itsWidth;}
-          private:
-            double itsHeight;
-            double itsWidth;
-        };
-        class Square : public Rectangle {
-          public:
-            virtual void SetWidth(double w);
-            virtual void SetHeight(double h);
-        };
-        void Square::SetWidth(double w) {
-          Rectangle::SetWidth(w);
-          Rectangle::SetHeight(w);
-        }
-        void Square::SetHeight(double h) {
-          Rectangle::SetHeight(h);
-          Rectangle::SetWidth(h);
-        }
-      
-
-\[fragile\]
-
-### Ejemplo: atentado contra LSP
-
-        void g(Rectangle& r) {
-          r.SetWidth(5);
-          r.SetHeight(4);
-          assert(r.GetWidth() * r.GetHeight()) == 20);
-        }
-      
-
 Problemas...
 
--   &lt;2-&gt;
-
--   &lt;2-&gt;<span>Un cuadrado podría ser un rectángulo, pero
+-   Un cuadrado podría ser un rectángulo, pero
     definitivamente un objeto `Square` **no es un** objeto
-    `Rectangle`</span>
+    `Rectangle`
+    
+-   Un `Square` no tiene propiedades `height`y `width`. Pero
+    supongamos que no nos importa el desperdicio de memoria.
+    Aún así, `Square` heredará los métodos accesores de `Rectangle. 
+    Así que hacemos:
+    
+	```csharp
+    public new double Width	{		set		{			base.Width = value;			base.Height = value;		}	}
+	public new double Height	{		set		{			base.Height = value;			base.Width = value;		}
+	```
 
--   &lt;2-&gt;<span>El comportamiento de un objeto `Square` no es
-    consistente con el de un objeto `Rectangle`</span>
+-   El comportamiento de un objeto `Square` no es
+    consistente con el de un objeto `Rectangle`:
+    
+    ```csharp
+    Square s = new Square();	s.SetWidth(1); 	s.SetHeight(2);
+	
+	void f(Rectangle r)	{		r.SetWidth(32); // calls Rectangle.SetWidth	}
+    ```
 
--   &lt;2-&gt;<span>El LSP pone en evidencia que la relación ES-UN tiene
+-   El LSP pone en evidencia que la relación ES-UN tiene
     que ver con el comportamiento público extrínseco, del que los
-    clientes dependen.</span>
+    clientes dependen.
+    
+    ¿Qué sucede si pasamos un `Square` a la función `f`?
+
+ 	 ¡No cambia `Height`! Los métodos `Width`y `Height` no se declararon `virtual`
+
+### Ejemplo:
+
+```c++
+    class Rectangle {
+      public:
+        virtual void SetWidth(double w) {itsWidth=w;}
+        virtual void SetHeight(double h) {itsHeight=h;}
+        double GetHeight() const {return itsHeight;}
+        double GetWidth() const {return itsWidth;}
+      private:
+        double itsHeight;
+        double itsWidth;
+    };
+    class Square : public Rectangle {
+      public:
+        virtual void SetWidth(double w);
+        virtual void SetHeight(double h);
+    };
+    void Square::SetWidth(double w) {
+      Rectangle::SetWidth(w);
+      Rectangle::SetHeight(w);
+    }
+    void Square::SetHeight(double h) {
+      Rectangle::SetHeight(h);
+      Rectangle::SetWidth(h);
+    }
+    
+    void g(Rectangle& r) {
+      r.SetWidth(5);
+      r.SetHeight(4);
+      assert(r.GetWidth() * r.GetHeight()) == 20);
+    }
+```      
+
+
+Pero consideremos esto:
+
+```csharp
+void g(Rectangle r){	r.Width = 5;	r.Height = 4;	if(r.Area() != 20)		throw new Exception("Bad area!");}
+```
 
 ### Diseño por contrato
 
@@ -1240,7 +1212,7 @@ Relación entre LSP y el **Design-By-Contract** (DBC) de *Bertrand
 Meyer*:
 
 -   Métodos de clases declaran *precondiciones* y *postcondiciones*: al
-    redefinir una operación \[en una subclase derivada\]…
+    redefinir una operación en una subclase derivada...
 
     -   las precondiciones sólo pueden sustituirse por otras más
         débiles/laxas
