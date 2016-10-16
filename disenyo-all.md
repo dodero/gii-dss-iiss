@@ -903,7 +903,7 @@ SRP es lo mismo que el principio de __cohesión__ de [DeMarco](#demarco)
 
 
 ###Ejemplo: Shapes v1 en Java
-
+<a id="shapesV1"></a>
 ¿Qué parte no cumple SRP en el ejemplo de las figuras? 
 
 ¿Cuántas responsabilidades tienen las clases que implementan la interfaz `Shape`? ¿Cuáles son?
@@ -1023,7 +1023,7 @@ public interface Shape{	void Draw();}
 > Bob C. Martin
 
 
-### Principo de segregación de interfaces
+## Principo de segregación de interfaces
 
 __ISP: *Interface Segregation Principle*__
 
@@ -1085,6 +1085,118 @@ public class Timer {	public void Register(int timeout, int timeOutId, TimerClie
 		![Puertas de seguridad - adaptador de objetos](./figuras/isp-timer-door-object-adapter.png)	
 
 
+
+## Aplicación OCP y SRP
+
+### Ejemplo: [Shapes versión 1](#shapesV1)
+
+```java
+package shapes;
+interface Shape {
+  double area();
+  void draw();
+}
+
+class Point {
+  double getX() {...}
+  double getY() {...}
+}
+
+abstract class Polygon implements Shape {
+  Point getVertex(index i) {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Triangle extends Polygon {
+  double area() {...}
+}
+
+abstract class RectParallelogram extends Polygon {
+  double area() {...}
+}
+
+class Square extends RectParallelogram {...}
+
+class Rectangle extends RectParallelogram {...}
+
+abstract class ClosedCurve implements Shape {...}
+
+class Circle
+    extends ClosedCurve {
+  double getRadius() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Ellipse extends ClosedCurve {
+  double getApogeeRadius() {...}
+  double getPerigeeRadius() {...}
+  Point getFocus1() {...}
+  Point getFocus2() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+```
+
+Las funcionalidades para pintar (`draw`) y para imprimir (`toString`) pueden descohesionar las clases y atentar contra OCP y SRP. Saquémoslas fuera utilizando **aspectos**:
+
+
+```java
+// Ficheros <X>ToString.aj (uno por aspecto)
+package shapes.tostring; // para todos los toString()
+aspect PolygonToString {
+  String Polygon.toString() {
+    StringBuffer buff = new StringBuffer();
+    buff.append(getClass().getName());
+     //... añadir nombre y área...
+     //... añadir cada línea desde un vértice al siguiente
+    return buff.toString();
+  }
+}
+aspect CircleToString {
+  String Circle.toString() {...}
+}
+aspect EllipseToString {
+  String Ellipse.toString() {...}
+}
+
+// Drawable.java
+package drawing;
+interface Drawable {
+  void draw();
+}     
+   
+// Ficheros Drawable<X>.aj
+package shapes.drawing; // para todos los draw()...
+import drawing.Drawable;
+abstract aspect DrawableShape {
+  declare parents: Shape implements Drawable;
+  void Shape.draw () //template method
+  {
+    String drawCommand = makeDrawCommand();
+    // enviar orden al motor gráfico...
+  }
+  String Shape.makeDrawCommand() {
+    return getClass().getName() + "\n" + makeDetails("\t");
+  }
+  abstract String Shape.makeDetails (String indent);
+}
+aspect DrawablePolygon extends DrawableShape {
+  String Polygon.makeDetails (String indent){...}
+}
+aspect DrawableCircle extends DrawableShape {
+  String Circle.makeDetails (String indent){...}
+}
+aspect DrawableEllipse extends DrawableShape {
+  String Ellipse. makeDetails (String indent){...} }
+```
+
+
 ## Principio de sustitución de Liskov
 
 __LSP: *Liskov Substitution Principle*__
@@ -1102,7 +1214,6 @@ __LSP: *Liskov Substitution Principle*__
 
 ### Ejemplo: Shapes versión 3
 
-
 ```csharp
 struct Point {double x, y;}public enum ShapeType {square, circle};public class Shape {	private ShapeType type;	public Shape(ShapeType t){type = t;}	public static void DrawShape(Shape s) {		if(s.type == ShapeType.square)			(s as Square).Draw();		else if(s.type == ShapeType.circle)			(s as Circle).Draw();	}}public class Circle : Shape {	private Point center;	private double radius;
 		public Circle() : base(ShapeType.circle) {}	public void Draw() {/* draws the circle */}}
@@ -1111,26 +1222,29 @@ struct Point {double x, y;}public enum ShapeType {square, circle};public clas
 ```
 
 - `DrawShape` viola claramente el OCP
-- Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` $\rightarrow$ violación de LSP
+- Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` 
+- Esta violación de LSP además provoca la violación de OCP en `DrawShape`
 
 - Violación más sutil de LSP...
- 
+
+### Ejemplo: 
+
+De momento solo necesitamos rectángulos y escribimos esta versión:
+
 ```csharp
 public class Rectangle {	private Point topLeft;	private double width;	private double height;	public double Width {		get { return width; }		set { width = value; }	}
 		public double Height {		get { return height; }		set { height = value; }	}}   
 ```
 
-¿Cumple LSP? `Square` no es subclase de `Rectangle`, ni `Circle` es subclase de `Ellipse`. Un `Square` puede emplearse en cualquier lugar donde se necesite un `Rectangle`
+Un día hace falta manejar cuadrados además de rectángulos.
+Normalmente, un cuadrado es un rectángulo, así que hacemos uso de la herencia (relación **es-un**):
 
+```java
+public class Square extends Rectangle {
+   ...
+}
+```
 
-```csharp
-Square s;
-s.SetWidth(1);
-s.SetHeight(2);   
-void f(Rectangle r) {
-  r.SetWidth(32); // llama a Rectangle.SetWidth
-} 
-```      
 
 Problemas...
 
@@ -1152,102 +1266,126 @@ Problemas...
     consistente con el de un objeto `Rectangle`:
     
     ```csharp
-    Square s = new Square();	s.SetWidth(1); 	s.SetHeight(2);
+    Square s = new Square();	s.SetWidth(1);   // fija ambos	s.SetHeight(2);  // fija ambos
 	
 	void f(Rectangle r)	{		r.SetWidth(32); // calls Rectangle.SetWidth	}
     ```
-
--   El LSP pone en evidencia que la relación ES-UN tiene
-    que ver con el comportamiento público extrínseco, del que los
-    clientes dependen.
     
     ¿Qué sucede si pasamos un `Square` a la función `f`?
 
- 	 ¡No cambia `Height`! Los métodos `Width`y `Height` no se declararon `virtual`
+ 	 ¡No cambia `Height`! Los métodos `Width`y `Height` no se declararon `virtual` en `Rectangle`. Cuando la creación de una clase derivada provoca cambios en la clase base, es síntoma de un mal diseño.
+ 	 
+-   El LSP pone en evidencia que la relación **es-un** tiene
+    que ver con el comportamiento público extrínseco, del que los
+    clientes dependen.
+
 
 ### Ejemplo:
 
-```c++
-    class Rectangle {
-      public:
-        virtual void SetWidth(double w) {itsWidth=w;}
-        virtual void SetHeight(double h) {itsHeight=h;}
-        double GetHeight() const {return itsHeight;}
-        double GetWidth() const {return itsWidth;}
-      private:
-        double itsHeight;
-        double itsWidth;
-    };
-    class Square : public Rectangle {
-      public:
-        virtual void SetWidth(double w);
-        virtual void SetHeight(double h);
-    };
-    void Square::SetWidth(double w) {
-      Rectangle::SetWidth(w);
-      Rectangle::SetHeight(w);
-    }
-    void Square::SetHeight(double h) {
-      Rectangle::SetHeight(h);
-      Rectangle::SetWidth(h);
-    }
-    
-    void g(Rectangle& r) {
-      r.SetWidth(5);
-      r.SetHeight(4);
-      assert(r.GetWidth() * r.GetHeight()) == 20);
-    }
+```csharp
+public class Rectangle{	private Point topLeft;	private double width;	private double height;	public virtual double Width	{		get { return width; }		set { width = value; }	}	public virtual double Height	{		get { return height; }		set { height = value; }	}}
+public class Square : Rectangle{	public override double Width	{		set		{			base.Width = value;			base.Height = value;		}	}	public override double Height	{		set		{			base.Height = value;			base.Width = value;		}	}}
 ```      
 
+Ahora parece que funcionan `Square` y `Rectangle`, que matemáticamente quedan bien definidos.
 
 Pero consideremos esto:
 
 ```csharp
-void g(Rectangle r){	r.Width = 5;	r.Height = 4;	if(r.Area() != 20)		throw new Exception("Bad area!");}
+void g(Rectangle r){	r.Width = 5;		// cree que es un Rectangle	r.Height = 4;		// cree que es un Rectangle	if(r.Area() != 20)		throw new Exception("Bad area!");}
 ```
+¿Qué pasa si llamamos a `g(new Square(3))`?
 
-### Diseño por contrato
+El autor de `g` asumió que cambiar el ancho de un rectángulo deja intacto el alto. Si pasamos un cuadrado esto no es así 
 
-Relación entre LSP y el **Design-By-Contract** (DBC) de *Bertrand
+Violación de LSP: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`) de forma que `g` deja de funcionar.
+
+¿Quién tiene la culpa?
+
+- ¿El autor de `g` por asumir que "en un rectángulo su ancho y alto son independientes" (_invariante_)?
+- ¿El autor de `Square` por violar el invariante?
+- ¿De qué clase ha violado el invariante? ¡De `Rectangle` y no de `Square`!
+
+Para evaluar si un diseño es apropiado, no se debe tener en cuenta la solución por sí sola, sino en términos de los _supuestos razonables_ que hagan los usuarios del diseño.
+
+### Ejercicios de LSP
+
+- Robert C. Martin & Micah Martin: [Agile Principles, Patterns and Practices in C#](#unclebob), Prentice Hall, 2006
+
+### Diseño por Contrato
+
+Relación entre LSP y el **_Design-By-Contract_** (DBC) de *Bertrand
 Meyer*:
 
--   Métodos de clases declaran *precondiciones* y *postcondiciones*: al
-    redefinir una operación en una subclase derivada...
+> A routine redeclaration [in a derivative] may only replace the original precondition by one equal or weaker, and the original post-condition by one equal or stronger
+> 
+> –– <cite>B. Meyer</cite>
 
-    -   las precondiciones sólo pueden sustituirse por otras más
+-   Métodos de clase declaran *precondiciones* y *postcondiciones*
+    al redefinir una operación en una subclase derivada
+
+    -   las **precondiciones** sólo pueden sustituirse por otras más
         débiles/laxas
 
-    -   las postcondiciones sólo pueden sustituirse por otras más
+    -   las **postcondiciones** sólo pueden sustituirse por otras más
         fuertes/estrictas
 
--   Ejemplo:
+Ejemplo:
 
-    -   Postcondición de `Rectangle::SetWidth(double w)`:
-        `assert((itsWidth==w) && (itsHeight==old.itsHeight));`
+   -  Postcondición del _setter_ de `Rectangle.Width`
+      (En C++ sería `Rectangle::SetWidth(double w)`):
+     
+        assert((Width == w) && (Height == old.Height));
 
-    -   Postcondición de `Square::SetWidth(double w)`:
-        `assert((itsWidth==w);`
+   -  Postcondición del setter de `Square.Witdh`
+      (En C++ sería `Square::SetWidth(double w)`):
+     
+        assert(Width==w);
 
--   La postcondición de `Square::SetWidth(double w)` viola el contrato
-    de la clase base porque es más débil que la de `Rectangle`
+   -  La postcondición de `Square::SetWidth(double w)` viola el 
+      contrato de la clase base porque es más débil que la de
+      `Rectangle`
 
-DIP: Dependency Inversion Principle
------------------------------------
 
-### DIP: Dependency Inversion Principle
+## Principio de Inversión de Dependencias
 
-**Principio de inversión de dependencias**
+__DIP: *Dependency Inversion Principle*__
 
-*Los módulos de alto nivel no deben depender de módulos de bajo nivel.
-Ambos deben depender de abstracciones.*
+- Los módulos de alto nivel no deben depender de módulos de bajo nivel.
+Ambos deben depender de abstracciones.
 
-*Las abstracciones no deben depender de los detalles, sino los detalles
-de las abstracciones*
+- Las abstracciones no deben depender de los detalles, sino los detalles de las abstracciones
 
--   Las dependencias son transitivas
+> Depend on abstractions
+> 
+> <cite>Robert C. Martin</cite>
 
+###Ejemplo: estructura en capas 
+
+__Diseño inicial__:
+
+![estructura en capas](./figuras/dip-1.png)
+
+- Las dependencias son transitivas
+- _Policy_ depende de todo lo que depende _Mechanism_. 
+
+__Diseño invertido__:
+
+![capas invertidas](./figuras/dip-2.png)
+
+-   Cada nivel declara una interfaz para lo que necesita de otros niveles inferiores
+-   Los niveles inferiores dependen de interfaces definidas en los superiores
 -   El cliente puede definir la abstracción que necesita (ISP)
-
 -   Cada nivel es intercambiable por un sustituto
 
+### Heurística _ingenua_:
 
+- Ninguna variable debería guardar una referencia a una clase concreta
+- Ninguna clase debería ser derivada de una clase concreta
+- Ningún método debería redefinir un método ya implementado de ninguna de sus clases base
+
+Hay que violar alguna vez estas heurísticas, pues alguien tiene que crear las instancias de las clases concretas. El módulo que lo haga presentará una dependencia de dichas clases concretas.
+
+Gracias a la introspección o la carga dinámica de clases, los lenguajes de programación pueden indicar el nombre de la clase a instanciar (por ejemplo, en un fichero de configuración).
+
+Hay clases concretas que no cambian, como `string`, así que no hace ningún daño depender de ellas.

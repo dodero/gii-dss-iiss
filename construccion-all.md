@@ -42,6 +42,7 @@
 2. Delegación - [Implementación de una orquesta](#orquesta)
 3. Inyección de dependencias - [Caballeros de la mesa redonda](#knights)
 4. Código duplicado - [Cálculo de nóminas](#nominas)
+5. Ortogonalidad con aspectos - [Editor de figuras](#aspectos)
  
 
 # Caso 1 - Ocultación de la implementación
@@ -917,7 +918,7 @@ Esta clase sigue usando `new` para ciertos elementos de la interfaz.
 Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
       
 
-#Caso 4 - código duplicado
+#Caso 4 - Código duplicado
 ##Cálculo de nóminas
 <a id="nominas"></a>
 
@@ -1009,6 +1010,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
   }
 ```      
 
+- ¿Todos los empleados deben tener un salario anual bruto? Los autónomos no...
 - El método de cálculo del salario está descohesionado
  
 
@@ -1083,7 +1085,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 
 La gestión del proyecto así nos lo exige:
 
--   Representaciones múltiples de la información
+-   Representaciones múltiples de la información (v.g. un TAD para guardar elementos de distintos tipos)
 -   Documentación del código
 -   Casos de prueba
 -   Características del lenguaje (v.g. C/C++ header files, IDL specs)
@@ -1095,9 +1097,16 @@ La gestión del proyecto así nos lo exige:
 -   Plantillas: Java, C++, etc.
 -   Metadatos: En Java, anotaciones @
 -   [Programación literaria](http://www.literateprogramming.com/)
+-   Herramientas de documentación (v.g. [asciidoctor](http://asciidoctor.org/):
+    [include](http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files) file y
+    [source code](http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#source-code) formatting)
 -   Ayuda del IDE
 
-#### ¿Siempre aplicar DRY?
+### Duplicación inadvertida
+
+Normalmente tiene origen en un mal diseño
+
+Fuente de numerosos problemas de integración
 
 **Ejemplo: versión 1**
 
@@ -1120,6 +1129,8 @@ La gestión del proyecto así nos lo exige:
     }
   }
 ```  
+
+¿Es conveniente aplicar siempre DRY?
 
 A veces se puede optar por violar DRY por razones de rendimiento. 
 
@@ -1151,12 +1162,13 @@ Es menos problemático si queda dentro de los límites de la clase/módulo.
 
 Otras veces no merece la pena violar DRY por rendimiento: ¡las cachés y los optimizadores de código también hacen su labor!
 
-
 ###Principio de acceso uniforme
 
 > All services offered by a module should be available through a uniform notation, which does not betray whether they are implemented through storage or through computation
 >
 > <cite>[B. Meyer](#meyer)</cite>
+
+Conviene aplicar el principio de acceso uniforme para que sea más fácil añadir mejoras de rendimiento (v.g. caching)
 
 **Ejemplo: versión 3 en C#**
 
@@ -1173,8 +1185,9 @@ public class Line {	private Point Start;
 __Impaciencia__
 
 - Los peligros del *copy&paste*
-- *Vísteme despacio que tengo prisa*
-- v.g. Fiasco del año 2000
+- "Vísteme despacio que tengo prisa" (_shortcuts make for long delays_). Ejemplos:
+	- Meter el `main` de Java en cualquier clase
+	- Fiasco del año 2000
 
 __Simultaneidad__
 
@@ -1231,32 +1244,6 @@ __Ejemplo__:
 
 - Definir un método `User.hasPermission()`
 
-<!--
-####Ejemplo:
-
-Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recorder_) dispersas por el mundo. Cada grabadora está en una ubicación (_Location_) y una zona horaria (_TimeZone_). Los usuarios seleccionan una grabadora y pintan sus datos etiquetados con la zona horaria correcta...
-
-```java
-  public void plotDate(Date aDate, Selection aSelection) {
-    TimeZone tz = aSelection.getRecorder().getLocation().getZone();
-  }
-```      
-
-####Críticas
-
-  -  Multiplicidad de dependencias: `plotDate` $\dashrightarrow$ `Selection`, `Recorder`, `Location`, `TimeZone`. Si cambia la implementación de `Location` de forma que ya no incluye directaemnte una `TimeZone`, hay que cambiar `plotDate`
-    
-  - Añadir un método `getTimeZone` a `Selection`. Así `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`. 
-   
-
-  - ```java
-	  public void plotDate(Date aDate, TimeZone tz) {
-	     /* ... */
-	  }
-	  plotDate(someDate, someSelection.getTimeZone());
-	```     
--->     
-      
 
 #### Inyectar el contexto
 
@@ -1316,15 +1303,377 @@ class Demeter {
 }
 ```
 
-####Críticas
+####Críticas a la ley de Demeter
 
- -   ¿Realmente ayuda a crear código más mantenible?
- -   Costes de espacio y ejecución de métodos <span>*wrapper*</span> que reenvían la petición al objeto delegado.
- -   Violar la ley para mejorar el rendimiento
+ -   La ley de Demeter, ¿realmente ayuda a crear código más mantenible?
+ 
+__Ejemplo__: violación de la ley de Demeter:
 
+
+Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recorder_) dispersas por el mundo. Cada grabadora está en una ubicación (_Location_), que tiene una zona horaria (_TimeZone_). Los usuarios seleccionan (_Selection_) una grabadora y pintan sus datos etiquetados con la zona horaria correcta...
+
+```java
+  public void plotDate(Date aDate, Selection aSelection) {
+    TimeZone tz = aSelection.getRecorder().getLocation().getZone();
+  }
+```      
+
+  -  Multiplicidad de dependencias: `plotDate` $\dashrightarrow$ `Selection`, `Recorder`, `Location`, `TimeZone`. Si cambia la implementación de `Location` de forma que ya no incluye directamente una `TimeZone`, hay que cambiar `plotDate`
+    
+  - Añadir un método *delegado* `getTimeZone` a `Selection`. Así `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`. 
+   
+
+  - ```java
+	  public void plotDate(Date aDate, TimeZone tz) {
+	     /* ... */
+	  }
+	  plotDate(someDate, someSelection.getTimeZone());
+	```           
+ 
+Costes de espacio y ejecución de métodos <span>*wrapper*</span> que reenvían la petición al objeto delegado. Violar la ley de Demeter para mejorar el rendimiento
+
+Desnormalización de BBDD
 
 ###Toolkits y bibliotecas
 
 -   Usar metadatos (@tag) para propósitos específicos: e.g. persistencia de objetos, transacciones, etc.
 -   Aspect-Oriented Programming (AOP)
 
+
+# Caso 5 - Ortogonalidad con aspectos
+<a id="aspectos"></a>
+## Editor de figuras
+
+### Ejemplo: 
+
+```java
+class Line implements FigureElement{
+  private Point p1, p2;
+
+  Point getP1() { return p1; }
+  Point getP2() { return p2; }
+
+  void setP1(Point p1) { this.p1 = p1; }
+  void setP2(Point p2) { this.p2 = p2; }
+}
+
+class Point implements FigureElement {
+  private int x = 0, y = 0;
+
+  int getX() { return x; }
+  int getY() { return y; }
+
+  void setX(int x) { this.x = x; }
+  void setY(int y) { this.y = y; }
+}
+```
+
+Hay que actualizar la pantalla tras mover los objetos
+
+![figuras en pantalla](./figuras/aspectj-1.png)
+
+Hay una colección de figuras que cambian periódicamente. Se deben monitorizar los cambios para refrescar el display.
+
+```java
+class Line {
+  private Point p1, p2;
+
+  Point getP1() { return p1; }
+  Point getP2() { return p2; }
+
+  void setP1(Point p1) {
+    this.p1 = p1;
+
+  }
+  void setP2(Point p2) {
+    this.p2 = p2;
+
+  }
+}
+
+class Point {
+  private int x = 0, y= 0;
+
+  int getX() { return x; }
+  int getY() { return y; }
+
+  void setX(int x) {    
+    this.x = x;
+
+  }
+  void setY(int y) {    
+    this.y = y;
+
+  }
+}
+```
+Implementamos `MoveTracking`
+
+### Implementación sin aspectos
+
+#### Versión 1
+
+```java
+class Line {
+  private Point p1, p2;
+
+  Point getP1() { return _p1; }
+  Point getP2() { return _p2; }
+
+  void setP1(Point p1) {
+    this.p1 = p1;
+    MoveTracking.setFlag(); // añadido
+  }
+  void setP2(Point p2) {
+    this.p2 = p2;
+    MoveTracking.setFlag(); // añadido
+  }
+}
+
+class Point {
+  private int x = 0, y= 0;
+
+  int getX() { return x; }
+  int getY() { return y; }
+
+  void setX(int x) {    
+    this.x = x;
+
+  }
+  void setY(int y) {    
+    this.y = y;
+
+  }
+}
+
+class MoveTracking {
+  private static boolean flag = false;
+  
+  public static void setFlag() {
+    flag = true;
+  }
+  
+  public static boolean testAndClear() {    boolean result = flag;
+    flag = false;
+    return result;
+  }
+}
+```
+
+#### Versión 2
+
+
+```java
+class Line {
+  private Point p1, p2;
+
+  Point getP1() { return p1; }
+  Point getP2() { return p2; }
+
+  void setP1(Point p1) {
+    this.p1 = p1;
+    MoveTracking.setFlag();
+  }
+  void setP2(Point p2) {
+    this.p2 = p2;
+    MoveTracking.setFlag();
+  }
+}
+
+class Point {
+  private int x = 0, y = 0;
+
+  int getX() { return x; }
+  int getY() { return y; }
+
+  void setX(int x) {    
+    this.x = x;
+    MoveTracking.setFlag(); //añadido
+  }
+  void setY(int y) {    
+    this.y = y;
+    MoveTracking.setFlag(); //añadido
+  }
+}
+
+class MoveTracking {
+  private static boolean flag = false;
+  
+  public static void setFlag() {
+    flag = true;
+  }
+  
+  public static boolean testAndClear() {
+    boolean result = flag;
+    flag = false;
+    return result;
+  }
+}
+
+```
+
+Las colecciones de figuras son complejas. Las estructuras de objetos son jerárquicas y se producen eventos asíncronos:
+
+![colección de figuras](./figuras/aspectj-2.png)
+
+La versión 2 hace que un cambio en cualquier elemento provoque un refresco de todas las figuras. 
+
+Mejor monitorizar las figuras que cambian...
+
+#### Versión 3
+
+Cambiar el método `setFlag` por `collectOne`, indicando la figura que se mueve.
+
+```java
+class Line {
+  private Point p1, p2;
+
+  Point getP1() { return p1; }
+  Point getP2() { return p2; }
+
+  void setP1(Point p1) {
+    this.p1 = p1;
+    MoveTracking.collectOne(this); // modificado
+  }
+  void setP2(Point p2) {
+    this.p2 = p2;
+    MoveTracking.collectOne(this); // modificado
+  }
+}
+
+class Point {
+  private int x = 0, y = 0;
+
+  int getX() { return x; }
+  int getY() { return y; }
+
+  void setX(int x) {    
+    this.x = x;
+    MoveTracking.collectOne(this); // modificado
+  }
+  void setY(int y) {    
+    this.y = y;
+    MoveTracking.collectOne(this); // modificado
+  }
+}
+
+class MoveTracking {
+  private static Set movees = new HashSet();
+  
+  public static void collectOne(Object o) {
+    movees.add(o);
+  }
+
+  public static Set getmovees() {
+    Set result = movees;
+    movees = new HashSet();
+    return result;
+  }    
+}
+```
+
+El cambio de implementación del seguimiento de los cambios para el refresco en pantalla ha dado lugar a modificaciones en todos los módulos (clases): `Line`, `Point` y `MoveTracking` 
+
+###Implementación con aspectos 
+
+Las clases `Line` y `Point` no se ven afectadas:
+
+```java
+class Line {
+  private Point p1, p2;
+
+  Point getP1() { return p1; }
+  Point getP2() { return p2; }
+
+  void setP1(Point p1) {
+    this.p1 = p1;
+  }
+  void setP2(Point p2) {
+    this.p2 = p2;
+  }
+}
+
+class Point {
+  private int x = 0, y = 0;
+
+  int getX() { return x; }
+  int getY() { return y; }
+
+  void setX(int x) {    
+    this.x = x;
+  }
+  void setY(int y) {    
+    this.y = y;
+  }
+}
+```
+#### Versión 1
+
+```java 
+aspect MoveTracking {
+  private boolean flag = false;
+  public boolean testAndClear() {
+    boolean result = flag;
+    flag = false;
+    return result;
+  }
+
+  pointcut move():
+    call(void Line.setP1(Point)) ||
+    call(void Line.setP2(Point));
+
+  after(): move() {
+    flag = true;
+  }
+}
+```
+
+#### Versión 2
+
+```java
+aspect MoveTracking {
+  private boolean flag = false;
+  public boolean testAndClear() {
+    boolean result = flag;
+    flag = false;
+    return result;
+  }
+
+  pointcut move():
+    call(void Line.setP1(Point)) ||
+    call(void Line.setP2(Point)) ||
+    call(void Point.setX(int))   ||
+    call(void Point.setY(int));
+
+  after(): move() {
+    flag = true;
+  }
+}
+```
+
+#### Versión 3
+
+Versión más ortogonal. Todos los cambios están concentrados en un solo aspecto.
+
+```java
+aspect MoveTracking {
+  private Set movees = new HashSet();
+  public Set getmovees() {
+    Set result = movees;
+    movees = new HashSet();
+    return result;
+  }    
+
+  pointcut move(FigureElement figElt):
+    target(figElt) && 
+    (call(void Line.setP1(Point)) ||
+     call(void Line.setP2(Point)) ||
+     call(void Point.setX(int))   ||
+     call(void Point.setY(int)));
+
+
+  after(FigureElement fe): move(fe) {
+    movees.add(fe);
+  }
+}
+```

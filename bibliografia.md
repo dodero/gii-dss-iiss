@@ -18,3 +18,5 @@ B. Meyer. <a id="meyer">Object-Oriented Software Construction.</a> Prentice-Hal
 C. Walls & R. Breidenbach. <a id="spring">Spring in Action.</a> Manning Publications, 2005.
 
 T. DeMarco. <a id="demarco">Structured Analysis and System Specification</a>. Yourdon Press, 1979.
+
+Robert C. Martin & Micah Martin. <a id="unclebob">Agile Principles, Patterns and Practices in C#</a>, Prentice Hall, 2006.
