@@ -1847,7 +1847,45 @@ Añadir __aserciones__ al código para chequear esas situaciones:
     }
 ```
 
-No usar aserciones en lugar de gestión de errores
+### Invariantes
+
+Las aserciones sirven para expresar invariantes
+
+__Invariante__ = condición que se puede considerar cierta durante la ejecución de un programa o de parte del mismo. Es una aserción lógica que se mantiene siempre cierta durante una cierta fase de la ejecución
+
+Por ejemplo, una _invariante de bucle_ es una condición que es cierta al principio y al final de cada ejecución de un bucle
+
+### Aserciones en Java
+
+Forma 1:
+
+```java
+    assert Expression1 ;
+```      
+
+Forma 2:
+
+```
+    assert Expression1 : Expression2 ;
+```
+
+-   `Expression1` es `boolean`
+
+-   `Expression2` devuelve un valor que es pasado al constructor de
+    `AssertionError`, que usa una representación en forma de string del
+    valor como detalle del mensaje
+
+Notificar al compilador que las acepte:
+
+    javac -source 1.4 *.java
+
+Y en tiempo de ejecución:
+
+    java [ -enableassertions | -ea  ] [:<package name>"..." | :<class name> ]
+    java [ -disableassertions | -da ] [:<package name>"..." | :<class name> ]
+
+
+#### No son para gestión de errores
 
 ```java
     try {
@@ -1881,44 +1919,7 @@ No usar aserciones en lugar de gestión de errores
     }
 ```
 
-### Aserciones en Java
-
-Forma 1:
-
-```java
-    assert Expression1 ;
-```      
-
-Forma 2:
-
-```
-    assert Expression1 : Expression2 ;
-```
-
--   `Expression1` es `boolean`
-
--   `Expression2` devuelve un valor que es pasado al constructor de
-    `AssertionError`, que usa una representación en forma de string del
-    valor como detalle del mensaje
-
-Notificar al compilador que las acepte:
-
-    javac -source 1.4 *.java
-
-Y en tiempo de ejecución:
-
-    java [ -enableassertions | -ea  ] [:<package name>"..." | :<class name> ]
-    java [ -disableassertions | -da ] [:<package name>"..." | :<class name> ]
-
-
 ### Invariantes    
-
-Las aserciones sirven para expresar invariantes
-
-__Invariante__ = condición que se puede considerar cierta durante la ejecución de un programa o de parte del mismo. Es una aserción lógica que se mantiene siempre cierta durante una cierta fase de la ejecución
-
-Por ejemplo, una _invariante de bucle_ es una condición que es cierta al principio y al final de cada ejecución de un bucle
-
 
 #### Invariantes internas
 
@@ -2010,7 +2011,7 @@ Todo método público y constructor debe llamar a `assert balanced();` antes del
 
 Es recomendable incluir comprobaciones de invariantes de clase al principio de los métodos de clases cuyo estado es modificable por otras clases.
 
-#### Idiom para definir aserciones finales
+#### *Idiom* para definir aserciones finales
 
 A veces hace falta guardar datos antes de hacer un cómputo, para poder luego comprobar una condición cuando éste se haya completado. Ejemplo de cómo hacerlo con una _inner class_ que guarda el estado de variables:
 
@@ -2039,6 +2040,115 @@ A veces hace falta guardar datos antes de hacer un cómputo, para poder luego co
 
 ## Contratos
 <a id="contracts"></a>
+
+### Ejemplo: Cuenta Bancaria
+
+__Sin contratos__
+
+```eiffel
+class ACCOUNT feature
+    balance: INTEGER
+    owner: PERSON
+    minimum_balance: INTEGER is 1000
+    open (who: PERSON) is
+            -- Assign the account to owner who.
+          do
+            owner := who
+        end
+    deposit (sum: INTEGER) is
+            -- Deposit sum into the account.
+          do
+            add (sum)
+        end
+    withdraw (sum: INTEGER) is
+            -- Withdraw sum from the account.
+          do
+            add (-sum)
+        end
+    may_withdraw (sum: INTEGER): BOOLEAN is
+            -- Is there enough money to withdraw sum?
+         do
+            Result := (balance >= sum + minimum_balance)
+         end
+feature {NONE}
+    add (sum: INTEGER) is
+            -- Add sum to the balance.
+         do
+            balance := balance + sum
+        end
+end -- class ACCOUNT
+```
+
+- `feature` son las operaciones de la clase
+- `feature { NONE }` son privados
+- `make` para definir el constructor 
+
+__Con contratos__
+
+```eiffel
+class ACCOUNT create
+    make
+feature
+    ... Attributes as before:
+         balance , minimum_balance , owner , open ...
+    deposit (sum: INTEGER) is
+            -- Deposit sum into the account.
+         require
+            sum >= 0
+         do
+            add (sum)
+         ensure
+            balance = old balance + sum
+        end
+    withdraw (sum: INTEGER) is
+            -- Withdraw sum from the account.
+         require
+            sum >= 0
+            sum <= balance - minimum_balance
+         do
+            add (-sum)
+         ensure
+            balance = old balance - sum
+        end
+    may_withdraw ... -- As before
+feature {NONE}
+    add ... -- As before
+    make (initial: INTEGER) is
+            -- Initialize account with balance initial.
+         require
+            initial >= minimum_balance
+         do
+            balance := initial
+         end
+invariant
+    balance >= minimum_balance
+end -- class ACCOUNT
+```
+Forma corta del contrato:
+
+```eiffel
+class interface ACCOUNT create
+    make
+feature
+    balance: INTEGER
+    ...
+    deposit (sum: INTEGER) is
+            -- Deposit sum into the account.
+         require
+            sum >= 0
+         ensure
+            balance = old balance + sum
+    withdraw (sum: INTEGER) is
+            -- Withdraw sum from the account.
+         require
+            sum >= 0
+            sum <= balance - minimum_balance
+         ensure
+            balance = old balance - sum
+ 
+    may_withdraw ...
+end -- class ACCOUNT
+```
 
 ### Programación por contratos
 
