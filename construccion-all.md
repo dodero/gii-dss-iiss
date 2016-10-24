@@ -15,25 +15,30 @@
  - Delegación
 
 ## Técnicas
- 
+
  - [Herencia](#herencia)
  - [Polimorfismo](#polimorfismo)
  - [Composición](#compisicion)
  - [Inyección de dependencias](#inyeccion)
- - [Refactoring](#refactoring): código duplicado, dependencias
- - Calidad: errores, depuración
- - Bibliotecas y frameworks
- - Documentación 
+ - [Refactoring](#refactoring)
+    - [Código duplicado](#duplcode)
+    - [Ortogonalidad y dependencias](#ortogonalidad)
+ - Calidad
+    - [Aserciones](#assert)
+    - [Contratos](#contracts)
+    - Errores
+    - Depuración
+ - Documentación
+ - Clausuras
  - Reflexión
  - Metaprogramación
 
 ## Paradigmas
- - <span style="color:blue;">Objetos</span>
- - <span style="color:blue;">Eventos</span>
- - <span style="color:blue;">Funcional</span>
+ - Objetos
+ - Eventos
+ - Funcional
  - Aspectos
- - Etc
-
+ - Contratos
 
 
 ## Casos prácticos
@@ -43,7 +48,7 @@
 3. Inyección de dependencias - [Caballeros de la mesa redonda](#knights)
 4. Código duplicado - [Cálculo de nóminas](#nominas)
 5. Ortogonalidad con aspectos - [Editor de figuras](#aspectos)
- 
+
 
 # Caso 1 - Ocultación de la implementación
 <a id="recorridolista"></a>
@@ -154,7 +159,7 @@ Delegar hacia otra clase
     boolean hasNext();
     E next();
     void remove();
-  } 
+  }
 ```      
 
 -  __Cohesión__: Las responsabilidades están separadas: `List` almacena, `Iterator` recorre. `List` está más cohesionada
@@ -173,7 +178,7 @@ Delegar hacia otra clase
 ### Alta cohesión, bajo acoplamiento
 
 > Cuando los componentes están aislados, puedes cambiar uno sin preocuparte por el resto. Mientras no cambies las interfaces externas, no habrá problemas en el resto del sistema
-> 
+>
 > -- <cite>[Eric Yourdon](#yourdon)</cite>
 
 ### Modularidad
@@ -211,11 +216,11 @@ Hay diversas técnicas para ocultar la implementación...
 
 
 > When you inherit, you take an existing class and make a special version of it. In general, this means that you’re taking a general-purpose class and specializing it for a particular need. [...] it would make no sense to compose a car using a vehicle object —a car doesn’t contain a vehicle, it is a vehicle. The _is-a_ relationship is expressed with inheritance, and the _has-a_ relationship is expressed with composition.
-> 
+>
 > -- <cite>[Bruce Eckel](#eckel)</cite>
 
 ### Ejemplo: *downcasting* y *upcasting*
-   
+
 
 ```java
    public class PersonajeDeAccion {
@@ -244,14 +249,14 @@ Hay diversas técnicas para ocultar la implementación...
        PersonajeDeAccion[] cuatroFantasticos = new Creador().personajes();
        cuatroFantasticos[1].luchar();
        cuatroFantasticos[2].luchar(); // Upcast
-       
+
        // En tiempo de compilacion: metodo no encontrado:
        //! cuatroFantasticos[2].volar();
        ((Heroe)cuatroFantasticos[2]).volar(); // Downcast
        ((Heroe)cuatroFantasticos[1]).volar(); // ClassCastException
-       for (PersonajeDeAccion p: cuatroFantasticos) 
+       for (PersonajeDeAccion p: cuatroFantasticos)
        		p.luchar; // Sin problema
-       for (PersonajeDeAccion p: cuatroFantasticos) 
+       for (PersonajeDeAccion p: cuatroFantasticos)
        		p.volar; // El 0, 1 y 3 van a lanzar ClassCastException
      }
    }
@@ -430,7 +435,7 @@ Usar polimorfismo. Seguir criticando la implementación...
 -   __Encapsulación__: método `add`
 -   __Encapsulación__: visibilidad de `Orquesta::instrumentos` (en C++ sería `friend`)
 -   __Flexibilidad__: la implementación `Orquesta::instrumentos` puede variar, pero no hay colección (agregado) en quien confíe `Orquesta` por delegación.
-   
+
 
 ### Implementación alternativa: Orquesta v0.3
 
@@ -504,7 +509,7 @@ Definir una __interfaz__ para iterar en la colección de instrumentos:
        i.tocar(); // Prueba de que esta afinado
     }
   }
-  
+
   public PruebaOrquesta {
      public static void main(String[] args) {
         Orquesta orquesta = new Orquesta();
@@ -553,7 +558,7 @@ Criticar...
        i.tocar(); // Prueba de que esta afinado
     }
   }
-  
+
   public PruebaOrquesta {
      public static void main(String[] args) {
         Orquesta orquesta = new Orquesta();
@@ -598,7 +603,7 @@ Criticar...
       i.tocar(); // Prueba de que esta afinado
     }
   }
-  
+
   public PruebaOrquesta {
      public static void main(String[] args) {
         Orquesta orquesta = new Orquesta();
@@ -625,7 +630,7 @@ A través de un fichero de configuración `orquesta.xml` le indicamos los valore
 	<bean id="violin"		class="Cuerda"/>
 	<bean id="tambor"		class="Percusion"/>
 	<bean id="viola"		class="Cuerda"/>
-			<bean id="cuarteto"		class="Orquesta">		<property name="instrumento1">			<ref bean="trompeta"/>		</property>
+	<bean id="cuarteto"		class="Orquesta">		<property name="instrumento1">			<ref bean="trompeta"/>		</property>
 		<property name="instrumento2">			<ref bean="violin"/>		</property>		<property name="instrumento3">			<ref bean="viola"/>		</property>		<property name="instrumento4">			<ref bean="tambor"/>		</property>			</bean></beans>
 ```
 
@@ -662,8 +667,8 @@ Delegación _en horizontal_ hacia otras clases cuya interfaz es bien conocida
 -   **Herencia** (delegación _en vertical_)
     -   Sirve para hacer una versión especial de una clase existente,
         reutilizando su interfaz.
-    -   La relación de herencia en los lenguajes de programación _suele ser_ 
-       __estática__ (definida en tiempo de compilación) y no __dinámica__ 
+    -   La relación de herencia en los lenguajes de programación _suele ser_
+       __estática__ (definida en tiempo de compilación) y no __dinámica__
        (que pueda cambiarse en tiempo de ejecución).
     -   Permite re-interpretar el tipo de un objeto en tiempo
         de ejecución.
@@ -722,7 +727,7 @@ __Invariantes:__
  - Transitividad: `(x.compareTo(y)>0 and y.compareTo(z)>0)` $\Rightarrow$
 `x.compareTo(z)>0`
 
- - `x.compareTo(y)=0` $\Rightarrow$ 
+ - `x.compareTo(y)=0` $\Rightarrow$
    `sgn(x.compareTo(z))=sgn(y.compareTo(z))` $\forall$ `z`
 
  - Consistencia con `equals` (no obligatoria): `(x.compareTo(y)=0)`
@@ -736,11 +741,11 @@ __Implementación en Java 1.5__:
 
  - Utilizando _templates_
  - Delegar en `compareTo` y `equals` del tipo de id _envuelto_ (e.g. `String`)
-  
+
 ```java
 import java.util.*;
 import java.io.*;
-  
+
 public final class BankAccount implements Comparable<BankAccount> {
     private final String id;
     public BankAccount (String number)  {
@@ -782,7 +787,7 @@ __Implementación en Java 1.4__:
 ```java
 import java.util.*;
 import java.io.*;
-  
+
 public final class BankAccount implements Comparable {
     private final String id;
     public BankAccount (String number)  {
@@ -813,7 +818,7 @@ public final class BankAccount implements Comparable {
 ```
 
 
-# Caso 3 - Inyección de dependencias 
+# Caso 3 - Inyección de dependencias
 ## Caballeros de la mesa redonda
 <a id="knights"></a>
 
@@ -841,12 +846,12 @@ public class KnightOfTheRoundTable implements Knight {
     this.quest = quest;
   }
 }
-    
+
 public interface Quest {
   abstract Object embark()
     throws QuestFailedException;
 }
-    
+
 public class HolyGrailQuest implements Quest {
   public HolyGrailQuest() {}
   public Object embark() throws QuestFailedException {
@@ -877,7 +882,7 @@ import org.springframework.beans.factory.BeanFactory;import org.springframework
 ```
 
 
-### Ejemplo: Logger 
+### Ejemplo: Logger
 
 ```java
 import java.util.logging.Logger;
@@ -916,7 +921,7 @@ public class MyPart {
 
 Esta clase sigue usando `new` para ciertos elementos de la interfaz.
 Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
-      
+
 
 #Caso 4 - Código duplicado
 ##Cálculo de nóminas
@@ -925,7 +930,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 ### Implementación de nóminas v0.1
 
  - ¿Dónde hay código duplicado?
-  
+
 ```java
   public class Empleado {
     Comparable id;
@@ -962,7 +967,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 - Código duplicado en los constructores de las clases y subclases
 - Refactorizar delegando hacia la superclase
 - Ahora incluimos un método para el cálculo de la nómina mensual...      
-      
+
 ### Nóminas v0.2
 
 - ¿Están descohesionadas las clases?
@@ -1012,7 +1017,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 
 - ¿Todos los empleados deben tener un salario anual bruto? Los autónomos no...
 - El método de cálculo del salario está descohesionado
- 
+
 
 ### Nóminas v0.3
 
@@ -1023,7 +1028,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
   }
   public class Plantilla extends Empleado {
     float yearlyGrossSalary;
-    /* ... */ 
+    /* ... */
     float setSalary( float s ) { yearlyGrossSalary=s; }
     public float computeMonthlySalary() {
         return yearlyGrossSalary/12;
@@ -1032,7 +1037,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
   public class Autonomo extends Empleado {
     String vatCode;
     float workingHours;
-    /* ... */ 
+    /* ... */
     public float computeMonthlySalary() {
         return workingHours*Company.getHourlyRate()*(1.0+Company.getVatRate());
     }
@@ -1043,7 +1048,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
       e.setSalary(25000.0);
       Empleado a = new Autonomo("0001", "Ana", "12345-A");
       a.addWorkingHours(30.0);
-      e.print(); System.out.println(" Salario: "+e.computeMonthlySalary()+" EUR"); 
+      e.print(); System.out.println(" Salario: "+e.computeMonthlySalary()+" EUR");
       a.print(); System.out.println(" Salario: "+a.computeMonthlySalary()+" EUR");
     }
   }
@@ -1054,16 +1059,16 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 <a id="refactoring"></a>
 
 > Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior [@Refactoring]
-> 
+>
 > —- <cite>[M. Fowler](www.refactoring.com), www.refactoring.com</cite>
 
 -   Pequeñas transformaciones
 -   Mantienen el sistema funcional
-   
+
 
 ## Código duplicado
-
-####¿Por qué no?
+<a id="duplcode"></a>
+###¿Por qué no duplicar?
 
 -   Mantenimiento
 -   Cambios (no sólo a nivel de código)
@@ -1077,9 +1082,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 -   __Simultaneidad__: Ha sido otro
 
 
-###Principio DRY
-
-> **D**on't **R**epeat **Y**ourself!
+###Principio DRY – _Don't Repeat Yourself!_
 
 ###Duplicación impuesta
 
@@ -1104,9 +1107,9 @@ La gestión del proyecto así nos lo exige:
 
 ### Duplicación inadvertida
 
-Normalmente tiene origen en un mal diseño
+Normalmente tiene origen en un diseño inapropiado.
 
-Fuente de numerosos problemas de integración
+Fuente de numerosos problemas de integración.
 
 **Ejemplo: versión 1**
 
@@ -1132,10 +1135,12 @@ Fuente de numerosos problemas de integración
 
 ¿Es conveniente aplicar siempre DRY?
 
-A veces se puede optar por violar DRY por razones de rendimiento. 
+A veces se puede optar por violar DRY por razones de rendimiento.
 
 
 **Ejemplo: versión 2**
+
+Aplicando [_memoization_](https://en.wikipedia.org/wiki/Memoization) - cachear los resultados de cómputos costosos
 
 ```java
   public class Line {
@@ -1177,7 +1182,7 @@ public class Line {	private Point Start;
 	private Point End;	private double Length;	public Point Start {		get { return Start; }		set { Start = value; }	}
 
 	public Point End {		get { return End; }		set { Start = value; }	}
-		public double Length {		get { return Start.distanceTo(End); }	}}   
+	public double Length {		get { return Start.distanceTo(End); }	}}   
 ```
 
 ### Otros motivos de duplicación
@@ -1196,6 +1201,7 @@ __Simultaneidad__
 
 
 ## Ortogonalidad
+<a id="ortogonalidad"></a>
 
 Dos componentes A y B son ortogonales ($A \perp B$) si los cambios en uno no afectan al otro. Suponen más independencia, menos acoplamiento. Por ejemplo:
 
@@ -1270,12 +1276,12 @@ public class KnightOfTheRoundTable implements Knight {
     this.quest = quest;
   }
 }
-    
+
 public interface Quest {
   abstract Object embark()
     throws QuestFailedException;
 }
-``` 
+```
 
 
 #### Ley de Demeter para funciones
@@ -1286,13 +1292,13 @@ Los métodos de un objeto solo deben hacer llamadas a métodos...
   2. de objetos pasados como _parámetros_
   3. de objetos _creados_ por ellos mismos
   4. de objetos _declarados_ en el mismo método
-  
+
 ```java
 class Demeter {
   private A a;
   private int func();
   public void example (B b);
-  
+
   void example(B b) {
     C c;
     int f = func();     // (1)
@@ -1306,7 +1312,7 @@ class Demeter {
 ####Críticas a la ley de Demeter
 
  -   La ley de Demeter, ¿realmente ayuda a crear código más mantenible?
- 
+
 __Ejemplo__: violación de la ley de Demeter:
 
 
@@ -1319,9 +1325,9 @@ Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recor
 ```      
 
   -  Multiplicidad de dependencias: `plotDate` $\dashrightarrow$ `Selection`, `Recorder`, `Location`, `TimeZone`. Si cambia la implementación de `Location` de forma que ya no incluye directamente una `TimeZone`, hay que cambiar `plotDate`
-    
-  - Añadir un método *delegado* `getTimeZone` a `Selection`. Así `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`. 
-   
+
+  - Añadir un método *delegado* `getTimeZone` a `Selection`. Así `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`.
+
 
   - ```java
 	  public void plotDate(Date aDate, TimeZone tz) {
@@ -1329,7 +1335,7 @@ Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recor
 	  }
 	  plotDate(someDate, someSelection.getTimeZone());
 	```           
- 
+
 Costes de espacio y ejecución de métodos <span>*wrapper*</span> que reenvían la petición al objeto delegado. Violar la ley de Demeter para mejorar el rendimiento
 
 Desnormalización de BBDD
@@ -1344,7 +1350,7 @@ Desnormalización de BBDD
 <a id="aspectos"></a>
 ## Editor de figuras
 
-### Ejemplo: 
+### Ejemplo:
 
 ```java
 class Line implements FigureElement{
@@ -1448,11 +1454,11 @@ class Point {
 
 class MoveTracking {
   private static boolean flag = false;
-  
+
   public static void setFlag() {
     flag = true;
   }
-  
+
   public static boolean testAndClear() {    boolean result = flag;
     flag = false;
     return result;
@@ -1498,11 +1504,11 @@ class Point {
 
 class MoveTracking {
   private static boolean flag = false;
-  
+
   public static void setFlag() {
     flag = true;
   }
-  
+
   public static boolean testAndClear() {
     boolean result = flag;
     flag = false;
@@ -1516,7 +1522,7 @@ Las colecciones de figuras son complejas. Las estructuras de objetos son jerárq
 
 ![colección de figuras](./figuras/aspectj-2.png)
 
-La versión 2 hace que un cambio en cualquier elemento provoque un refresco de todas las figuras. 
+La versión 2 hace que un cambio en cualquier elemento provoque un refresco de todas las figuras.
 
 Mejor monitorizar las figuras que cambian...
 
@@ -1559,7 +1565,7 @@ class Point {
 
 class MoveTracking {
   private static Set movees = new HashSet();
-  
+
   public static void collectOne(Object o) {
     movees.add(o);
   }
@@ -1572,9 +1578,9 @@ class MoveTracking {
 }
 ```
 
-El cambio de implementación del seguimiento de los cambios para el refresco en pantalla ha dado lugar a modificaciones en todos los módulos (clases): `Line`, `Point` y `MoveTracking` 
+El cambio de implementación del seguimiento de los cambios para el refresco en pantalla ha dado lugar a modificaciones en todos los módulos (clases): `Line`, `Point` y `MoveTracking`
 
-###Implementación con aspectos 
+###Implementación con aspectos
 
 Las clases `Line` y `Point` no se ven afectadas:
 
@@ -1609,7 +1615,7 @@ class Point {
 ```
 #### Versión 1
 
-```java 
+```java
 aspect MoveTracking {
   private boolean flag = false;
   public boolean testAndClear() {
@@ -1665,7 +1671,7 @@ aspect MoveTracking {
   }    
 
   pointcut move(FigureElement figElt):
-    target(figElt) && 
+    target(figElt) &&
     (call(void Line.setP1(Point)) ||
      call(void Line.setP2(Point)) ||
      call(void Point.setX(int))   ||
@@ -1677,3 +1683,400 @@ aspect MoveTracking {
   }
 }
 ```
+
+## Aserciones
+<a id="assert"></a>
+
+> There is a luxury in self-reproach. When we blame ourselves we feel no one else has a right to blame us.
+>
+> <cite>Oscar Wilde, The Picture of Dorian Gray</cite>
+
+
+### Programación asertiva
+
+Ejemplos de situaciones que "no van a ocurrir nunca":
+
+-   Con dos dígitos para el año basta
+-   Esta aplicación nunca va a usarse en el extranjero
+-   Este contador nunca va a ser negativo
+
+
+Añadir __aserciones__ al código para chequear esas situaciones:
+
+```java
+    void writeString(String s) {
+      assert(s != null);
+      ...
+    }
+    ...
+    for (int i = 0; i < num_entries-1; i++) {
+      assert(sorted[i] <= sorted[i+i]);
+    }
+```
+
+No usar aserciones en lugar de gestión de errores
+
+```java
+    try {
+      BufferedReader in =
+        new BufferedReader(new InputStreamReader(System.in));
+      String input;
+      System.out.print("Please Type Something here: ");
+      input = in.readLine();
+      assert((input.equalsIgnoreCase("Y") ||
+             (input.equalsIgnoreCase("N"));   /* bad idea! */
+      ...
+    } catch (Exception ex) {
+      System.out.print("We've had an Exception: " + ex.getMessage());
+    }
+```
+
+#### Efectos colaterales
+
+```java
+    while (Iterator i.hasNext() {
+      assert(i.next() != null); /* side effect */
+      Object obj = i.next();
+      // ...
+    }
+
+
+    while (Iterator i.hasNext() {
+      Object obj = i.next();
+      assert(obj != null);
+      // ...
+    }
+```
+
+### Aserciones en Java
+
+Forma 1:
+
+```java
+    assert Expression1 ;
+```      
+
+Forma 2:
+
+```
+    assert Expression1 : Expression2 ;
+```
+
+-   `Expression1` es `boolean`
+
+-   `Expression2` devuelve un valor que es pasado al constructor de
+    `AssertionError`, que usa una representación en forma de string del
+    valor como detalle del mensaje
+
+Notificar al compilador que las acepte:
+
+    javac -source 1.4 *.java
+
+Y en tiempo de ejecución:
+
+    java [ -enableassertions | -ea  ] [:<package name>"..." | :<class name> ]
+    java [ -disableassertions | -da ] [:<package name>"..." | :<class name> ]
+
+
+### Invariantes    
+
+Las aserciones sirven para expresar invariantes
+
+__Invariante__ = condición que se puede considerar cierta durante la ejecución de un programa o de parte del mismo. Es una aserción lógica que se mantiene siempre cierta durante una cierta fase de la ejecución
+
+Por ejemplo, una _invariante de bucle_ es una condición que es cierta al principio y al final de cada ejecución de un bucle
+
+
+#### Invariantes internas
+
+Cambiar los comentarios que indicaban invariantes
+
+```java
+    if (i % 3 == 0) {
+      ...
+    } else if (i % 3 == 1) {
+      ...
+    } else { // We know (i % 3 == 2)
+      ...
+    }
+```
+
+Mejor con aserciones:
+
+```java
+    if (i % 3 == 0) {
+      ...
+    } else if (i % 3 == 1) {
+      ...
+    } else {
+      assert i % 3 == 2 : i;
+      ...
+    }
+```
+
+#### Invariantes de control de flujo
+
+Para **selectivas**:
+
+```java
+    switch(suit) {
+      case Suit.CLUBS:
+        ...
+        break;
+      case Suit.DIAMONDS:
+        ...
+        break;
+      case Suit.HEARTS:
+        ...
+        break;
+      case Suit.SPADES:
+        ...
+    }
+```      
+
+- Añadir:
+
+	```java
+	    default:
+	      assert false : suit;
+	```      
+
+- o también:
+
+	```java
+	    default:
+	      throw new AssertionError(suit);
+	```
+
+Puntos **inalcanzables**:
+
+```java
+    void foo() {
+      for (...) {
+        if (...)
+          return;
+      }
+      assert false; // Execution should never reach this point!!!
+    }
+```
+
+#### Invariantes de clase
+
+Son un tipo de invariantes internas que se aplican a todas las instancias de una clase, en todos los momentos, excepto cuando una instancia está en transición de un estado consistente a otro.
+
+Por ejemplo, en un árbol binario equilibrado, una invariante de clase puede indicar que está ordenado y equilibrado.
+
+```java
+    // Returns true if this tree is properly balanced
+    private boolean isBalanced() {
+       ...
+    }
+```
+
+Todo método público y constructor debe llamar a `assert balanced();` antes del `return`.
+
+Es recomendable incluir comprobaciones de invariantes de clase al principio de los métodos de clases cuyo estado es modificable por otras clases.
+
+#### Idiom para definir aserciones finales
+
+A veces hace falta guardar datos antes de hacer un cómputo, para poder luego comprobar una condición cuando éste se haya completado. Ejemplo de cómo hacerlo con una _inner class_ que guarda el estado de variables:
+
+```java
+	void foo(int[] array) {
+        // Manipulate array
+        ...
+        // At this point, array will contain exactly the ints that it did
+        // prior to manipulation, in the same order.
+    }
+
+	void foo(final int[] array) {
+        class DataCopy {
+          private int[] arrayCopy;
+          DataCopy() { arrayCopy = (int[])(array.clone()); }
+          boolean isConsistent() { return Arrays.equals(array, arrayCopy); }
+        }
+        DataCopy copy = null;
+        // Always succeeds; has side effect of saving a copy of array
+        assert (copy = new DataCopy()) != null;
+        ... // Manipulate array
+        assert copy.isConsistent();
+     }
+```
+
+
+## Contratos
+<a id="contracts"></a>
+
+### Programación por contratos
+
+__Contrato__
+
+-   Un contrato entre dos partes define derechos y responsabilidades por
+    ambas partes
+-   Define las repercusiones por incumplimiento del contrato
+
+__*Design By Contract*__
+
+-   Desarrollado para lenguaje *Eiffel* por Bertrand Meyer
+-   Documentar y aceptar los derechos y responsabilidades de cada módulo de software para asegurar la correción de un programa
+-   Un programa correcto es aquél que hace nada más y nada menos que lo que dice hacer
+
+### Precondiciones, postcondiciones e invariantes
+
+__Precondición__
+
+-   Qué debe ser cierto antes de llamar a una rutina/método
+    (sus requisitos)
+-   Una rutina jamás debe ser llamada si se violan sus precondiciones
+-   Es responsabilidad del que la llama hacer que se cumplan
+
+__Postcondición__
+
+-   Qué garantiza la rutina: estado del mundo cuando la rutina/método termina
+-   Implica que la rutina debe finalizar: no puede haber bucles ifinitos
+
+__Invariante de clase__
+
+-   Condición que se cumple para todas las instancias de la clase, desde la perspectiva del llamador
+-   Durante el procesamiento interno, la invariante puede no cumplirse, pero sí cuando la rutina termina y se devuelve el control al llamador
+-   Una clase no puede dar permiso de escritura sin restricciones a propiedades (_data members_) que participen en la invariante
+
+
+### Java + iContract
+
+Java no permite especificar contratos (los _assert_ no son lo mismo). Así que hay que utilizar extensiones como _iContract_
+
+__Ejemplo__: Inserción en una lista ordenada
+
+```java
+    /**
+     * @invariant forall Node n in elements() |
+     *    n.prev() != null
+     *      implies
+     *         n.value().compare To(n.prev().value()) > 0
+     */
+    public class OrderedList {
+      /**
+       * @pre contains(aNode) == false
+       * @post contains(aNode) == true
+       */
+       public void insertNode(final Node aNode) {
+         // ...
+       }
+       // ...
+    }
+```      
+
+Una postcondición puede necesitar expresarse con parámetros pasados a un método para verificar un comportamiento correcto.
+
+Si el método puede cambiar el valor del parámetro pasado (parámetro mutable), el contrato puede incumplirse.
+
+#### Parámetros inmutables
+
+- Eiffel no permiten que se pueda cambiar el valor de un parámetro (es inmutable)
+- En C++ usar `const`
+- Opciones en Java:
+	- Usar `final` para marcar un parámetro constante. Sin embargo, las subclases podrían redefinir los parámetros y volver a hacerlos mutables. Además `final` se aplica a la referencia, no al objeto en sí.
+	- Usar `variable@pre` de _iContract_
+- Muchos lenguajes funcionales (Lisp, Haskell, Erlang, Clojure, etc.) definen inmutabilidad por defecto
+
+¿Por qué la inmutabilidad?
+
+- Por rendimiento (v.g. `String` en Java): si es inmutable, para copiar un objeto basta con copiar la referencia (_interning_)
+- Por _thread-safety_
+
+#### Código perezoso
+
+- Se recomienda escribir código "perezoso" para los contratos: ser estricto en lo que se acepta al empezar y prometer lo menos posible al terminar.
+- Si un contrato indica que se acepta cualquier cosa y promete la luna a cambio, habrá que escribir un montón de código!
+
+
+<!--
+### Precondiciones con aserciones
+
+#### Método público
+
+```java
+    /**
+     * Sets the refresh rate.
+     *
+     * @param  rate refresh rate, in frames per second.
+     * @throws IllegalArgumentException if rate <= 0 or
+     *          rate > MAX_REFRESH_RATE.
+     */
+     public void setRefreshRate(int rate) {
+       // Enforce specified precondition in public method
+       if (rate <= 0 || rate > MAX_REFRESH_RATE)
+          throw new IllegalArgumentException("Illegal rate: " + rate);
+       setRefreshInterval(1000/rate);
+     }
+```
+
+-   El método garantiza que siempre se harán chequeos de los argumentos, independientemente de si las aserciones están o no activadas
+-	Añadir un assert para la precondición no es apropiado en este caso
+
+#### Método no público
+
+```java
+    /**
+     * Sets the refresh interval (must correspond to a legal frame rate).
+     *
+     * @param  interval refresh interval in milliseconds.
+     */
+     private void setRefreshInterval(int interval) {
+       // Confirm adherence to precondition in nonpublic method
+       assert interval > 0 && interval <= 1000/MAX_REFRESH_RATE : interval;
+       ... // Set the refresh interval
+     }
+```
+
+-   La aserción indica una precondición que debe ser cierta sin importar lo que el cliente haga con la clase
+-   La aserción puede indicar un bug en la biblioteca
+
+
+### Postcondiciones con aserciones
+
+-   Pueden usarse en métodos públicos y no públicos
+
+```java
+    /**
+     * Returns a BigInteger whose value is (1/this mod m).
+     *
+     * @param  m the modulus.
+     * @return 1/this mod m.
+     * @throws ArithmeticException m <= 0, or this BigInteger
+     *         has no multiplicative inverse mod m
+     *         (this BigInteger is not relatively prime to m).
+     */
+     public BigInteger modInverse(BigInteger m) {
+       if (m.signum <= 0)
+          throw new ArithmeticException("Modulus not positive: " + m);
+       ... // Do the computation
+
+       assert this.multiply(result).mod(m).equals(ONE) : this;
+       return result;
+     }
+```
+-->
+
+<!--
+### Cuestiones de Diseño
+
+(LSP) Inheritance and polymorphism are the cornerstones of object-oriented languages and an area where contracts can really shine. Suppose you are using inheritance to create an "is-a-kind-of" relationship, where one class "is-a-kind-of" another class. You probably want to adhere to the Liskov Substitution Principle
+
+
+Without a contract, all the compiler can do is ensure that a subclass conforms to a particular method signature. But if we put a base class contract in place, we can now ensure that any future subclass can't alter the meanings of our methods. For instance, you might want to establish a contract for setFont such as the following, which ensures that the font you set is the font you get:
+	/**	* @pre f != null	* @post getFont() == f	*/	public void setFont(final Font f) {	// ...
+-->
+
+## Aserciones versus contratos
+
+-   No hay soporte para propagar aserciones por una jerarquía de herencia: si se redefine un método con contrato, las aserciones que implementan el contrato no serán llamadas correctamente (excepto si se duplican en el código)
+
+-   No hay soporte para valores *antiguos*: si se implementara un
+    contrato mediante aserciones, habría que añadir código a la
+    precondición para guardar la información que quiera usarse en
+    la postcondición. (v.g. `variable@pre` en *iContract* versus
+    `old expression` en Eiffel)
+
+-   El sistema de runtime y las bibliotecas no están diseñadas para dar soporte a contratos, así que estos no se chequean. Y es precisamente en la frontera entre el cliente y la biblioteca donde hay más problemas.
