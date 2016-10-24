@@ -2247,33 +2247,33 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
 ### Tratamiento de errores
 
 ```java
-    if (deletePage(page) == E_OK) {
-      if (registry.deleteReference(page.name) == E_OK) {
-        if (configKeys.deleteKey(page.name.makeKey()) == E_OK){
-          logger.log("page deleted");
-        } else {
-          logger.log("configKey not deleted");
-        }
-      } else {
-        logger.log("deleteReference from registry failed");
-      }
+if (deletePage(page) == E_OK) {
+  if (registry.deleteReference(page.name) == E_OK) {
+    if (configKeys.deleteKey(page.name.makeKey()) == E_OK){
+      logger.log("page deleted");
     } else {
-      logger.log("delete failed");
-      return E_ERROR;
+      logger.log("configKey not deleted");
     }
+  } else {
+    logger.log("deleteReference from registry failed");
+  }
+} else {
+  logger.log("delete failed");
+  return E_ERROR;
+}
 ```
 
 Excepciones en lugar de códigos de error:
 
 ```java
-    try {
-      deletePage(page);
-      registry.deleteReference(page.name);
-      configKeys.deleteKey(page.name.makeKey());
-    }
-    catch (Exception e) {
-      logger.log(e.getMessage());
-    }
+try {
+  deletePage(page);
+  registry.deleteReference(page.name);
+  configKeys.deleteKey(page.name.makeKey());
+}
+catch (Exception e) {
+  logger.log(e.getMessage());
+}
 ```
 
 ¿No queda más claro?
@@ -2281,24 +2281,24 @@ Excepciones en lugar de códigos de error:
 ### Ubicación de bloques try/catch
 
 ```java
-    public void delete(Page page) {
-      try {
-        deletePageAndAllReferences(page);
-      }
-      catch (Exception e) {
-        logError(e);
-      }
-    }
+public void delete(Page page) {
+  try {
+    deletePageAndAllReferences(page);
+  }
+  catch (Exception e) {
+    logError(e);
+  }
+}
 
-    private void deletePageAndAllReferences(Page page) throws Exception {
-      deletePage(page);
-      registry.deleteReference(page.name);
-      configKeys.deleteKey(page.name.makeKey());
-    }
+private void deletePageAndAllReferences(Page page) throws Exception {
+  deletePage(page);
+  registry.deleteReference(page.name);
+  configKeys.deleteKey(page.name.makeKey());
+}
 
-    private void logError(Exception e) {
-      logger.log(e.getMessage());
-    }
+private void logError(Exception e) {
+  logger.log(e.getMessage());
+}
 ```
 
 ¿No queda más fácil de comprender, modificar y depurar?
