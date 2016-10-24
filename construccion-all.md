@@ -26,7 +26,7 @@
  - Calidad
     - [Aserciones](#assert)
     - [Contratos](#contracts)
-    - Errores
+    - [Errores y excepciones](#errores)
     - Depuración
  - Documentación
  - Clausuras
@@ -617,7 +617,140 @@ Criticar...
   }
 ```
 
-### Implementación final: Orquesta v0.7
+### Implementación alternativa: Orquesta v0.7
+
+Existe una cierta tensión proveedor-cliente en la **frontera** de la interfaz
+
+-   Los proveedores de packages y frameworks quieren amplia
+    aplicabilidad
+-   Los clientes quieren una interfaz centrada en sus necesidades
+    particulares
+
+__Ejemplo__: La interfaz [`java.util.Map`](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html)
+
+```
+clear() void – Map
+containsKey(Object key) boolean – Map
+containsValue(Object value) boolean – Map
+entrySet() Set – Map
+equals(Object o) boolean – Map
+get(Object key) Object – Map
+getClass() Class<? extends Object> – Object
+hashCode() int – Map
+isEmpty() boolean – Map
+keySet() Set – Map
+notify() void – Object
+notifyAll() void – Object
+put(Object key, Object value) Object – Map
+putAll(Map t) void – Map
+remove(Object key) Object – Map
+size() int – Map
+toString() String – Object
+values() Collection – Map
+wait() void – Object
+wait(long timeout) void – Object
+wait(long timeout, int nanos) void – Object
+```
+
+Construimos un `Map` y lo pasamos.
+- Diseño A: Ninguno de los receptores deberá poder borrar algo del map. ¡Pero hay un `clear()`!
+- Diseño B: solo algunos tipos de objetos deben poderse guardar. ¡Los tipos no están restringidos!
+
+¿La interfaz `Map` es siempre satisfactoria? ¿seguro que no va a cambiar?
+
+- JDK < 5.0:
+
+      ```java
+      Map sensors = new HashMap();
+      ...
+      Sensor s = (Sensor)sensors.get(sensorId);
+      ```
+
+- JDK >= 5.0:
+
+      ```java
+      Map<Sensor> sensors = new HashMap<Sensor>();
+      ...
+      Sensor s = sensors.get(sensorId);
+      ```
+
+__Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
+
+```java
+      public class Sensors {
+        private Map sensors = new HashMap();
+        public Sensor getById(String id) {
+          return (Sensor) sensors.get(id);
+        }
+        //...
+      }
+```
+
+-   La interfaz `Map` queda oculta
+-   Filtramos los métodos que no nos sirven
+-   Más fácil de hacer evolucionar sin impacto en el resto de la
+    aplicación
+-   El casting queda confinado en la clase Sensors, que es más seguro
+
+__Interfaces de frontera__: No todo uso de `Map` o interfaz de
+frontera debe quedar encapsulado. Sólo es un consejo para no ’pasarla’
+con métodos que no vamos a necesitar.
+
+Así que proponemos esta implementación de la Orquesta:
+
+```java
+  class Orquesta implements Iterable<Instrumento> {
+    private Instrumentos instrumentos;
+    public Orquesta {
+       instrumentos = new Instrumentos(3);
+    }
+    public boolean addInstrumento(Instrumento i) {
+       return instrumentos.add(i);
+    }
+    public boolean removeInstrumento(Instrumento i) {
+       return instrumentos.remove(i);
+    }
+    public Iterator<Instrumento> iterator() {
+       return instrumentos.iterator();
+    }
+    public void tocar() {
+       for (Instrumento i: this)
+          i.tocar();
+    }
+    public void afinar(Instrumento i) {
+      i.afinar();
+      i.tocar(); // Prueba de que esta afinado
+    }
+  }
+
+  public class Instrumentos {
+    private List instrumentos;
+    public Instrumentos(int numero) {
+      instrumentos = new ArrayList<numero>();
+    }
+    public Instrumento addInstrumento(Instrumento i) {
+      return instrumentos.add(i);
+    }
+    public Instrumento removeInstrumento(Instrumento i) {
+      return instrumentos.remove(i);
+    }
+  }
+
+  public PruebaOrquesta {
+     public static void main(String[] args) {
+        Orquesta orquesta = new Orquesta();
+        orquesta.addInstrumento(new Viento());
+        orquesta.addInstrumento(new Cuerda());
+        orquesta.addInstrumento(new Percusion());
+        for (Instrumento i: orquesta)
+           orquesta.afinar(i);
+        orquesta.tocar();
+     }
+  }
+```
+
+
+### Implementación final: Orquesta v0.8
 
 Los `new` de `PruebaOrquesta` siguen introduciendo dependencias de `PruebaOrquesta` con respecto a los tipos concretos de `Instrumento`.
 
@@ -1082,7 +1215,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 -   __Simultaneidad__: Ha sido otro
 
 
-###Principio DRY – _Don't Repeat Yourself!_
+###Principio DRY – *Don't Repeat Yourself!*
 
 ###Duplicación impuesta
 
@@ -1941,8 +2074,23 @@ __Invariante de clase__
 -   Durante el procesamiento interno, la invariante puede no cumplirse, pero sí cuando la rutina termina y se devuelve el control al llamador
 -   Una clase no puede dar permiso de escritura sin restricciones a propiedades (_data members_) que participen en la invariante
 
+### Ejemplo: Eiffel
 
-### Java + iContract
+```eiffel
+sqrt: DOUBLE is	-- Square root routine	require		sqrt_arg_must_be_positive: Current >= 0;	--- ...	--- calculate square root here	--- ...	ensure		((Result*Result) - Current).abs <= epsilon*Current.abs;
+	-- Result should be within error toleranceend;
+```
+
+Si el usuario introduce un número negativo en la consola, es responsabilidad del código que llama a `sqrt` que dicho valor no se pase nunca a `sqrt`. Opciones:
+
+- Terminar
+- Emitir una advertencia y leer otro número
+- Pasar el número a complejo (ponerlo  en positivo y añadir una _i_)
+
+Si se llega a pasar un número negativo, Eiffel imprime el error `sqrt_arg_must_be_positive` en tiempo de ejecición y una traza de la pila (En otros lenguajes, como Java, se devolvería un `Nan`).
+
+
+### Ejemplo: Java + iContract
 
 Java no permite especificar contratos (los _assert_ no son lo mismo). Así que hay que utilizar extensiones como _iContract_
 
@@ -1989,6 +2137,17 @@ Si el método puede cambiar el valor del parámetro pasado (parámetro mutable),
 
 - Se recomienda escribir código "perezoso" para los contratos: ser estricto en lo que se acepta al empezar y prometer lo menos posible al terminar.
 - Si un contrato indica que se acepta cualquier cosa y promete la luna a cambio, habrá que escribir un montón de código!
+
+### _Dead programs tell no lies_
+
+El DBC y la programación por contratos son una forma de gestionar los errores mediante
+_early crash_.
+
+Hay diversas técnicas de gestión de errores (que veremos más adelante), pero en general el principio básico es: cuando el código descubre que sucede algo que supuestamente es imposible o "no debería suceder", el programa ya no es viable: eutanasia.
+
+- En Java se lanza una `RuntimeException` cuando sucede algo extraño en tiempo de ejecución.
+- Se puede/debe hacer lo mismo con cualquier lenguaje
+
 
 
 <!--
@@ -2069,7 +2228,7 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
 	/**	* @pre f != null	* @post getFont() == f	*/	public void setFont(final Font f) {	// ...
 -->
 
-## Aserciones versus contratos
+### Aserciones versus contratos
 
 -   No hay soporte para propagar aserciones por una jerarquía de herencia: si se redefine un método con contrato, las aserciones que implementan el contrato no serán llamadas correctamente (excepto si se duplican en el código)
 
@@ -2080,3 +2239,449 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
     `old expression` en Eiffel)
 
 -   El sistema de runtime y las bibliotecas no están diseñadas para dar soporte a contratos, así que estos no se chequean. Y es precisamente en la frontera entre el cliente y la biblioteca donde hay más problemas.
+
+
+## Errores y Excepciones
+<a id="errores"></a>
+
+### Tratamiento de errores
+
+```java
+    if (deletePage(page) == E_OK) {
+      if (registry.deleteReference(page.name) == E_OK) {
+        if (configKeys.deleteKey(page.name.makeKey()) == E_OK){
+          logger.log("page deleted");
+        } else {
+          logger.log("configKey not deleted");
+        }
+      } else {
+        logger.log("deleteReference from registry failed");
+      }
+    } else {
+      logger.log("delete failed");
+      return E_ERROR;
+    }
+```
+
+Excepciones en lugar de códigos de error:
+
+```java
+    try {
+      deletePage(page);
+      registry.deleteReference(page.name);
+      configKeys.deleteKey(page.name.makeKey());
+    }
+    catch (Exception e) {
+      logger.log(e.getMessage());
+    }
+```
+
+¿No queda más claro?
+
+### Ubicación de bloques try/catch
+
+```java
+    public void delete(Page page) {
+      try {
+        deletePageAndAllReferences(page);
+      }
+      catch (Exception e) {
+        logError(e);
+      }
+    }
+
+    private void deletePageAndAllReferences(Page page) throws Exception {
+      deletePage(page);
+      registry.deleteReference(page.name);
+      configKeys.deleteKey(page.name.makeKey());
+    }
+
+    private void logError(Exception e) {
+      logger.log(e.getMessage());
+    }
+```
+
+¿No queda más fácil de comprender, modificar y depurar?
+
+
+### Excepciones en Java
+
+-   **Checked**: instancias de clases derivadas de `java.lang.Throwable`
+    (menos `RuntimeException`). Deben declararse en el método mediante
+    `throws` y obligan al llamador a tratar la excepción.
+
+-   **Unchecked**: instancias de clases derivadas de
+    `java.lang.RuntimeException`. No se declaran en el método y no
+    obligan al llamador a tratar la excepción.
+
+-   Elevar una excepción *e* es:
+
+    -   Deshacer (roll back) la llamada a un método
+
+    -   hasta que se encuentre un bloque catch para el tipo de *e*
+
+    -   y si no se encuentra, la excepción es capturada por la JVM que
+        detiene el programa
+
+
+### Tratar excepciones
+
+```java
+      try {
+         /* guarded region that can send
+            IOException or SecurityException */
+      }
+      catch (IOException e) {
+         /* decide what to do when an IOException
+            or a sub-class of IOException occurs */
+      }
+      catch (Exception e){
+         // Treats any others exception including Security
+      }
+      finally{
+          // in all cases execute this
+      }
+```
+
+### Recomendaciones
+
+Incluir el contexto
+
+-   Incluir información suficiente con cada excepción para determinar el
+    motivo y la ubicación de un error
+-   No basta con el *stack trace*
+-   Escribir mensajes informativos: operación fallida y tipo de fallo
+
+Solo usar excepciones unchecked
+
+-   C\#, C++, Python o Ruby no ofrecen excepciones checked.
+-   Los beneficios de las checked en Java son mínimos
+-   Se paga el precio de violar el principio OCP (Open-Closed Principle): si lanzamos una excepción checked desde un método y el `catch`está tres niveles por encima, hay que declarar la excepción en la signatura de todos los métodos que can entre medias. Esto significa que un cambio en un nivel bajo del software puede forzar cambios en niveles altos
+
+
+### Transformar checked a unchecked
+
+__Problema__: Muchas APIs de Java lanzan excepciones checked cuando deberían ser unchecked
+
+Al ejecutar una consulta mediante `executeQuery` en el API de JDBC se
+lanza una excepción `java.sql.SQLException` (de tipo checked) si la SQL
+es errónea.
+
+__Solución__: Transformar las excepciones checked en unchecked:
+
+```java
+    try {
+      // Codigo que genera la excepcion checked
+    } catch (Exception ex) {
+      throw new RuntimeException("Excepcion unchecked",ex)
+    }
+```
+
+
+### Ejemplo
+
+Criticar la siguiente implementación:
+
+```java
+    ACMEPort port = new ACMEPort(12);
+    try {
+      port.open();
+    } catch (DeviceResponseException e) {
+      reportPortError(e);
+      logger.log("Device response exception", e);
+    } catch (ATM1212UnlockedException e) {
+      reportPortError(e);
+      logger.log("Unlock exception", e);
+    } catch (GMXError e) {
+      reportPortError(e);
+      logger.log("Device response exception");
+    } finally {
+      ...
+    }
+```
+
+Mucha duplicación de código
+
+Excepción encapsulada:
+
+```java
+    LocalPort port = new LocalPort(12);
+    try {
+      port.open();
+    } catch (PortDeviceFailure e) {
+      reportError(e);
+      logger.log(e.getMessage(), e);
+    } finally {
+      ...
+    }
+
+    public class LocalPort {
+      private ACMEPort innerPort;
+      public LocalPort(int portNumber) {
+        innerPort = new ACMEPort(portNumber);
+      }
+      public void open() {
+        try {
+          innerPort.open();
+        } catch (DeviceResponseException e) {
+          throw new PortDeviceFailure(e);
+        } catch (ATM1212UnlockedException e) {
+          throw new PortDeviceFailure(e);
+        } catch (GMXError e) {
+          throw new PortDeviceFailure(e);
+        }
+      }
+      ...
+    }
+```
+
+
+### Excepciones excepcionales
+
+__Recomendación de uso__: Usar excepciones para problemas
+excepcionales (eventos inesperados)
+
+__Ejemplo__: ¿Usar excepciones cuando se intenta abrir un fichero para leer y el
+fichero no existe?
+
+Depende de si el fichero debe estar ahí
+
+-   Usando excepciones:
+   
+	```java
+	public void open_passwd() throws FileNotFoundException {
+		// This may throw FileNotFoundException...
+		ipstream = new FileInputStream("/etc/passwd");
+		// ...
+	}
+	```
+
+-   Sin usar excepciones:
+   
+	```java
+	public boolean open_user_file(String name)
+			throws FileNotFoundException {
+		File f = new File(name);
+		if (!f.exists())
+			return false;
+		ipstream = new FileInputStream(f);
+		return true;
+	}
+	```
+
+### Uso de null
+
+#### No devolver null
+
+```java
+public void registerItem(Item item) {
+  if (item != null) {
+    ItemRegistry registry = peristentStore.getItemRegistry();
+    if (registry != null) {
+      Item existing = registry.getItem(item.getID());
+      if (existing.getBillingPeriod().hasRetailOwner()) {
+        existing.register(item);
+      }
+    }
+  }
+}
+```
+
+¿Qué pasa si `persistentStore` es null?
+
+-  ¿Se nos ha olvidado un 'if null'?
+-  Peligro de `NullPointerException`
+-  El problema no es que se haya olvidado uno, sino que hay demasiados
+-  En su lugar, elevar una excepción o devolver un objeto *especial*
+
+
+__Ejemplo__: no devolver
+
+Evitar:
+
+```java
+List<Employee> employees = getEmployees();
+if (employees != null) {
+  for(Employee e : employees) {
+    totalPay += e.getPay();
+  }
+}
+```
+
+Mejor así:
+
+```java
+List<Employee> employees = getEmployees();
+for(Employee e : employees) {
+  totalPay += e.getPay();
+}
+
+public List<Employee> getEmployees() {
+  if( /* there are no employees */ )
+    return Collections.emptyList();
+}
+```
+
+#### No pasar valores null
+
+```java
+public class MetricsCalculator
+{
+  public double xProjection(Point p1, Point p2) {
+  return (p2.x - p1.x) * 1.5;
+}
+```
+
+¿Qué sucede si `calculator.xProjection(null, new Point(12, 13))`?
+
+
+Devolver null es malo, pero ¡pasar un valor null es peor!
+
+Mejor así…?
+
+```java
+public class MetricsCalculator
+{
+  public double xProjection(Point p1, Point p2) {
+    if (p1 == null || p2 == null) {
+      throw InvalidArgumentException(
+               "Invalid argument for MetricsCalculator.xProjection");
+    }
+    return (p2.x - p1.x) * 1.5;
+  }
+}
+```
+
+¿Qué curso de acción tomar ante un `InvalidArgumentException`? ¿Hay alguno?
+
+__Alternativa con aserciones__
+
+(*solo para JDK $\geq$ 5.0*)
+
+```java
+public class MetricsCalculator
+{
+  public double xProjection(Point p1, Point p2) {
+    assert p1 != null : "p1 should not be null";
+    assert p2 != null : "p2 should not be null";
+    return (p2.x - p1.x) * 1.5;
+  }
+}
+```
+
+Es una buena forma de documentar, pero no resuelve el problema
+
+En la mayoría de lenguajes no hay forma satisfactoria de tratar con nulls pasados como argumento
+accidentalmente.
+
+
+__[Scala options](https://www.tutorialspoint.com/scala/scala_options.htm)__
+
+`Option[T]` es un contenedor de un valor opcional de tipo T. Si el valor de tipo T está presente, Option[T] es una intancia de `Some[T]` que contiene el valor presente de tipo T. Si el valor está ausente, `Option[T]` es el objeto `None`.
+
+```scala
+object Demo {
+   def main(args: Array[String]) {
+      val a:Option[Int] = Some(5)
+      val b:Option[Int] = None
+
+      println("a.isEmpty: " + a.isEmpty )  //false
+      println("b.isEmpty: " + b.isEmpty )  //true
+   }
+}
+```
+
+```scala
+object Demo {
+   def main(args: Array[String]) {
+      val capitals = Map("France" -> "Paris", "Japan" -> "Tokyo")
+
+      println("show(capitals.get( \"Japan\")) : " + show(capitals.get( "Japan")) )
+      println("show(capitals.get( \"India\")) : " + show(capitals.get( "India")) )
+   }
+
+   def show(x: Option[String]) = x match {
+      case Some(s) => s
+      case None => "?"
+   }
+}
+```
+
+### Fronteras
+
+Tensión proveedor-cliente
+
+-   Los proveedores de packages y frameworks quieren amplia
+    aplicabilidad
+-   Los clientes quieren una interfaz centrada en sus necesidades
+    particulares
+
+__Ejemplo__: La interfaz [`java.util.Map`](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html)
+
+```java
+clear() void – Map
+containsKey(Object key) boolean – Map
+containsValue(Object value) boolean – Map
+entrySet() Set – Map
+equals(Object o) boolean – Map
+get(Object key) Object – Map
+getClass() Class<? extends Object> – Object
+hashCode() int – Map
+isEmpty() boolean – Map
+keySet() Set – Map
+notify() void – Object
+notifyAll() void – Object
+put(Object key, Object value) Object – Map
+putAll(Map t) void – Map
+remove(Object key) Object – Map
+size() int – Map
+toString() String – Object
+values() Collection – Map
+wait() void – Object
+wait(long timeout) void – Object
+wait(long timeout, int nanos) void – Object
+```
+
+Construimos un `Map` y lo pasamos.
+- Diseño A: Ninguno de los receptores deberá poder borrar algo del map. ¡Pero hay un `clear()`!
+- Diseño B: solo algunos tipos de objetos deben poderse guardar. ¡Los tipos no están restringidos!
+
+¿La interfaz `Map` es siempre satisfactoria? ¿seguro que no va a cambiar?
+
+- JDK < 5.0:
+
+      ```java
+      Map sensors = new HashMap();
+      ...
+      Sensor s = (Sensor)sensors.get(sensorId);
+      ```
+
+- JDK >= 5.0:
+
+      ```java
+      Map<Sensor> sensors = new HashMap<Sensor>();
+      ...
+      Sensor s = sensors.get(sensorId);
+      ```
+
+__Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
+
+```java
+  public class Sensors {
+    private Map sensors = new HashMap();
+    public Sensor getById(String id) {
+      return (Sensor) sensors.get(id);
+    }
+    //...
+  }
+```
+
+-   La interfaz `Map` queda oculta
+-   Filtramos los métodos que no nos sirven
+-   Más fácil de hacer evolucionar sin impacto en el resto de la
+    aplicación
+-   El casting queda confinado en la clase Sensors, que es más seguro
+
+__Interfaces de frontera__: No todo uso de `Map` o interfaz de
+frontera debe quedar encapsulado. Sólo es un consejo para no ’pasarla’
+con métodos que no vamos a necesitar.
