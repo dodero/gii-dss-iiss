@@ -48,7 +48,7 @@
 3. Inyección de dependencias - [Caballeros de la mesa redonda](#knights)
 4. Código duplicado - [Cálculo de nóminas](#nominas)
 5. Ortogonalidad con aspectos - [Editor de figuras](#aspectos)
-6. Interfaces funcionales - [Formateo de informes](#informes)
+
 
 
 # Caso 1 - Ocultación de la implementación
@@ -2796,11 +2796,6 @@ __Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
 __Interfaces de frontera__: No todo uso de `Map` o interfaz de
 frontera debe quedar encapsulado. Sólo es un consejo para no ’pasarla’
 con métodos que no vamos a necesitar.
-
-
-# Caso 6 - Interfaces funcionales
-<a id="informes"></a>
-## Formateo de informes
 
 
 
