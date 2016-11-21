@@ -358,4 +358,20 @@ object StringIteratorTest {
   }
 }
 ```    
+- [Unit](http://www.scala-lang.org/api/current/scala/Unit.html) en scala: método Java que devuelve `void`
 
+###Diferencia con clase abstracta
+
+- [Scala traits vs abstract classes](http://stackoverflow.com/questions/1991042/what-is-the-advantage-of-using-abstract-classes-instead-of-traits)
+- Los constructores de traits no pueden tener parámetros
+
+#### Reglas:
+
+[To trait or not to trait](http://www.artima.com/pins1ed/traits.html#12.7)
+
+- Si no se va a reutilizar el comportamiento => clase concreta
+- Si se va a reutilizar en varias clases no relacionadas entre sí => trait (mixin)
+- Si hace falta heredarlo en código Java => clase abstracta
+- Si se va a distribuir compilado y se va a heredar => clase abstracta
+- Si importa mucho la eficiencia => clase (los traits se compilan a interfaces y son algo más lentas de llamar)
+- Si no se sabe => empezar por un trait y cambiarlo cuando se sepa
