@@ -760,20 +760,53 @@ Los `new` de `PruebaOrquesta` siguen introduciendo dependencias de `PruebaOrques
 A través de un fichero de configuración `orquesta.xml` le indicamos los valores inyectables:
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"	"http://www.springframework.org/dtd/spring-beans.dtd"><beans>	<bean id="trompeta"		class="Viento"/>
-	<bean id="violin"		class="Cuerda"/>
-	<bean id="tambor"		class="Percusion"/>
-	<bean id="viola"		class="Cuerda"/>
-	<bean id="cuarteto"		class="Orquesta">		<property name="instrumento1">			<ref bean="trompeta"/>		</property>
-		<property name="instrumento2">			<ref bean="violin"/>		</property>		<property name="instrumento3">			<ref bean="viola"/>		</property>		<property name="instrumento4">			<ref bean="tambor"/>		</property>			</bean></beans>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="trompeta"
+		class="Viento"/>
+	<bean id="violin"
+		class="Cuerda"/>
+	<bean id="tambor"
+		class="Percusion"/>
+	<bean id="viola"
+		class="Cuerda"/>
+
+	<bean id="cuarteto"
+		class="Orquesta">
+		<property name="instrumento1">
+			<ref bean="trompeta"/>
+		</property>
+		<property name="instrumento2">
+			<ref bean="violin"/>
+		</property>
+		<property name="instrumento3">
+			<ref bean="viola"/>
+		</property>
+		<property name="instrumento4">
+			<ref bean="tambor"/>
+		</property>		
+	</bean>
+</beans>
 ```
 
 La inyección de la dependencia concreta la hace el contenedor (_spring_ en este ejemplo):
 
 ```java
-import org.springframework.beans.factory.BeanFactory;import org.springframework.beans.factory.xml.XmlBeanFactory;public class PruebaOrquesta {	public static void main(String[] args) throws Exception {		BeanFactory factory =			new XmlBeanFactory(new FileInputStream("orquesta.xml"));		Orquesta orquesta =			(Orquesta) factory.getBean("cuarteto");
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+public class PruebaOrquesta {
+	public static void main(String[] args) throws Exception {
+		BeanFactory factory =
+			new XmlBeanFactory(new FileInputStream("orquesta.xml"));
+		Orquesta orquesta =
+			(Orquesta) factory.getBean("cuarteto");
 		for (Instrumento i: orquesta)
-           orquesta.afinar(i);		orquesta.tocar();	}}
+           orquesta.afinar(i);
+		orquesta.tocar();
+	}
+}
 ```
 
 
@@ -1006,13 +1039,38 @@ public class HolyGrailQuest implements Quest {
 A través de un fichero de configuración XML le indicamos los valores inyectables:
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"	"http://www.springframework.org/dtd/spring-beans.dtd"><beans>	<bean id="quest"		class="HolyGrailQuest"/>	<bean id="knight"		class="KnightOfTheRoundTable">		<constructor-arg>			<value>CruzadoMagico</value>		</constructor-arg>		<property name="quest">			<ref bean="quest"/>		</property>	</bean></beans>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="quest"
+		class="HolyGrailQuest"/>
+	<bean id="knight"
+		class="KnightOfTheRoundTable">
+		<constructor-arg>
+			<value>CruzadoMagico</value>
+		</constructor-arg>
+		<property name="quest">
+			<ref bean="quest"/>
+		</property>
+	</bean>
+</beans>
 ```
 
 La inyección de la dependencia concreta la hace el contenedor (_spring_ en este ejemplo):
 
 ```java
-import org.springframework.beans.factory.BeanFactory;import org.springframework.beans.factory.xml.XmlBeanFactory;public class KnightApp {	public static void main(String[] args) throws Exception {		BeanFactory factory =			new XmlBeanFactory(new FileInputStream("knight.xml"));		KnightOfTheRoundTable knight =			(KnightOfTheRoundTable) factory.getBean("knight");		knight.embarkOnQuest();	}}
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+public class KnightApp {
+	public static void main(String[] args) throws Exception {
+		BeanFactory factory =
+			new XmlBeanFactory(new FileInputStream("knight.xml"));
+		KnightOfTheRoundTable knight =
+			(KnightOfTheRoundTable) factory.getBean("knight");
+		knight.embarkOnQuest();
+	}
+}
 ```
 
 
@@ -1312,11 +1370,25 @@ Conviene aplicar el principio de acceso uniforme para que sea más fácil añadi
 **Ejemplo: versión 3 en C#**
 
 ```csharp
-public class Line {	private Point Start;
-	private Point End;	private double Length;	public Point Start {		get { return Start; }		set { Start = value; }	}
+public class Line {
+	private Point Start;
+	private Point End;
+	private double Length;
 
-	public Point End {		get { return End; }		set { Start = value; }	}
-	public double Length {		get { return Start.distanceTo(End); }	}}   
+	public Point Start {
+		get { return Start; }
+		set { Start = value; }
+	}
+
+	public Point End {
+		get { return End; }
+		set { Start = value; }
+	}
+
+	public double Length {
+		get { return Start.distanceTo(End); }
+	}
+}   
 ```
 
 ### Otros motivos de duplicación
@@ -1379,7 +1451,13 @@ Al pedir un servicio a un objeto, el servicio debe ser realizado de parte nuestr
 __Ejemplo__:
 
 ```java
-	public boolean canWrite(User user) {		if (user.isAnonymous())			return false;		else {			return user.getGroup().hasPermission(Permission.WRITE);		}	}
+	public boolean canWrite(User user) {
+		if (user.isAnonymous())
+			return false;
+		else {
+			return user.getGroup().hasPermission(Permission.WRITE);
+		}
+	}
 ```
 
 - Definir un método `User.hasPermission()`
@@ -2188,8 +2266,17 @@ __Invariante de clase__
 ### Ejemplo: Eiffel
 
 ```eiffel
-sqrt: DOUBLE is	-- Square root routine	require		sqrt_arg_must_be_positive: Current >= 0;	--- ...	--- calculate square root here	--- ...	ensure		((Result*Result) - Current).abs <= epsilon*Current.abs;
-	-- Result should be within error toleranceend;
+sqrt: DOUBLE is
+	-- Square root routine
+	require
+		sqrt_arg_must_be_positive: Current >= 0;
+	--- ...
+	--- calculate square root here
+	--- ...
+	ensure
+		((Result*Result) - Current).abs <= epsilon*Current.abs;
+	-- Result should be within error tolerance
+end;
 ```
 
 Si el usuario introduce un número negativo en la consola, es responsabilidad del código que llama a `sqrt` que dicho valor no se pase nunca a `sqrt`. Opciones:
@@ -2336,7 +2423,13 @@ Hay diversas técnicas de gestión de errores (que veremos más adelante), pero 
 
 
 Without a contract, all the compiler can do is ensure that a subclass conforms to a particular method signature. But if we put a base class contract in place, we can now ensure that any future subclass can't alter the meanings of our methods. For instance, you might want to establish a contract for setFont such as the following, which ensures that the font you set is the font you get:
-	/**	* @pre f != null	* @post getFont() == f	*/	public void setFont(final Font f) {	// ...
+
+	/**
+	* @pre f != null
+	* @post getFont() == f
+	*/
+	public void setFont(final Font f) {
+	// ...
 -->
 
 ### Aserciones versus contratos
