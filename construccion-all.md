@@ -405,7 +405,7 @@ Usar polimorfismo. Seguir criticando la implementación...
       i.tocar();   // Prueba de que esta afinado
     }
   }
-  public PruebaOrquesta {
+  public class PruebaOrquesta {
      public static void main(String[] args) {
         Orquesta orquesta = new Orquesta();
         orquesta.instrumentos.add(new Viento());
@@ -466,7 +466,7 @@ Delegar las altas/bajas de `Instrumento` en la colección (agregado) de `Orquest
     }
   }
 
-  public PruebaOrquesta {
+  public class PruebaOrquesta {
      public static void main(String[] args) {
         Orquesta orquesta = new Orquesta();
         orquesta.addInstrumento(new Viento());
@@ -511,7 +511,7 @@ Definir una __interfaz__ para iterar en la colección de instrumentos:
     }
   }
 
-  public PruebaOrquesta {
+  public class PruebaOrquesta {
      public static void main(String[] args) {
         Orquesta orquesta = new Orquesta();
         orquesta.addInstrumento(new Viento());
@@ -560,7 +560,7 @@ Criticar...
     }
   }
 
-  public PruebaOrquesta {
+  public class PruebaOrquesta {
      public static void main(String[] args) {
         Orquesta orquesta = new Orquesta();
         orquesta.addInstrumento(new Viento());
@@ -605,7 +605,7 @@ Criticar...
     }
   }
 
-  public PruebaOrquesta {
+  public class PruebaOrquesta {
      public static void main(String[] args) {
         Orquesta orquesta = new Orquesta();
         orquesta.addInstrumento(new Viento());
@@ -737,7 +737,7 @@ Así que proponemos esta implementación de la Orquesta:
     }
   }
 
-  public PruebaOrquesta {
+  public class PruebaOrquesta {
      public static void main(String[] args) {
         Orquesta orquesta = new Orquesta();
         orquesta.addInstrumento(new Viento());
@@ -2160,7 +2160,7 @@ end -- class ACCOUNT
 
 - `feature` son las operaciones de la clase
 - `feature { NONE }` son privados
-- `make` para definir el constructor 
+- `make` para definir el constructor
 
 __Con contratos__
 
@@ -2224,7 +2224,7 @@ feature
             sum <= balance - minimum_balance
          ensure
             balance = old balance - sum
- 
+
     may_withdraw ...
 end -- class ACCOUNT
 ```
@@ -2651,7 +2651,7 @@ fichero no existe?
 Depende de si el fichero debe estar ahí
 
 -   Usando excepciones:
-   
+
 	```java
 	public void open_passwd() throws FileNotFoundException {
 		// This may throw FileNotFoundException...
@@ -2661,7 +2661,7 @@ Depende de si el fichero debe estar ahí
 	```
 
 -   Sin usar excepciones:
-   
+
 	```java
 	public boolean open_user_file(String name)
 			throws FileNotFoundException {
@@ -2889,6 +2889,3 @@ __Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
 __Interfaces de frontera__: No todo uso de `Map` o interfaz de
 frontera debe quedar encapsulado. Sólo es un consejo para no ’pasarla’
 con métodos que no vamos a necesitar.
-
-
-
