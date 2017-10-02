@@ -1,33 +1,56 @@
 # Diseño de Sistemas Software
 
 ## Problemáticas
- - Variabilidad
- - Acoplamiento
- - Complejidad
- - Robustez
- - <span style="color:blue;">Reutilización</span>
- - <span style="color:blue;">Flexibilidad</span>
+
+- Variabilidad
+- Acoplamiento
+- Complejidad
+- Robustez 
+- Reutilización
+- Flexibilidad
 
 ## Principios
- - Ocultación: OCP, ISP, LSP
- - Cohesión: SRP
- - Ortogonalidad: ISP
- - Delegación
+
+- Ocultación: OCP, ISP, LSP
+- Cohesión: SRP
+- Ortogonalidad: ISP
+- Delegación
 
 ## Técnicas
 
- - Refactoring
- - Bibliotecas y frameworks
- - Contratos
- - Inyección de dependencias
- - 
+- Refactoring
+- Bibliotecas y frameworks
+- Contratos
+- Inyección de dependencias
 
 ## Paradigmas
- - <span style="color:blue;">Objetos</span>
- - Eventos
- - Funcional
- - <span style="color:blue;">Aspectos</span>
- - Etc
+
+- Estructurado (E. W. Dijsktra)
+- Objetos (O. J. Dahl & K. Nygaard)
+- Funcional (J. McCarthy)
+- Aspectos (G. Kiczales)
+- Eventos
+
+## Pregunta
+
+_¿De qué fecha data cada paradigma?_
+_¿Cuál diríais que es el más antiguo?_
+
+## Bloques
+
+1. Principios de diseño OO
+2. Patrones de diseño
+3. Arquitectura de software
+
+### Respuesta
+
+_¿De qué fecha data cada paradigma?_
+
+- Estructurado (E. W. Dijsktra, 1968)
+- Objetos (O. J. Dahl & K. Nygaard, 1966)
+- Funcional (J. McCarthy, 1958)
+- Aspectos (G. Kiczales, 1997)
+- Eventos 
 
 ## Casos prácticos
 
@@ -37,10 +60,11 @@
 4. [Guitarras Paco](#guitarras)
 5. [Figuras geométricas](#figuras)
 
-
 # Caso práctico 1
+
 <a id="handler"></a>
-## Identificadores 
+
+## Identificadores
 
 ### Versión inicial: Identificadores v0.1
 
@@ -63,12 +87,11 @@
        return dni==otro.getDni();
     }
   }
-```      
+```
 
 ####Críticas:
 
 - __Flexibilidad__: El Real Decreto 338/1990 regula el uso de NIFs en lugar de DNIs. ¡Hay que cambiar toda la implementación!
-
 
 ### Implementación alternativa: Identificadores v0.2
 
@@ -87,7 +110,7 @@
        return nif.equals(otro.getId());
     }
   }
-```      
+```
 
 ####Críticas:
 
@@ -137,7 +160,6 @@
   }
 ```
 
-
 ## Ejercicio: `java.lang.Comparable`
 
 Implementar un identificador utilizando `java.lang.Comparable` del JDK.
@@ -154,63 +176,74 @@ __Invariantes:__
 
 `sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`
 
-`(x.compareTo(y)>0 and y.compareTo(z)>0)` $\Rightarrow$
-`x.compareTo(z)>0`
+`(x.compareTo(y)>0 and y.compareTo(z)>0)` $\Rightarrow$ `x.compareTo(z)>0`
 
-`x.compareTo(y)=0` $\Rightarrow$
-`sgn(x.compareTo(z))=sgn(y.compareTo(z))` $\forall$ `z`
+`x.compareTo(y)=0` $\Rightarrow$ `sgn(x.compareTo(z))=sgn(y.compareTo(z))` $\forall$ `z`
 
 __Consistencia con `equals`__:
 
-`(x.compareTo(y)=0)`
-$\Leftrightarrow$ `(x.equals(y))`
+`(x.compareTo(y)=0)` $\Leftrightarrow$ `(x.equals(y))`
 
-
-
-##Reutilización y flexibilidad
+## Reutilización y flexibilidad
 
 -  __Flexibilidad__: Adaptarse a cambios de requisitos y construir 
        software fácil de cambiar
 -  __Reutilización__: Construir software fácil de reutilizar sin
        tener que cambiar los módulos ya escritos
 
-
 # Caso práctico 2
+
 <a id="junit"></a>
+
 ## Framework de pruebas unitarias
 
--   JUnit es un framework en Java que sirve para diseñar, construir y
-    ejecutar **pruebas unitarias**
--   Una prueba unitaria comprueba la corrección de un
-    _módulo_ de software en cuanto a funcionalidades
-    que ofrece.
--   En el caso de Java, las pruebas unitarias comprueban la corrección
-    de cada uno de los métodos de _cada clase_.
--   ¿Cómo funciona?
-
+- JUnit es un framework en Java que sirve para diseñar, construir y
+ejecutar **pruebas unitarias**
+- Una prueba unitaria comprueba la corrección de un _módulo_ de software en cuanto a funcionalidades que ofrece.
+- En el caso de Java, las pruebas unitarias comprueban la corrección de cada uno de los métodos de _cada clase_.
+- ¿Cómo funciona?
 
 ### ¿Cómo probar `Saludo.java`?
 
 Incluir un método `main` que pruebe la funcionalidad de la clase:
 
 ```java
-class Saludo {	/**	* Imprime "Hola Mundo!"	*/	void saludar() {		System.out.println("Hola Mundo!");	}
-	/**	* Imprime un mensaje	*/	void saludar(String mensaje) {		System.out.println(mensaje);	}		/**	* Tests	*/	public static void main( String[] args ) {		Saludo saludo1 = new Saludo();		saludo1.saludar();
-		
-		Saludo saludo2 = new Saludo("Hola caracola!");		saludo2.saludar();	}}
+class Saludo {
+  /**
+  * Imprime "Hola Mundo!"
+  */
+  void saludar() {
+    System.out.println("Hola Mundo!");
+  }
+  /**
+  * Imprime un mensaje
+  */
+  void saludar(String mensaje) {
+    System.out.println(mensaje);
+  }
+
+  /**
+  * Tests
+  */
+  public static void main( String[] args ) {
+    Saludo saludo1 = new Saludo();
+    saludo1.saludar();
+
+    Saludo saludo2 = new Saludo("Hola caracola!");
+    saludo2.saludar();
+  }
+}
 ```
 
 ### Pegas
 
--   Cuanto más grande sea la interfaz de la clase, mayor será el main
+- Cuanto más grande sea la interfaz de la clase, mayor será el main
 
--   El tamaño del código de la clase crece por las pruebas
+- El tamaño del código de la clase crece por las pruebas
 
--   Poco fiable, porque main forma parte de la misma clase y tiene
-    acceso a los elementos privados
+- Poco fiable, porque main forma parte de la misma clase y tiene acceso a los elementos privados
 
--   Difícil de automatizar las pruebas, incluso pasando argumentos a
-    main
+- Difícil de automatizar las pruebas, incluso pasando argumentos a `main`
 
 ### Ejemplo: software _cliente_ del framework
 
@@ -271,34 +304,31 @@ public class SaludoTest extends TestCase {
 }
 ```
 
-
 ### Diseño del framework jUnit
 
-####Estructura de clases:
+#### Estructura de clases:
 
 ![Clases del framework jUnit](./figuras/junit-design-1.png)
 
-####Ejecución de casos de prueba:
+#### Ejecución de casos de prueba:
 
 ![Clases del framework jUnit](./figuras/junit-design-2.png)
-
-
 
 ### Ejemplo: aplicación de comercio electrónico
 
 Diseño de una aplicación de comercio electrónico:
 
-  - `ShoppingCart` - carrito de la compra
-  - `CreditCard` - tarjeta de crédito
-  - `Product`- artículos
-  - Etc.
+- `ShoppingCart` - carrito de la compra
+- `CreditCard` - tarjeta de crédito
+- `Product`- artículos
+- Etc.
 
 Diseño de pruebas unitarias de `ShoppingCart` para:
 
-  -   Probar carrito de la compra (añadir/eliminar artículos)
-  -   Probar validación de tarjetas de crédito
-  -   Probar manejo de varias monedas
-  -   Etc.
+- Probar carrito de la compra (añadir/eliminar artículos)
+- Probar validación de tarjetas de crédito
+- Probar manejo de varias monedas
+- Etc.
 
 #### ShoppingCart
 
@@ -314,7 +344,7 @@ public class ShoppingCart {
   public void empty() { ... }
   public boolean isEmpty() { ... }
 }
-```      
+```
 
 #### ShoppingCartTestCase con jUnit 3
 
@@ -373,7 +403,7 @@ public class ShoppingCartTest extends TestCase {
          return suite;
   }
 }
-```      
+```
 
 Ahora agrupamos varios casos de prueba en una misma _suite_:
 
@@ -442,7 +472,7 @@ public class ShoppingCartTest {
       fail("Should raise a ProductNotFoundException");
   }
 }
-```  
+```
 
 #### EcommerceTestSuite con jUnit 3
 
@@ -457,7 +487,7 @@ public class ShoppingCartTest {
           return suite;
       }
   }
-```      
+```
 
 #### EcommerceTestSuite con jUnit 4
 
@@ -468,7 +498,7 @@ public class ShoppingCartTest {
   public class EcommerceTestSuite {
       //...
   }
-```    
+```
 
 
 ### Arquitectura del framework
@@ -569,7 +599,7 @@ public class HolyGrailQuest {
     return grail;
   }
 }  
-```      
+```
 
 ### Diseño de pruebas con jUnit 3
 
@@ -586,7 +616,7 @@ public class KnightOfTheRoundTableTest extends TestCase {
     assertTrue(grail.isHoly());
   }
 }
-```      
+```
 
 -   Instanciación de `HolyGrail`
 
@@ -628,7 +658,7 @@ public class HolyGrailQuest implements Quest {
     return new HolyGrail();
   }
 }
-```  
+```
 
 -   El `Knight` aún recibe un tipo específico de `Quest`
 -   ¿Debe ser el caballero responsable de obtener un desafío?
@@ -648,7 +678,7 @@ public class KnightOfTheRoundTable implements Knight {
     this.quest = quest;
   }
 }
-```  
+```
 
 -   El caballero sólo sabe del desafío a través de su interfaz `Quest`.
 
@@ -775,7 +805,7 @@ Problemas de la aplicación heredada:
      public String getBackWood() {return backWood;}
      public String getTopWood() {return topWood;}
   }
-```      
+```
 
 
 ### Implementación: Inventario
@@ -828,7 +858,7 @@ public class Inventory {
     return null;
   }
 }
-```      
+```
 
 ## Algunos problemas
 
@@ -997,8 +1027,46 @@ __OCP: *Open-Closed Principle*__
 Versión imperativa (sin objetos):
 
 ```csharp
-enum ShapeType {circle, square};struct Shape{	ShapeType itsType;};struct Circle{	ShapeType itsType;	double itsRadius;	Point itsCenter;};void DrawCircle(struct Circle*);struct Square{	ShapeType itsType;
-	double itsSide;	Point itsTopLeft;};void DrawSquare(struct Square*);typedef struct Shape *ShapePointer;void DrawAllShapes(ShapePointer list[], int n){	int i;	for (i=0; i<n; i++)	{		struct Shape* s = list[i];		switch (s->itsType)		{			case square:				DrawSquare((struct Square*)s);				break;			case circle:				DrawCircle((struct Circle*)s);				break;		}	}}
+enum ShapeType {circle, square};
+struct Shape
+{
+  ShapeType itsType;
+};
+
+struct Circle
+{
+  ShapeType itsType;
+  double itsRadius;
+  Point itsCenter;
+};
+void DrawCircle(struct Circle*);
+
+struct Square
+{
+  ShapeType itsType;
+  double itsSide;
+  Point itsTopLeft;
+};
+void DrawSquare(struct Square*);
+
+typedef struct Shape *ShapePointer;
+void DrawAllShapes(ShapePointer list[], int n)
+{
+  int i;
+  for (i=0; i<n; i++)
+  {
+    struct Shape* s = list[i];
+    switch (s->itsType)
+    {
+      case square:
+        DrawSquare((struct Square*)s);
+        break;
+      case circle:
+        DrawCircle((struct Circle*)s);
+        break;
+    }
+  }
+}
 ```
 
 - `DrawAllShapes` no está cerrado para modificaciones cuando aparecen nuevos tipos de `Shape`
@@ -1010,15 +1078,40 @@ enum ShapeType {circle, square};struct Shape{	ShapeType itsType;};struct C
 Aplicando el OCP...
 
 ```csharp
-public interface Shape{	void Draw();}
-public class Square : Shape{	public void Draw()	{		//draw a square	}}public class Circle : Shape{	public void Draw()	{		//draw a circle	}}public void DrawAllShapes(IList shapes){	foreach(Shape shape in shapes)		shape.Draw();}
+public interface Shape
+{
+  void Draw();
+}
+
+public class Square : Shape
+{
+  public void Draw()
+  {
+    //draw a square
+  }
+}
+
+public class Circle : Shape
+{
+  public void Draw()
+  {
+    //draw a circle
+  }
+}
+
+public void DrawAllShapes(IList shapes)
+{
+  foreach(Shape shape in shapes)
+    shape.Draw();
+}
 ```
 
 - Si queremos ampliar el comportamiento de `DrawAllShapes`, solo tenemos que añadir una nueva clase derivada de `Shape`
 - Si se aplica bien OCP, los cambios de un cierto tipo obligan a añadir nuevo código, no a modificar el existente
  
 >  In general, no matter how "closed" a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!
-> > Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
+> 
+> Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
 > 
 > Bob C. Martin
 
@@ -1052,7 +1145,12 @@ Con la siguiente solución un `TimerClient` puede registrarse a sí mismo  en un
 ![Puertas de seguridad](./figuras/isp-timer-door.png)
 
 ```csharp
-public class Timer {	public void Register(int timeout, TimerClient client)	{ /*code*/ }}public interface TimerClient {		void TimeOut();
+public class Timer {
+  public void Register(int timeout, TimerClient client)
+  { /*code*/ }
+}
+public interface TimerClient {
+    void TimeOut();
 }
 ```
 
@@ -1062,7 +1160,13 @@ Por ejemplo, en la implementación anterior, si se cierra la puerta antes de que
 
 
 ```csharp
-public class Timer {	public void Register(int timeout, int timeOutId, TimerClient client)		{/*code*/}}public interface TimerClient {	void TimeOut(int timeOutID);}
+public class Timer {
+  public void Register(int timeout, int timeOutId, TimerClient client)
+    {/*code*/}
+}
+public interface TimerClient {
+  void TimeOut(int timeOutID);
+}
 ```
 
 - El cambio afecta a los usuarios de `TimerClient`, pero también a `Door` y a los clientes de `Door` (y no debería)  
@@ -1076,13 +1180,13 @@ public class Timer {	public void Register(int timeout, int timeOutId, TimerClie
 
 -   __Delegación__ a través del patrón adapter (de objetos o de clases)
 
-	-  Versión adaptador de clases (por herencia):
+  -  Versión adaptador de clases (por herencia):
 
-		![Puertas de seguridad - adaptador de clases](./figuras/isp-timer-door-class-adapter.png)
+    ![Puertas de seguridad - adaptador de clases](./figuras/isp-timer-door-class-adapter.png)
 
-	-  Versión adaptador de objetos (por composición):
+  -  Versión adaptador de objetos (por composición):
 
-		![Puertas de seguridad - adaptador de objetos](./figuras/isp-timer-door-object-adapter.png)	
+    ![Puertas de seguridad - adaptador de objetos](./figuras/isp-timer-door-object-adapter.png)  
 
 
 
@@ -1215,10 +1319,34 @@ __LSP: *Liskov Substitution Principle*__
 ### Ejemplo: Shapes versión 3
 
 ```csharp
-struct Point {double x, y;}public enum ShapeType {square, circle};public class Shape {	private ShapeType type;	public Shape(ShapeType t){type = t;}	public static void DrawShape(Shape s) {		if(s.type == ShapeType.square)			(s as Square).Draw();		else if(s.type == ShapeType.circle)			(s as Circle).Draw();	}}public class Circle : Shape {	private Point center;	private double radius;
-		public Circle() : base(ShapeType.circle) {}	public void Draw() {/* draws the circle */}}
-public class Square : Shape {	private Point topLeft;	private double side;	public Square() : base(ShapeType.square) {}
-	public void Draw() {/* draws the square */}}
+struct Point {double x, y;}
+public enum ShapeType {square, circle};
+
+public class Shape {
+  private ShapeType type;
+  public Shape(ShapeType t){type = t;}
+  public static void DrawShape(Shape s) {
+    if(s.type == ShapeType.square)
+      (s as Square).Draw();
+    else if(s.type == ShapeType.circle)
+      (s as Circle).Draw();
+  }
+}
+
+public class Circle : Shape {
+  private Point center;
+  private double radius;
+  
+  public Circle() : base(ShapeType.circle) {}
+  public void Draw() {/* draws the circle */}
+}
+
+public class Square : Shape {
+  private Point topLeft;
+  private double side;
+  public Square() : base(ShapeType.square) {}
+  public void Draw() {/* draws the square */}
+}
 ```
 
 - `DrawShape` viola claramente el OCP
@@ -1232,8 +1360,21 @@ struct Point {double x, y;}public enum ShapeType {square, circle};public clas
 De momento solo necesitamos rectángulos y escribimos esta versión:
 
 ```csharp
-public class Rectangle {	private Point topLeft;	private double width;	private double height;	public double Width {		get { return width; }		set { width = value; }	}
-		public double Height {		get { return height; }		set { height = value; }	}}   
+public class Rectangle {
+  private Point topLeft;
+  private double width;
+  private double height;
+
+  public double Width {
+    get { return width; }
+    set { width = value; }
+  }
+  
+  public double Height {
+    get { return height; }
+    set { height = value; }
+  }
+}   
 ```
 
 Un día hace falta manejar cuadrados además de rectángulos.
@@ -1257,24 +1398,42 @@ Problemas...
     Aún así, `Square` heredará los métodos accesores de `Rectangle. 
     Así que hacemos:
     
-	```csharp
-    public new double Width	{		set		{			base.Width = value;			base.Height = value;		}	}
-	public new double Height	{		set		{			base.Height = value;			base.Width = value;		}
-	```
+  ```csharp
+    public new double Width
+  {
+    set
+    {
+      base.Width = value;
+      base.Height = value;
+    }
+  }
+  public new double Height
+  {
+    set
+    {
+      base.Height = value;
+      base.Width = value;
+    }
+  ```
 
 -   El comportamiento de un objeto `Square` no es
     consistente con el de un objeto `Rectangle`:
     
     ```csharp
-    Square s = new Square();	s.SetWidth(1);   // fija ambos	s.SetHeight(2);  // fija ambos
-	
-	void f(Rectangle r)	{		r.SetWidth(32); // calls Rectangle.SetWidth	}
+    Square s = new Square();
+  s.SetWidth(1);   // fija ambos
+  s.SetHeight(2);  // fija ambos
+  
+  void f(Rectangle r)
+  {
+    r.SetWidth(32); // calls Rectangle.SetWidth
+  }
     ```
     
     ¿Qué sucede si pasamos un `Square` a la función `f`?
 
- 	 ¡No cambia `Height`! Los métodos `Width`y `Height` no se declararon `virtual` en `Rectangle`. Cuando la creación de una clase derivada provoca cambios en la clase base, es síntoma de un mal diseño.
- 	 
+    ¡No cambia `Height`! Los métodos `Width`y `Height` no se declararon `virtual` en `Rectangle`. Cuando la creación de una clase derivada provoca cambios en la clase base, es síntoma de un mal diseño.
+    
 -   El LSP pone en evidencia que la relación **es-un** tiene
     que ver con el comportamiento público extrínseco, del que los
     clientes dependen.
@@ -1283,16 +1442,56 @@ Problemas...
 ### Ejemplo:
 
 ```csharp
-public class Rectangle{	private Point topLeft;	private double width;	private double height;	public virtual double Width	{		get { return width; }		set { width = value; }	}	public virtual double Height	{		get { return height; }		set { height = value; }	}}
-public class Square : Rectangle{	public override double Width	{		set		{			base.Width = value;			base.Height = value;		}	}	public override double Height	{		set		{			base.Height = value;			base.Width = value;		}	}}
-```      
+public class Rectangle
+{
+  private Point topLeft;
+  private double width;
+  private double height;
+  public virtual double Width
+  {
+    get { return width; }
+    set { width = value; }
+  }
+  public virtual double Height
+  {
+    get { return height; }
+    set { height = value; }
+  }
+}
+
+public class Square : Rectangle
+{
+  public override double Width
+  {
+    set
+    {
+      base.Width = value;
+      base.Height = value;
+    }
+  }
+  public override double Height
+  {
+    set
+    {
+      base.Height = value;
+      base.Width = value;
+    }
+  }
+}
+```
 
 Ahora parece que funcionan `Square` y `Rectangle`, que matemáticamente quedan bien definidos.
 
 Pero consideremos esto:
 
 ```csharp
-void g(Rectangle r){	r.Width = 5;		// cree que es un Rectangle	r.Height = 4;		// cree que es un Rectangle	if(r.Area() != 20)		throw new Exception("Bad area!");}
+void g(Rectangle r)
+{
+  r.Width = 5;    // cree que es un Rectangle
+  r.Height = 4;   // cree que es un Rectangle
+  if(r.Area() != 20)
+    throw new Exception("Bad area!");
+}
 ```
 ¿Qué pasa si llamamos a `g(new Square(3))`?
 
