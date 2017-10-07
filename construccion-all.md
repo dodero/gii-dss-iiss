@@ -1,45 +1,47 @@
 # Construcción de Sistemas Software
 
 ## Problemáticas
- - <span style="color:blue;">Variabilidad</span>
- - <span style="color:blue;">Acoplamiento</span>
- - <span style="color:blue;">Complejidad</span>
- - <span style="color:blue;">Robustez</span>
- - Reutilización
- - Flexibilidad
+
+- <span style="color:blue;">Variabilidad</span>
+- <span style="color:blue;">Acoplamiento</span>
+- <span style="color:blue;">Complejidad</span>
+- <span style="color:blue;">Robustez</span>
+- Reutilización
+- Flexibilidad
 
 ## Principios
- - Ocultación
- - Cohesión
- - Ortogonalidad
- - Delegación
+
+- Ocultación
+- Cohesión
+- Ortogonalidad
+- Delegación
 
 ## Técnicas
 
- - [Herencia](#herencia)
- - [Polimorfismo](#polimorfismo)
- - [Composición](#compisicion)
- - [Inyección de dependencias](#inyeccion)
- - [Refactoring](#refactoring)
-    - [Código duplicado](#duplcode)
+- [Herencia](#herencia)
+- [Polimorfismo](#polimorfismo)
+- [Composición](#compisicion)
+- [Inyección de dependencias](#inyeccion)
+- [Refactoring](#refactoring)
+  - [Código duplicado](#duplcode)
     - [Ortogonalidad y dependencias](#ortogonalidad)
- - Calidad
-    - [Aserciones](#assert)
-    - [Contratos](#contracts)
-    - [Errores y excepciones](#errores)
-    - Depuración
- - Mixins
- - Anónimos y cierres
- - Reflexión
- - Metaprogramación
+- Calidad
+  - [Aserciones](#assert)
+  - [Contratos](#contracts)
+  - [Errores y excepciones](#errores)
+  - Depuración
+- Mixins
+- Anónimos y cierres
+- Reflexión
+- Metaprogramación
 
 ## Paradigmas
- - Objetos
- - Eventos
- - Funcional
- - Aspectos
- - Contratos
 
+- Objetos
+- Eventos
+- Funcional
+- Aspectos
+- Contratos
 
 ## Casos prácticos
 
@@ -49,10 +51,10 @@
 4. Código duplicado - [Cálculo de nóminas](#nominas)
 5. Ortogonalidad con aspectos - [Editor de figuras](#aspectos)
 
-
-
 # Caso 1 - Ocultación de la implementación
+
 <a id="recorridolista"></a>
+
 ## Recorrido de una lista
 
 ### Versión inicial: Lista v0.1
@@ -63,30 +65,39 @@ Criticar la implementación siguiente:
 
 ```java
   public abstract class List<T> {
-    public void addFirst(T value) { ... };    
-    public void removeFirst() { ... };  
+    public void addFirst(T value) { ... };
+    public void removeFirst() { ... };
     public void addLast(T value) { ... };
     public void removeLast() { ... };
     public T first() { ... };
     public T last() { ... };
-    public boolean isEmpty() { ... };    
+    public boolean isEmpty() { ... };
     public int length() { ... };
     public List<T> clone() { ... };
     public boolean isEqualTo(List<T>) { ... };
     public abstract void traverse();
     // etc...
   }
-```      
+```
 
-####Críticas:
+__Cohesión__
 
--  __Variabilidad__: ¿Y si hay distintas implementaciones de `traverse()`? Si implementamos varias versiones de la lista, introducimos más dependencias (acoplamiento)
--  __Cohesión__: `List<T>` aglutina más de una responsabilidad: almacenar y recorrer. Implementación no cohesionada
+> Cohesion refers to the degree to which the elements inside a module belong together
+> -- <cite>[E. Yourdon & L. Constantine](bibliografia.html#yourdon)</cite>
 
+#### Críticas a Lista v0.1
+
+- `List<T>` aglutina más de una responsabilidad: almacenar y recorrer. Implementación no cohesionada
+- ¿Y si hay distintas implementaciones de `traverse()`? Si implementamos varias versiones de la lista, introducimos más dependencias (acoplamiento)
+
+#### Problemáticas
+
+- Baja __cohesión__
+- Alta __variabilidad__ no bien tratada $\Rightarrow$ poca __flexibilidad__
 
 ### Implementación alternativa: Lista v0.2
 
-Delegar funcionalidad hacia las subclases (vía herencia).
+Delegar funcionalidad hacia las subclases (vía __herencia__).
 
 Criticar la implementación:
 
@@ -99,27 +110,31 @@ Criticar la implementación:
     //...
     public void traverse() { // recorrer hacia atras};
   }
-```      
+```
 
-####Críticas
+#### Críticas a Lista v0.2
 
--   ¿Qué operación hace `traverse()` con cada elemento individual (imprimir, sumar, etc.)? ¿Hay que especializar de nuevo para cada tipo de operación?
--   ¿Y si hay que especializar de nuevo el recorrido: sólo los pares, sólo los impares, etc.?
+- ¿Qué operación hace `traverse()` con cada elemento individual (imprimir, sumar, etc.)? ¿Hay que especializar de nuevo para cada tipo de operación? 
+- ¿Y si hay que especializar de nuevo el recorrido: sólo los pares, sólo los impares, etc.? 
 
+#### Problemáticas
+
+- Elevada __complejidad__
+- Alta __variabilidad__ no bien tratada $\Rightarrow$ poca __flexibilidad__, mala __reutilización__
 
 ### Implementación alternativa: Lista v0.3
 
-Ampliar la interfaz
+Ampliamos la interfaz...
 
 ```java
   public interface List<T> {
-    public void addFirst(T value);    
-    public void removeFirst();  
+    public void addFirst(T value);
+    public void removeFirst();
     public void addLast(T value);
     public void removeLast();
     public T first();
     public T last();
-    public boolean isEmpty();    
+    public boolean isEmpty();
     public int length();
     public List<T> clone();
     public boolean isEqualTo(List<T>);
@@ -129,27 +144,31 @@ Ampliar la interfaz
     public void traverseOdds();  //impares
     // etc...
   }
-```      
+```
 
-####Críticas:
+#### Críticas a Lista v0.3
 
--   __Dependencias__: Si hay que cambiar la operación básica que hace `traverse()` con cada elemento (imprimir, sumar, etc.), ¿cuántos métodos hay que cambiar?
--   __Flexibilidad__: Cuánto más variedad de recorridos (la interfaz es mayor), menos flexibilidad para los cambios
+- Si hay que cambiar la operación básica que hace `traverse()` con cada elemento (imprimir, sumar, etc.), ¿cuántos métodos hay que cambiar? Hay muchas dependencias
+- Cuanto más variedad de recorridos (la interfaz es mayor), menos flexibilidad para los cambios. Implementación poco flexible
 
+#### Problemáticas
+
+- Muchas __dependencias__ $\Rightarrow$ __acoplamiento__
+- Poca __flexibilidad__
 
 ### Implementación alternativa: Lista v0.4
 
-Delegar hacia otra clase
+__Delegar__ hacia otra clase
 
 ```java
   public interface List<T> {
-    void addFirst(T value);    
-    void removeFirst();  
+    void addFirst(T value);
+    void removeFirst();
     void addLast(T value);
     void removeLast();
     T first();
     T last();
-    boolean isEmpty();    
+    boolean isEmpty();
     int length();
     List<T> clone();
     boolean isEqualTo(List<T>);
@@ -161,26 +180,28 @@ Delegar hacia otra clase
     E next();
     void remove();
   }
-```      
+```
 
--  __Cohesión__: Las responsabilidades están separadas: `List` almacena, `Iterator` recorre. `List` está más cohesionada
+#### Ventajas
 
+- Mayor __cohesión__: Las responsabilidades están ahora separadas: `List` almacena, `Iterator` recorre. `List` está más cohesionada
+- Uso de __delegación__: la responsabilidad de recorrer se ha delegado hacia otro sitio
 
-## Ocultar la implementación
+## <span style="color:blue">Ocultar la implementación</span>
+
 <a id="ocultacion"></a>
 
--   __Cohesión__: módulos auto-contenidos, independientes y con un
+- __Cohesión__: módulos auto-contenidos, independientes y con un
     único propósito
--   __Acoplamiento__: minimizar dependencias entre módulos
--   __Abstracción__: diferenciar el *qué* y el *cómo*
--   __Modularidad__: clases, interfaces y componentes/módulos
-
+- __Acoplamiento__: minimizar dependencias entre módulos
+- __Abstracción__: diferenciar el *qué* y el *cómo*
+- __Modularidad__: clases, interfaces y componentes/módulos
 
 ### Alta cohesión, bajo acoplamiento
 
 > Cuando los componentes están aislados, puedes cambiar uno sin preocuparte por el resto. Mientras no cambies las interfaces externas, no habrá problemas en el resto del sistema
 >
-> -- <cite>[Eric Yourdon](#yourdon)</cite>
+> -- <cite>[Eric Yourdon](bibliografia.html#yourdon)</cite>
 
 ### Modularidad
 
@@ -190,38 +211,34 @@ Reducir el acoplamiento usando módulos o componentes con distintas responsabili
 
 Hay diversas técnicas para ocultar la implementación...
 
--  __Encapsular__: agrupar en módulos y clases
--  __Visibilidad__: `public`, `private`, `protected`, etc.
--  __Delegación__: incrementar la cohesión extrayendo funcionalidad pensada para otros propósitos fuera de un módulo
--  __Herencia__: delegar _en vertical_
--  __Polimorfismo__: ocultar la implementación de un método, manteniendo la misma interfaz de la clase base
--  __Interfaces__ bien documentadas
+- __Encapsular__: agrupar en módulos y clases
+- __Visibilidad__: `public`, `private`, `protected`, etc.
+- __Delegación__: incrementar la cohesión extrayendo funcionalidad pensada para otros propósitos fuera de un módulo
+- __Herencia__: delegar _en vertical_
+- __Polimorfismo__: ocultar la implementación de un método, manteniendo la misma interfaz de la clase base
+- __Interfaces__: usar interfaces bien documentadas
 
+## <span style="color:blue">Herencia: generalización y especialización</span>
 
-## Herencia: Generalización y especialización
 <a id="herencia"></a>
 
--   **Reutilizar la interfaz**
-    -   Clase base y derivada son del mismo tipo
-    -   Todas las operaciones de la clase base están también disponibles
-        en la derivada
+- **Reutilizar la interfaz**
+  - Clase base y derivada son del mismo tipo
+  - Todas las operaciones de la clase base están también disponibles en la derivada
 
--   **Redefinir vs. reutilizar el comportamiento**
-    -   *Overriding* (redefinición): cambio de comportamiento
-    -   *Overloading* (sobrecarga): cambio de interfaz
+- **Redefinir vs. reutilizar el comportamiento**
+  - *Overriding* (redefinición): cambio de comportamiento
+  - *Overloading* (sobrecarga): cambio de interfaz
 
--   **Herencia pura vs. extensión**
-    -   Herencia pura: mantiene la interfaz tal cual (relación *es-un*)
-    -   Extensión: amplía la interfaz con nuevas funcionalidades
-        (relación *es-como-un*). Puede causar problemas de _casting_.
-
+- **Herencia pura vs. extensión**
+  - Herencia pura: mantiene la interfaz tal cual (relación *es-un*)
+  - Extensión: amplía la interfaz con nuevas funcionalidades(relación *es-como-un*). Puede causar problemas de _casting_.
 
 > When you inherit, you take an existing class and make a special version of it. In general, this means that you’re taking a general-purpose class and specializing it for a particular need. [...] it would make no sense to compose a car using a vehicle object —a car doesn’t contain a vehicle, it is a vehicle. The _is-a_ relationship is expressed with inheritance, and the _has-a_ relationship is expressed with composition.
 >
-> -- <cite>[Bruce Eckel](#eckel)</cite>
+> -- <cite>[Bruce Eckel](bibliografia.html#eckel)</cite>
 
-### Ejemplo: *downcasting* y *upcasting*
-
+### Ejemplo: Aventura v0.1
 
 ```java
    public class PersonajeDeAccion {
@@ -256,16 +273,17 @@ Hay diversas técnicas para ocultar la implementación...
        ((Heroe)cuatroFantasticos[2]).volar(); // Downcast
        ((Heroe)cuatroFantasticos[1]).volar(); // ClassCastException
        for (PersonajeDeAccion p: cuatroFantasticos)
-       		p.luchar; // Sin problema
+           p.luchar; // Sin problema
        for (PersonajeDeAccion p: cuatroFantasticos)
-       		p.volar; // El 0, 1 y 3 van a lanzar ClassCastException
+           p.volar; // El 0, 1 y 3 van a lanzar ClassCastException
      }
    }
-```      
+```
 
-#### Críticas:
-- Hay que rediseñar la solución
+#### Críticas a Aventura v0.1
 
+- ¿De qué tipos van a ser los personales de acción? $\Rightarrow$ problema de _downcasting_
+- Hay que rediseñar la solución por ser insegura
 
 ```java
    interface SabeLuchar {
@@ -307,30 +325,27 @@ Hay diversas técnicas para ocultar la implementación...
        w(i); // Tratar como un PersonajeDeAccion
      }
    }
-```      
+```
 
-##Polimorfismo
+## <span style="color:blue">Polimorfismo</span>
+
 <a id="polimorfismo"></a>
 
 Fenómeno por el que, cuando se llama a una operación de un objeto del que no se sabe su tipo específico, se ejecuta el método adecuado de acuerdo con su tipo.
 
 El polimorfismo se basa en:
 
--   **Enlace dinámico**: se elige el método a ejecutar en tiempo de
-    ejecución, en función de la clase de objeto; es la implementación
-    del *polimorfismo*
+- **Enlace dinámico**: se elige el método a ejecutar en tiempo de ejecución, en función de la clase de objeto; es la implementación del *polimorfismo*
 
--   **Moldes (_casting_)**
-    -   *Upcasting*: Interpretar un objeto de una clase derivada como
-        del mismo tipo que la clase base
-    -   *Downcasting*: Interpretar un objeto de una clase base como del
+- **Moldes (_casting_)**
+  - *Upcasting*: Interpretar un objeto de una clase derivada como del mismo tipo que la clase base
+  - *Downcasting*: Interpretar un objeto de una clase base como del
         mismo tipo que una clase derivada suya
 
-
-
-
 # Caso 2 - Delegación
+
 <a id="orquesta"></a>
+
 ## Implementación de una orquesta
 
 ### Versión inicial: Orquesta v0.1
@@ -378,13 +393,12 @@ Criticar la solución siguiente (parte 1):
       tocar();
     }
   }
-```  
+```
 
-####Críticas:
+#### Críticas a la Orquesta v0.1
 
 - __Acoplamiento__: método `static`
 - __Cohesión__: ubicación de `main`
-
 
 ### Implementación alternativa: Orquesta v0.2
 
@@ -429,7 +443,7 @@ Usar polimorfismo. Seguir criticando la implementación...
         golpear(); golpear(); /* y afinar... */
       };
   }
-```      
+``` 
 
 ####Críticas:
 
@@ -477,7 +491,7 @@ Delegar las altas/bajas de `Instrumento` en la colección (agregado) de `Orquest
         orquesta.tocar();
      }
   }
-```      
+``` 
 
 ####Críticas:
 
@@ -571,7 +585,7 @@ Criticar...
         orquesta.tocar();
      }
   }
-```      
+``` 
 
 ####Críticas:
 
@@ -654,6 +668,7 @@ wait(long timeout, int nanos) void – Object
 ```
 
 Construimos un `Map` y lo pasamos.
+
 - Diseño A: Ninguno de los receptores deberá poder borrar algo del map. ¡Pero hay un `clear()`!
 - Diseño B: solo algunos tipos de objetos deben poderse guardar. ¡Los tipos no están restringidos!
 
@@ -693,9 +708,7 @@ __Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
     aplicación
 -   El casting queda confinado en la clase Sensors, que es más seguro
 
-__Interfaces de frontera__: No todo uso de `Map` o interfaz de
-frontera debe quedar encapsulado. Sólo es un consejo para no ’pasarla’
-con métodos que no vamos a necesitar.
+__Interfaces de frontera__: No todo uso de `Map` o interfaz de frontera debe quedar encapsulado. Sólo es un consejo para no ’pasarla’ con métodos que no vamos a necesitar.
 
 Así que proponemos esta implementación de la Orquesta:
 
@@ -762,32 +775,32 @@ A través de un fichero de configuración `orquesta.xml` le indicamos los valore
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-	"http://www.springframework.org/dtd/spring-beans.dtd">
+  "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-	<bean id="trompeta"
-		class="Viento"/>
-	<bean id="violin"
-		class="Cuerda"/>
-	<bean id="tambor"
-		class="Percusion"/>
-	<bean id="viola"
-		class="Cuerda"/>
+  <bean id="trompeta"
+    class="Viento"/>
+  <bean id="violin"
+    class="Cuerda"/>
+  <bean id="tambor"
+    class="Percusion"/>
+  <bean id="viola"
+    class="Cuerda"/>
 
-	<bean id="cuarteto"
-		class="Orquesta">
-		<property name="instrumento1">
-			<ref bean="trompeta"/>
-		</property>
-		<property name="instrumento2">
-			<ref bean="violin"/>
-		</property>
-		<property name="instrumento3">
-			<ref bean="viola"/>
-		</property>
-		<property name="instrumento4">
-			<ref bean="tambor"/>
-		</property>		
-	</bean>
+  <bean id="cuarteto"
+    class="Orquesta">
+    <property name="instrumento1">
+      <ref bean="trompeta"/>
+    </property>
+    <property name="instrumento2">
+      <ref bean="violin"/>
+    </property>
+    <property name="instrumento3">
+      <ref bean="viola"/>
+    </property>
+    <property name="instrumento4">
+      <ref bean="tambor"/>
+    </property>    
+  </bean>
 </beans>
 ```
 
@@ -797,48 +810,38 @@ La inyección de la dependencia concreta la hace el contenedor (_spring_ en este
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 public class PruebaOrquesta {
-	public static void main(String[] args) throws Exception {
-		BeanFactory factory =
-			new XmlBeanFactory(new FileInputStream("orquesta.xml"));
-		Orquesta orquesta =
-			(Orquesta) factory.getBean("cuarteto");
-		for (Instrumento i: orquesta)
+  public static void main(String[] args) throws Exception {
+    BeanFactory factory =
+      new XmlBeanFactory(new FileInputStream("orquesta.xml"));
+    Orquesta orquesta =
+      (Orquesta) factory.getBean("cuarteto");
+    for (Instrumento i: orquesta)
            orquesta.afinar(i);
-		orquesta.tocar();
-	}
+    orquesta.tocar();
+  }
 }
 ```
 
-
-
 ## Composición
+
 <a id="composicion"></a>
 
 Delegación _en horizontal_ hacia otras clases cuya interfaz es bien conocida
 
--   Los objetos miembro __delegados__ soon cambiables en tiempo de
-    ejecución sin afectar al código cliente ya existente
--   Alternativa más flexible que la herencia. Ejemplo: `Cola extends
-    ArrayList` implica que una cola va a implementarse como un `ArrayList`
-    para toda la vida, sin posibilidad de cambio en ejecución
+-   Los objetos miembro __delegados__ son cambiables en tiempo de ejecución sin afectar al código cliente ya existente
+-   Alternativa más flexible que la herencia. Ejemplo: `Cola extends ArrayList` implica que una cola va a implementarse como un `ArrayList` para toda la vida, sin posibilidad de cambio en ejecución
 
 ### Composición vs. Herencia
 
 -   **Composición** (delegación _en horizontal_)
-    -   Sirve cuando hacen falta las características de una clase
-        existente dentro de una nueva, pero no su interfaz.
-    -   Los objetos miembro privados pueden cambiarse en tiempo
-        de ejecución.
+    -   Sirve cuando hacen falta las características de una clase existente dentro de una nueva, pero no su interfaz.
+    -   Los objetos miembro privados pueden cambiarse en tiempo de ejecución.
     -   Los cambios en el objeto miembro no afectan al código del cliente.
 
 -   **Herencia** (delegación _en vertical_)
-    -   Sirve para hacer una versión especial de una clase existente,
-        reutilizando su interfaz.
-    -   La relación de herencia en los lenguajes de programación _suele ser_
-       __estática__ (definida en tiempo de compilación) y no __dinámica__
-       (que pueda cambiarse en tiempo de ejecución).
-    -   Permite re-interpretar el tipo de un objeto en tiempo
-        de ejecución.
+    -   Sirve para hacer una versión especial de una clase existente, reutilizando su interfaz.
+    -   La relación de herencia en los lenguajes de programación _suele ser_ __estática__ (definida en tiempo de compilación) y no __dinámica__ (que pueda cambiarse en tiempo de ejecución).
+    -   Permite re-interpretar el tipo de un objeto en tiempo de ejecución.
 
 
 ### Ejemplo: implementación de identificadores
@@ -925,18 +928,18 @@ public final class BankAccount implements Comparable<BankAccount> {
       assert this.equals(other) : "compareTo inconsistent with equals.";
       return this.id.compareTo(other.getId());
     }
-	@Override
-	public boolean equals(Object other) {
-		if (this == other) return true;
-		if (!(other instanceof BankAccount)) return false;
-		BankAccount that = (BankAccount)other;
-		return	( this.id.equals((that.getId()) );
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) return true;
+    if (!(other instanceof BankAccount)) return false;
+    BankAccount that = (BankAccount)other;
+    return  ( this.id.equals((that.getId()) );
    }
-	@Override
-	public int hashCode() {
-		int result = HashCodeUtil.SEED;
-		result = HashCodeUtil.hash( result, id );
-		return result;
+  @Override
+  public int hashCode() {
+    int result = HashCodeUtil.SEED;
+    result = HashCodeUtil.hash( result, id );
+    return result;
    }   
     @Override
     public String toString() {
@@ -967,16 +970,16 @@ public final class BankAccount implements Comparable {
       assert this.equals(that) : "compareTo inconsistent with equals.";
       return this.id.compareTo(that.getId());
     }
-	public boolean equals(Object other) {
-		if (this == other) return true;
-		if (!(other instanceof BankAccount)) return false;
-		that = (BankAccount)other:
-		return	( this.id.equals(that.getId()) );
+  public boolean equals(Object other) {
+    if (this == other) return true;
+    if (!(other instanceof BankAccount)) return false;
+    that = (BankAccount)other:
+    return  ( this.id.equals(that.getId()) );
    }
-	public int hashCode() {
-		int result = HashCodeUtil.SEED;
-		result = HashCodeUtil.hash( result, id );
-		return result;
+  public int hashCode() {
+    int result = HashCodeUtil.SEED;
+    result = HashCodeUtil.hash( result, id );
+    return result;
    }   
    public String toString() {
       return id.toString();
@@ -984,9 +987,10 @@ public final class BankAccount implements Comparable {
 }
 ```
 
-
 # Caso 3 - Inyección de dependencias
+
 ## Caballeros de la mesa redonda
+
 <a id="knights"></a>
 
 ### Tomado de <a id="bibliografia#spring">Spring in Action</a>
@@ -1041,19 +1045,19 @@ A través de un fichero de configuración XML le indicamos los valores inyectabl
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-	"http://www.springframework.org/dtd/spring-beans.dtd">
+  "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-	<bean id="quest"
-		class="HolyGrailQuest"/>
-	<bean id="knight"
-		class="KnightOfTheRoundTable">
-		<constructor-arg>
-			<value>CruzadoMagico</value>
-		</constructor-arg>
-		<property name="quest">
-			<ref bean="quest"/>
-		</property>
-	</bean>
+  <bean id="quest"
+    class="HolyGrailQuest"/>
+  <bean id="knight"
+    class="KnightOfTheRoundTable">
+    <constructor-arg>
+      <value>CruzadoMagico</value>
+    </constructor-arg>
+    <property name="quest">
+      <ref bean="quest"/>
+    </property>
+  </bean>
 </beans>
 ```
 
@@ -1063,13 +1067,13 @@ La inyección de la dependencia concreta la hace el contenedor (_spring_ en este
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 public class KnightApp {
-	public static void main(String[] args) throws Exception {
-		BeanFactory factory =
-			new XmlBeanFactory(new FileInputStream("knight.xml"));
-		KnightOfTheRoundTable knight =
-			(KnightOfTheRoundTable) factory.getBean("knight");
-		knight.embarkOnQuest();
-	}
+  public static void main(String[] args) throws Exception {
+    BeanFactory factory =
+      new XmlBeanFactory(new FileInputStream("knight.xml"));
+    KnightOfTheRoundTable knight =
+      (KnightOfTheRoundTable) factory.getBean("knight");
+    knight.embarkOnQuest();
+  }
 }
 ```
 
@@ -1114,9 +1118,10 @@ public class MyPart {
 Esta clase sigue usando `new` para ciertos elementos de la interfaz.
 Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 
+# Caso 4 - Código duplicado
 
-#Caso 4 - Código duplicado
-##Cálculo de nóminas
+## Cálculo de nóminas
+
 <a id="nominas"></a>
 
 ### Implementación de nóminas v0.1
@@ -1205,7 +1210,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
       a.print();  System.out.println();
     }
   }
-```      
+``` 
 
 - ¿Todos los empleados deben tener un salario anual bruto? Los autónomos no...
 - El método de cálculo del salario está descohesionado
@@ -1244,10 +1249,11 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
       a.print(); System.out.println(" Salario: "+a.computeMonthlySalary()+" EUR");
     }
   }
-```      
+``` 
 
 
 ##Refactoring
+
 <a id="refactoring"></a>
 
 > Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior [@Refactoring]
@@ -1259,6 +1265,7 @@ Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
 
 
 ## Código duplicado
+
 <a id="duplcode"></a>
 ###¿Por qué no duplicar?
 
@@ -1311,7 +1318,7 @@ Fuente de numerosos problemas de integración.
     public Point end;
     public double length;
   }
-```      
+``` 
 
 ¿Dónde está la duplicación?
 
@@ -1363,7 +1370,7 @@ Otras veces no merece la pena violar DRY por rendimiento: ¡las cachés y los op
 
 > All services offered by a module should be available through a uniform notation, which does not betray whether they are implemented through storage or through computation
 >
-> <cite>[B. Meyer](#meyer)</cite>
+> <cite>[B. Meyer](bibliografia.html#meyer)</cite>
 
 Conviene aplicar el principio de acceso uniforme para que sea más fácil añadir mejoras de rendimiento (v.g. caching)
 
@@ -1371,23 +1378,23 @@ Conviene aplicar el principio de acceso uniforme para que sea más fácil añadi
 
 ```csharp
 public class Line {
-	private Point Start;
-	private Point End;
-	private double Length;
+  private Point Start;
+  private Point End;
+  private double Length;
 
-	public Point Start {
-		get { return Start; }
-		set { Start = value; }
-	}
+  public Point Start {
+    get { return Start; }
+    set { Start = value; }
+  }
 
-	public Point End {
-		get { return End; }
-		set { Start = value; }
-	}
+  public Point End {
+    get { return End; }
+    set { Start = value; }
+  }
 
-	public double Length {
-		get { return Start.distanceTo(End); }
-	}
+  public double Length {
+    get { return Start.distanceTo(End); }
+  }
 }   
 ```
 
@@ -1397,8 +1404,8 @@ __Impaciencia__
 
 - Los peligros del *copy&paste*
 - "Vísteme despacio que tengo prisa" (_shortcuts make for long delays_). Ejemplos:
-	- Meter el `main` de Java en cualquier clase
-	- Fiasco del año 2000
+  - Meter el `main` de Java en cualquier clase
+  - Fiasco del año 2000
 
 __Simultaneidad__
 
@@ -1407,15 +1414,16 @@ __Simultaneidad__
 
 
 ## Ortogonalidad
+
 <a id="ortogonalidad"></a>
 
 Dos componentes A y B son ortogonales ($A \perp B$) si los cambios en uno no afectan al otro. Suponen más independencia, menos acoplamiento. Por ejemplo:
 
-  -   La base de datos debe ser ortogonal a la interfaz de usuario
-  -   En un helicóptero, los mandos de control no suelen ser ortogonales
+-   La base de datos debe ser ortogonal a la interfaz de usuario
+-   En un helicóptero, los mandos de control no suelen ser ortogonales
 
 
-###Beneficios
+### Beneficios
 
 Mayor **productividad**:
 
@@ -1434,7 +1442,7 @@ La ortogonalidad es aplicable a la gestión de proyectos, el diseño, la codific
 
 A nivel de diseño, patrones y arquitecturas como MVC facilitan la construcción de componentes ortogonales.
 
-###Codificación
+### Codificación
 
 Técnicas de codificación para fomentar la ortogonalidad:
 
@@ -1451,13 +1459,13 @@ Al pedir un servicio a un objeto, el servicio debe ser realizado de parte nuestr
 __Ejemplo__:
 
 ```java
-	public boolean canWrite(User user) {
-		if (user.isAnonymous())
-			return false;
-		else {
-			return user.getGroup().hasPermission(Permission.WRITE);
-		}
-	}
+  public boolean canWrite(User user) {
+    if (user.isAnonymous())
+      return false;
+    else {
+      return user.getGroup().hasPermission(Permission.WRITE);
+    }
+  }
 ```
 
 - Definir un método `User.hasPermission()`
@@ -1500,10 +1508,10 @@ public interface Quest {
 
 Los métodos de un objeto solo deben hacer llamadas a métodos...
 
-  1. _propios_  
-  2. de objetos pasados como _parámetros_
-  3. de objetos _creados_ por ellos mismos
-  4. de objetos _declarados_ en el mismo método
+1. _propios_ 
+2. de objetos pasados como _parámetros_
+3. de objetos _creados_ por ellos mismos
+4. de objetos _declarados_ en el mismo método
 
 ```java
 class Demeter {
@@ -1514,19 +1522,18 @@ class Demeter {
   void example(B b) {
     C c;
     int f = func();     // (1)
-    b.invert();			// (2)
+    b.invert();      // (2)
     a = new A();
     a.setActive();      // (3)
-    c.print();	        // (4)
+    c.print();          // (4)
 }
 ```
 
-####Críticas a la ley de Demeter
+#### Críticas a la ley de Demeter
 
  -   La ley de Demeter, ¿realmente ayuda a crear código más mantenible?
 
 __Ejemplo__: violación de la ley de Demeter:
-
 
 Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recorder_) dispersas por el mundo. Cada grabadora está en una ubicación (_Location_), que tiene una zona horaria (_TimeZone_). Los usuarios seleccionan (_Selection_) una grabadora y pintan sus datos etiquetados con la zona horaria correcta...
 
@@ -1534,32 +1541,32 @@ Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recor
   public void plotDate(Date aDate, Selection aSelection) {
     TimeZone tz = aSelection.getRecorder().getLocation().getZone();
   }
-```      
+```
 
   -  Multiplicidad de dependencias: `plotDate` $\dashrightarrow$ `Selection`, `Recorder`, `Location`, `TimeZone`. Si cambia la implementación de `Location` de forma que ya no incluye directamente una `TimeZone`, hay que cambiar `plotDate`
 
   - Añadir un método *delegado* `getTimeZone` a `Selection`. Así `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`.
 
-
   - ```java
-	  public void plotDate(Date aDate, TimeZone tz) {
-	     /* ... */
-	  }
-	  plotDate(someDate, someSelection.getTimeZone());
-	```           
+    public void plotDate(Date aDate, TimeZone tz) {
+       /* ... */
+    }
+    plotDate(someDate, someSelection.getTimeZone());
+    ```
 
 Costes de espacio y ejecución de métodos <span>*wrapper*</span> que reenvían la petición al objeto delegado. Violar la ley de Demeter para mejorar el rendimiento
 
 Desnormalización de BBDD
 
-###Toolkits y bibliotecas
+### Toolkits y bibliotecas
 
 -   Usar metadatos (@tag) para propósitos específicos: e.g. persistencia de objetos, transacciones, etc.
 -   Aspect-Oriented Programming (AOP)
 
-
 # Caso 5 - Ortogonalidad con aspectos
+
 <a id="aspectos"></a>
+
 ## Editor de figuras
 
 ### Ejemplo:
@@ -1727,7 +1734,6 @@ class MoveTracking {
     return result;
   }
 }
-
 ```
 
 Las colecciones de figuras son complejas. Las estructuras de objetos son jerárquicas y se producen eventos asíncronos:
@@ -1786,13 +1792,13 @@ class MoveTracking {
     Set result = movees;
     movees = new HashSet();
     return result;
-  }    
+  }
 }
 ```
 
 El cambio de implementación del seguimiento de los cambios para el refresco en pantalla ha dado lugar a modificaciones en todos los módulos (clases): `Line`, `Point` y `MoveTracking`
 
-###Implementación con aspectos
+### Implementación con aspectos
 
 Las clases `Line` y `Point` no se ven afectadas:
 
@@ -1817,14 +1823,15 @@ class Point {
   int getX() { return x; }
   int getY() { return y; }
 
-  void setX(int x) {    
+  void setX(int x) {
     this.x = x;
   }
-  void setY(int y) {    
+  void setY(int y) {
     this.y = y;
   }
 }
 ```
+
 #### Versión 1
 
 ```java
@@ -1880,7 +1887,7 @@ aspect MoveTracking {
     Set result = movees;
     movees = new HashSet();
     return result;
-  }    
+  }
 
   pointcut move(FigureElement figElt):
     target(figElt) &&
@@ -1897,6 +1904,7 @@ aspect MoveTracking {
 ```
 
 ## Aserciones
+
 <a id="assert"></a>
 
 > There is a luxury in self-reproach. When we blame ourselves we feel no one else has a right to blame us.
@@ -1940,7 +1948,7 @@ Forma 1:
 
 ```java
     assert Expression1 ;
-```      
+``` 
 
 Forma 2:
 
@@ -1998,7 +2006,7 @@ Y en tiempo de ejecución:
     }
 ```
 
-### Invariantes    
+### Invariantes
 
 #### Invariantes internas
 
@@ -2045,21 +2053,21 @@ Para **selectivas**:
       case Suit.SPADES:
         ...
     }
-```      
+``` 
 
 - Añadir:
 
-	```java
-	    default:
-	      assert false : suit;
-	```      
+  ```java
+      default:
+        assert false : suit;
+  ```
 
 - o también:
 
-	```java
-	    default:
-	      throw new AssertionError(suit);
-	```
+  ```java
+      default:
+        throw new AssertionError(suit);
+  ```
 
 Puntos **inalcanzables**:
 
@@ -2095,14 +2103,14 @@ Es recomendable incluir comprobaciones de invariantes de clase al principio de l
 A veces hace falta guardar datos antes de hacer un cómputo, para poder luego comprobar una condición cuando éste se haya completado. Ejemplo de cómo hacerlo con una _inner class_ que guarda el estado de variables:
 
 ```java
-	void foo(int[] array) {
+  void foo(int[] array) {
         // Manipulate array
         ...
         // At this point, array will contain exactly the ints that it did
         // prior to manipulation, in the same order.
     }
 
-	void foo(final int[] array) {
+  void foo(final int[] array) {
         class DataCopy {
           private int[] arrayCopy;
           DataCopy() { arrayCopy = (int[])(array.clone()); }
@@ -2116,8 +2124,8 @@ A veces hace falta guardar datos antes de hacer un cómputo, para poder luego co
      }
 ```
 
-
 ## Contratos
+
 <a id="contracts"></a>
 
 ### Ejemplo: Cuenta Bancaria
@@ -2203,6 +2211,7 @@ invariant
     balance >= minimum_balance
 end -- class ACCOUNT
 ```
+
 Forma corta del contrato:
 
 ```eiffel
@@ -2267,15 +2276,15 @@ __Invariante de clase__
 
 ```eiffel
 sqrt: DOUBLE is
-	-- Square root routine
-	require
-		sqrt_arg_must_be_positive: Current >= 0;
-	--- ...
-	--- calculate square root here
-	--- ...
-	ensure
-		((Result*Result) - Current).abs <= epsilon*Current.abs;
-	-- Result should be within error tolerance
+  -- Square root routine
+  require
+    sqrt_arg_must_be_positive: Current >= 0;
+  --- ...
+  --- calculate square root here
+  --- ...
+  ensure
+    ((Result*Result) - Current).abs <= epsilon*Current.abs;
+  -- Result should be within error tolerance
 end;
 ```
 
@@ -2311,7 +2320,7 @@ __Ejemplo__: Inserción en una lista ordenada
        }
        // ...
     }
-```      
+```
 
 Una postcondición puede necesitar expresarse con parámetros pasados a un método para verificar un comportamiento correcto.
 
@@ -2322,8 +2331,8 @@ Si el método puede cambiar el valor del parámetro pasado (parámetro mutable),
 - Eiffel no permiten que se pueda cambiar el valor de un parámetro (es inmutable)
 - En C++ usar `const`
 - Opciones en Java:
-	- Usar `final` para marcar un parámetro constante. Sin embargo, las subclases podrían redefinir los parámetros y volver a hacerlos mutables. Además `final` se aplica a la referencia, no al objeto en sí.
-	- Usar `variable@pre` de _iContract_
+  - Usar `final` para marcar un parámetro constante. Sin embargo, las subclases podrían redefinir los parámetros y volver a hacerlos mutables. Además `final` se aplica a la referencia, no al objeto en sí.
+  - Usar `variable@pre` de _iContract_
 - Muchos lenguajes funcionales (Lisp, Haskell, Erlang, Clojure, etc.) definen inmutabilidad por defecto
 
 ¿Por qué la inmutabilidad?
@@ -2370,7 +2379,7 @@ Hay diversas técnicas de gestión de errores (que veremos más adelante), pero 
 ```
 
 -   El método garantiza que siempre se harán chequeos de los argumentos, independientemente de si las aserciones están o no activadas
--	Añadir un assert para la precondición no es apropiado en este caso
+-  Añadir un assert para la precondición no es apropiado en este caso
 
 #### Método no público
 
@@ -2424,12 +2433,12 @@ Hay diversas técnicas de gestión de errores (que veremos más adelante), pero 
 
 Without a contract, all the compiler can do is ensure that a subclass conforms to a particular method signature. But if we put a base class contract in place, we can now ensure that any future subclass can't alter the meanings of our methods. For instance, you might want to establish a contract for setFont such as the following, which ensures that the font you set is the font you get:
 
-	/**
-	* @pre f != null
-	* @post getFont() == f
-	*/
-	public void setFont(final Font f) {
-	// ...
+  /**
+  * @pre f != null
+  * @post getFont() == f
+  */
+  public void setFont(final Font f) {
+  // ...
 -->
 
 ### Aserciones versus contratos
@@ -2444,8 +2453,8 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
 
 -   El sistema de runtime y las bibliotecas no están diseñadas para dar soporte a contratos, así que estos no se chequean. Y es precisamente en la frontera entre el cliente y la biblioteca donde hay más problemas.
 
-
 ## Errores y Excepciones
+
 <a id="errores"></a>
 
 ### Tratamiento de errores
@@ -2652,26 +2661,26 @@ Depende de si el fichero debe estar ahí
 
 -   Usando excepciones:
 
-	```java
-	public void open_passwd() throws FileNotFoundException {
-		// This may throw FileNotFoundException...
-		ipstream = new FileInputStream("/etc/passwd");
-		// ...
-	}
-	```
+  ```java
+  public void open_passwd() throws FileNotFoundException {
+    // This may throw FileNotFoundException...
+    ipstream = new FileInputStream("/etc/passwd");
+    // ...
+  }
+  ```
 
 -   Sin usar excepciones:
 
-	```java
-	public boolean open_user_file(String name)
-			throws FileNotFoundException {
-		File f = new File(name);
-		if (!f.exists())
-			return false;
-		ipstream = new FileInputStream(f);
-		return true;
-	}
-	```
+  ```java
+  public boolean open_user_file(String name)
+      throws FileNotFoundException {
+    File f = new File(name);
+    if (!f.exists())
+      return false;
+    ipstream = new FileInputStream(f);
+    return true;
+  }
+  ```
 
 ### Uso de null
 
