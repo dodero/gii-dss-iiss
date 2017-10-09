@@ -676,19 +676,19 @@ Construimos un `Map` y lo pasamos.
 
 - JDK < 5.0:
 
-      ```java
+```java
       Map sensors = new HashMap();
       ...
       Sensor s = (Sensor)sensors.get(sensorId);
-      ```
+```
 
 - JDK >= 5.0:
 
-      ```java
+```java
       Map<Sensor> sensors = new HashMap<Sensor>();
       ...
       Sensor s = sensors.get(sensorId);
-      ```
+```
 
 __Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
 
@@ -1552,7 +1552,7 @@ Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recor
        /* ... */
     }
     plotDate(someDate, someSelection.getTimeZone());
-    ```
+    ````
 
 Costes de espacio y ejecución de métodos <span>*wrapper*</span> que reenvían la petición al objeto delegado. Violar la ley de Demeter para mejorar el rendimiento
 
