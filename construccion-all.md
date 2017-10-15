@@ -80,7 +80,7 @@ Criticar la implementación siguiente:
   }
 ```
 
-__Cohesión__
+#### <span style="color:blue">Cohesión</span>
 
 > Cohesion refers to the degree to which the elements inside a module belong together
 > -- <cite>[E. Yourdon & L. Constantine](bibliografia.html#yourdon)</cite>
@@ -90,7 +90,7 @@ __Cohesión__
 - `List<T>` aglutina más de una responsabilidad: almacenar y recorrer. Implementación no cohesionada
 - ¿Y si hay distintas implementaciones de `traverse()`? Si implementamos varias versiones de la lista, introducimos más dependencias (acoplamiento)
 
-#### Problemáticas
+#### Problemáticas de Lista v0.1
 
 - Baja __cohesión__
 - Alta __variabilidad__ no bien tratada $\Rightarrow$ poca __flexibilidad__
@@ -117,7 +117,7 @@ Criticar la implementación:
 - ¿Qué operación hace `traverse()` con cada elemento individual (imprimir, sumar, etc.)? ¿Hay que especializar de nuevo para cada tipo de operación? 
 - ¿Y si hay que especializar de nuevo el recorrido: sólo los pares, sólo los impares, etc.? 
 
-#### Problemáticas
+#### Problemáticas de Lista v0.2
 
 - Elevada __complejidad__
 - Alta __variabilidad__ no bien tratada $\Rightarrow$ poca __flexibilidad__, mala __reutilización__
@@ -151,7 +151,7 @@ Ampliamos la interfaz...
 - Si hay que cambiar la operación básica que hace `traverse()` con cada elemento (imprimir, sumar, etc.), ¿cuántos métodos hay que cambiar? Hay muchas dependencias
 - Cuanto más variedad de recorridos (la interfaz es mayor), menos flexibilidad para los cambios. Implementación poco flexible
 
-#### Problemáticas
+#### Problemáticas de Lista v0.3
 
 - Muchas __dependencias__ $\Rightarrow$ __acoplamiento__
 - Poca __flexibilidad__
@@ -366,20 +366,28 @@ Criticar la solución siguiente (parte 1):
          i.tocar();  
       }
       public static void afinarViento(Viento i)
-      { /* ... */ };
+      { System.out.println("afinal soplido"); }
+
       public static void afinarCuerda(Cuerda i)
-      { /* ... */ };
+      { System.out.println("afinar rasgado"); }
   }
+
   class Viento extends Instrumento {
       public void tocar() { soplar(); }
+      public void afinar() { System.out.println("afinar soplido"); }
+      public void soplar() { System.out.println("soplar"); }
   }
+
   class Cuerda extends Instrumento {
-      public void tocar() { rascar(); }
+      public void tocar() { rasgar(); }
+      public void afinar() { System.out.println("afinar rasgado"); }
+      public void rasgar() { System.out.println("rasgar"); }
   }
 
   public class Orquesta {
     ArrayList<Instrumento> instrumentos;
-    public Orquesta { instrumentos = new ArrayList<Instrumento>(3); }
+    public Orquesta() {
+      instrumentos = new ArrayList<Instrumento>(3); }
     public void tocar() {
        for (int i=0; i<instrumentos.size(); i++)
          instrumentos.get(i).tocar();
@@ -407,7 +415,7 @@ Usar polimorfismo. Seguir criticando la implementación...
 ```java
   class Orquesta {
     ArrayList<Instrumento> instrumentos;
-    public Orquesta {
+    public Orquesta() {
         instrumentos = new ArrayList<Instrumento>(3);
     }
     public void tocar() {
@@ -435,22 +443,31 @@ Usar polimorfismo. Seguir criticando la implementación...
       public void tocar() { };
       public void afinar() { };
   }
-  //class Viento ...
-  //class Cuerda ...
+
+  class Viento extends Instrumento {
+      public void tocar() { soplar(); }
+      public void afinar() { System.out.println("afinar soplido"); }
+      public void soplar() { System.out.println("soplar"); }
+  }
+
+  class Cuerda extends Instrumento {
+      public void tocar() { rasgar(); }
+      public void afinar() { System.out.println("afinar rasgado"); }
+      public void rasgar() { System.out.println("rasgar"); }
+  }
+
   class Percusion extends Instrumento {
       public void tocar() { golpear(); }
-      public void afinar() {
-        golpear(); golpear(); /* y afinar... */
-      };
+      public void afinar() { System.out.println("afinar golpeado"); }
+      public void golpear() { System.out.println("golpear"); }
   }
-``` 
+```
 
-####Críticas:
+#### Críticas a la Orquesta v0.2
 
--   __Encapsulación__: método `add`
--   __Encapsulación__: visibilidad de `Orquesta::instrumentos` (en C++ sería `friend`)
--   __Flexibilidad__: la implementación `Orquesta::instrumentos` puede variar, pero no hay colección (agregado) en quien confíe `Orquesta` por delegación.
-
+- __Encapsulación__: método `add`
+- __Encapsulación__: visibilidad de `Orquesta::instrumentos` (en C++ sería `friend`)
+- __Flexibilidad__: la implementación `Orquesta::instrumentos` puede variar, pero no hay colección (agregado) en quien confíe `Orquesta` por delegación.
 
 ### Implementación alternativa: Orquesta v0.3
 
@@ -461,7 +478,7 @@ Delegar las altas/bajas de `Instrumento` en la colección (agregado) de `Orquest
 
     protected ArrayList<Instrumento> instrumentos;
 
-    public Orquesta {
+    public Orquesta() {
         instrumentos = new ArrayList<Instrumento>(3);
     }
     public boolean addInstrumento(Instrumento i) {
@@ -487,17 +504,16 @@ Delegar las altas/bajas de `Instrumento` en la colección (agregado) de `Orquest
         orquesta.addInstrumento(new Cuerda());
         orquesta.addInstrumento(new Percusion());
         for (int i=0; i<orquesta.instrumentos.size(); i++)
-           orquesta.afinar(instrumentos.get(i));
+           orquesta.afinar(orquesta.instrumentos.get(i));
         orquesta.tocar();
      }
   }
-``` 
+```
 
-####Críticas:
+#### Críticas a la Orquesta v0.3:
 
--  __Acoplamiento__: `PruebaOrquesta` conoce la implementación basada en un `ArrayList` de la colección de instrumentos de la orquesta.
--  __Variabilidad__: ¿La colección de instrumentos será siempre lineal?
-
+- __Acoplamiento__: `PruebaOrquesta` conoce la implementación basada en un `ArrayList` de la colección de instrumentos de la orquesta.
+- __Variabilidad__: ¿La colección de instrumentos será siempre lineal?
 
 ### Implementación alternativa: Orquesta v0.4
 
@@ -505,8 +521,8 @@ Definir una __interfaz__ para iterar en la colección de instrumentos:
 
 ```java
   class Orquesta {
-    private List<Instrumento> instrumentos;
-    public Orquesta {
+    protected List<Instrumento> instrumentos;
+    public Orquesta() {
        instrumentos = new ArrayList<Instrumento>(3);
     }
     public boolean addInstrumento(Instrumento i) {
@@ -531,16 +547,18 @@ Definir una __interfaz__ para iterar en la colección de instrumentos:
         orquesta.addInstrumento(new Viento());
         orquesta.addInstrumento(new Cuerda());
         orquesta.addInstrumento(new Percusion());
-        for (Iterator<Instrumento> i = instrumentos.iterator(); i.hasNext(); )
+        for (Iterator<Instrumento> i = orquesta.instrumentos.iterator(); i.hasNext(); )
            orquesta.afinar(i.next());
         orquesta.tocar();
      }
   }
 ```
 
-####Críticas:
+#### Críticas a la Orquesta v0.4
 
-- __Flexibilidad__: Aparece una nueva versión del lenguaje (Java JDK 1.5) que permite iterar haciendo un _for each_  sobre una colección que implemente la interfaz `Iterable`. Rehacemos la implementación:
+- __Ocultación__: el atributo `instrumentos` sigue sin ser privado.
+
+Rehacemos la implementación, aprovechando que aparece una nueva versión del lenguaje (Java JDK 1.5) que permite iterar haciendo un __*for each*__ sobre una colección que implemente la interfaz `Iterable`. 
 
 
 ### Implementación alternativa: Orquesta v0.5
@@ -551,8 +569,8 @@ Criticar...
 
 ```java
   class Orquesta {
-    protected List<Instrumento> instrumentos;
-    public Orquesta {
+    private List<Instrumento> instrumentos;
+    public Orquesta() {
        instrumentos = new ArrayList<Instrumento>(3);
     }
     public boolean addInstrumento(Instrumento i) {
@@ -585,19 +603,23 @@ Criticar...
         orquesta.tocar();
      }
   }
-``` 
+```
 
-####Críticas:
+#### Críticas a la Orquesta v0.5:
 
--   __Ocultación__: la interfaz del método `instrumentos()` sigue expuesta: el cliente sabe que devuelve una `List`.
-
+- __Ocultación__: la interfaz del método `instrumentos()` sigue expuesta: el cliente sabe que devuelve una `List`.
+- Hemos ocultado un poco la implementación de `instrumentos` (que es una `List`), pero ¿conviene saber que es una `List`? Quizá no hemos ocultado lo suficiente.
 
 ### Implementación alternativa: Orquesta v0.6
+
+Nos quedamos sólo con lo que nos interesa de la Orquesta: que es una colección iterable.
+
+Eliminamos lo que no nos interesa: el resto de elementos de la interfaz `List` que explican la forma lineal de almacenar los instrumentos.
 
 ```java
   class Orquesta implements Iterable<Instrumento> {
     private List<Instrumento> instrumentos;
-    public Orquesta {
+    public Orquesta() {
        instrumentos = new ArrayList<Instrumento>(3);
     }
     public boolean addInstrumento(Instrumento i) {
@@ -634,14 +656,9 @@ Criticar...
 
 ### Implementación alternativa: Orquesta v0.7
 
-Existe una cierta tensión proveedor-cliente en la **frontera** de la interfaz
+Supongamos que queremos sustituir la implementación basada en una `List` por otra (quizá más eficiente) basada en un `Map`.
 
--   Los proveedores de packages y frameworks quieren amplia
-    aplicabilidad
--   Los clientes quieren una interfaz centrada en sus necesidades
-    particulares
-
-__Ejemplo__: La interfaz [`java.util.Map`](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html)
+__Nota__: La interfaz [`java.util.Map`](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html) declara los métodos siguientes:
 
 ```
 clear() void – Map
@@ -667,10 +684,17 @@ wait(long timeout) void – Object
 wait(long timeout, int nanos) void – Object
 ```
 
+Pero ¡`Map` no implementa `Iterable`!
+
+Existe una cierta tensión proveedor-cliente en la **frontera** de la interfaz
+
+- Los proveedores de packages y frameworks quieren ampliar aplicabilidad
+- Los clientes quieren una interfaz centrada en sus necesidades particulares
+
 Construimos un `Map` y lo pasamos.
 
-- Diseño A: Ninguno de los receptores deberá poder borrar algo del map. ¡Pero hay un `clear()`!
-- Diseño B: solo algunos tipos de objetos deben poderse guardar. ¡Los tipos no están restringidos!
+- Primera opción: Ninguno de los receptores deberá poder borrar algo del map. Pero ¡hay un `clear()` en el `Map`!
+- Segunda opción: solo algunos tipos de objetos deben poderse guardar. Pero ¡los tipos de objeto a guardar no están restringidos en un `Map`!
 
 ¿La interfaz `Map` es siempre satisfactoria? ¿seguro que no va a cambiar?
 
@@ -690,7 +714,7 @@ Construimos un `Map` y lo pasamos.
       Sensor s = sensors.get(sensorId);
 ```
 
-__Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
+__Conclusión__: `Map<Sensor>` ofrece más de lo que necesitamos
 
 ```java
       public class Sensors {
@@ -702,20 +726,20 @@ __Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
       }
 ```
 
--   La interfaz `Map` queda oculta
--   Filtramos los métodos que no nos sirven
--   Más fácil de hacer evolucionar sin impacto en el resto de la
-    aplicación
--   El casting queda confinado en la clase Sensors, que es más seguro
+- La interfaz `Map` queda oculta
+- Filtramos los métodos que no nos sirven
+- Más fácil de hacer evolucionar sin impacto en el resto de la aplicación
+- El casting queda confinado en la clase Sensors, que es más seguro
 
-__Interfaces de frontera__: No todo uso de `Map` o interfaz de frontera debe quedar encapsulado. Sólo es un consejo para no ’pasarla’ con métodos que no vamos a necesitar.
+
+__<span style="color:blue">Interfaces de frontera<span>__: No todo uso de `Map` o interfaz de frontera debe quedar encapsulado. Sólo es un consejo para no _pasar la interfaz_ con métodos que no vamos a necesitar.
 
 Así que proponemos esta implementación de la Orquesta:
 
 ```java
   class Orquesta implements Iterable<Instrumento> {
     private Instrumentos instrumentos;
-    public Orquesta {
+    public Orquesta() {
        instrumentos = new Instrumentos(3);
     }
     public boolean addInstrumento(Instrumento i) {
@@ -763,6 +787,7 @@ Así que proponemos esta implementación de la Orquesta:
   }
 ```
 
+Esta implementación sí que podemos adaptarla más fácilmente para cambiar el `List` por un `Map`, pues la responsabilidad de ser iterable ha quedado confinada en `Instrumentos`, que desacopla `Orquesta` y la implementación elegida (`List`, `Map`, etc.) para la colección de instrumentos.
 
 ### Implementación final: Orquesta v0.8
 
@@ -822,26 +847,26 @@ public class PruebaOrquesta {
 }
 ```
 
-## Composición
+## <span style="color:blue">Composición</span>
 
 <a id="composicion"></a>
 
 Delegación _en horizontal_ hacia otras clases cuya interfaz es bien conocida
 
--   Los objetos miembro __delegados__ son cambiables en tiempo de ejecución sin afectar al código cliente ya existente
--   Alternativa más flexible que la herencia. Ejemplo: `Cola extends ArrayList` implica que una cola va a implementarse como un `ArrayList` para toda la vida, sin posibilidad de cambio en ejecución
+- Los objetos miembro __delegados__ son cambiables en tiempo de ejecución sin afectar al código cliente ya existente
+- Alternativa más flexible que la herencia. Ejemplo: `Cola extends ArrayList` implica que una cola va a implementarse como un `ArrayList` para toda la vida, sin posibilidad de cambio en ejecución
 
-### Composición vs. Herencia
+### <span style="color:blue">Composición vs. Herencia</span>
 
--   **Composición** (delegación _en horizontal_)
-    -   Sirve cuando hacen falta las características de una clase existente dentro de una nueva, pero no su interfaz.
-    -   Los objetos miembro privados pueden cambiarse en tiempo de ejecución.
-    -   Los cambios en el objeto miembro no afectan al código del cliente.
+- **Composición** (delegación _en horizontal_)
+  - Sirve cuando hacen falta las características de una clase existente dentro de una nueva, pero no su interfaz.
+  - Los objetos miembro privados pueden cambiarse en tiempo de ejecución.
+  - Los cambios en el objeto miembro no afectan al código del cliente.
 
--   **Herencia** (delegación _en vertical_)
-    -   Sirve para hacer una versión especial de una clase existente, reutilizando su interfaz.
-    -   La relación de herencia en los lenguajes de programación _suele ser_ __estática__ (definida en tiempo de compilación) y no __dinámica__ (que pueda cambiarse en tiempo de ejecución).
-    -   Permite re-interpretar el tipo de un objeto en tiempo de ejecución.
+- **Herencia** (delegación _en vertical_)
+  - Sirve para hacer una versión especial de una clase existente, reutilizando su interfaz.
+  - La relación de herencia en los lenguajes de programación _suele ser_ __estática__ (definida en tiempo de compilación) y no __dinámica__ (que pueda cambiarse en tiempo de ejecución).
+  - Permite re-interpretar el tipo de un objeto en tiempo de ejecución.
 
 
 ### Ejemplo: implementación de identificadores
@@ -867,67 +892,63 @@ Delegación _en horizontal_ hacia otras clases cuya interfaz es bien conocida
   }
 ```
 
-####Implementación utilizando `Comparable`
+#### Implementación utilizando `Comparable`
 
 `java.lang.Comparable` es una interfaz implementada por `String`, `File`, `Date`, etc. y todas las llamadas _clases de envoltura_ del JDK (i.e. `Integer`, `Long`, etc.)
 
-__Métodos de la interfaz__
+##### Métodos de la interfaz
 
-(JDK 1.4):
+- JDK 1.4:
 
 ```java
 public interface Comparable {
   public int compareTo(Object o); //throws ClassCastException
-}  
+}
 ```
 
-(JDK 1.5):
+- JDK 1.5:
 
 ```java
 public interface Comparable<T> {
   public int compareTo(T o); //throws ClassCastException
-}  
+}
 ```
 
+##### Invariantes
 
-__Invariantes:__
+- Anticonmutativa: `sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`
 
- - Anticonmutativa: `sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`
+- Transitividad: `(x.compareTo(y)>0 and y.compareTo(z)>0)` $\Rightarrow$ `x.compareTo(z)>0`
 
- - Transitividad: `(x.compareTo(y)>0 and y.compareTo(z)>0)` $\Rightarrow$
-`x.compareTo(z)>0`
+- `x.compareTo(y)=0`$\Rightarrow$`sgn(x.compareTo(z))=sgn(y.compareTo(z))` $\forall$ `z`
 
- - `x.compareTo(y)=0` $\Rightarrow$
-   `sgn(x.compareTo(z))=sgn(y.compareTo(z))` $\forall$ `z`
+- Consistencia con `equals` (no obligatoria): `(x.compareTo(y)=0)`$\Leftrightarrow$`(x.equals(y))`
 
- - Consistencia con `equals` (no obligatoria): `(x.compareTo(y)=0)`
-     $\Leftrightarrow$ `(x.equals(y))`
+Cuando una clase hereda de una clase concreta que implementa `Comparable` y le añade un campo significativo para la comparación, no se puede construir una implementación correcta de `compareTo`. La única alternativa entonces es la composición en lugar de la herencia.
 
- - Cuando una clase hereda de una clase concreta que implementa Comparable y le añade un campo significativo para la comparación, no se puede construir una implementación correcta de `compareTo`. La única alternativa entonces es la composición en lugar de la herencia.
+Una alternativa a implementar `Comparable` es pasar un `Comparator` como parámetro (se prefiere __composición__ frente a __herencia__).
 
- - Una alternativa a implementar `Comparable`es pasar un `Comparator` como parámetro.
+##### Implementación en Java 1.5
 
-__Implementación en Java 1.5__:
-
- - Utilizando _templates_
- - Delegar en `compareTo` y `equals` del tipo de id _envuelto_ (e.g. `String`)
+- Utilizando _templates_
+- Delegar en `compareTo` y `equals` del tipo de id _envuelto_ (e.g. `String`)
 
 ```java
 import java.util.*;
 import java.io.*;
 
 public final class BankAccount implements Comparable<BankAccount> {
-    private final String id;
-    public BankAccount (String number)  {
-      this.id = number;
-    }
-    String getId() { return id; }
-    @Override
-    public int compareTo(BankAccount other) {
-      if (this == other) return 0;
-      assert this.equals(other) : "compareTo inconsistent with equals.";
-      return this.id.compareTo(other.getId());
-    }
+  private final String id;
+  public BankAccount (String number)  {
+    this.id = number;
+  }
+  String getId() { return id; }
+  @Override
+  public int compareTo(BankAccount other) {
+    if (this == other) return 0;
+    assert this.equals(other) : "compareTo inconsistent with equals.";
+    return this.id.compareTo(other.getId());
+  }
   @Override
   public boolean equals(Object other) {
     if (this == other) return true;
@@ -940,19 +961,18 @@ public final class BankAccount implements Comparable<BankAccount> {
     int result = HashCodeUtil.SEED;
     result = HashCodeUtil.hash( result, id );
     return result;
-   }   
-    @Override
-    public String toString() {
-      return id.toString();
-    }
+   }
+  @Override
+  public String toString() {
+    return id.toString();
+  }
 }
 ```
 
-__Implementación en Java 1.4__:
+##### Implementación en Java 1.4
 
- - No hay plantillas. La genericidad se consigue con `Object`. Hay que hacer casting.
- - Cuidado con `Boolean` que no implementa `Comparable` en JDK 1.4
-
+- No hay plantillas. La genericidad se consigue con `Object`. Hay que hacer casting.
+- Cuidado con `Boolean` que no implementa `Comparable` en JDK 1.4
 
 ```java
 import java.util.*;
@@ -980,7 +1000,7 @@ public final class BankAccount implements Comparable {
     int result = HashCodeUtil.SEED;
     result = HashCodeUtil.hash( result, id );
     return result;
-   }   
+   }
    public String toString() {
       return id.toString();
    }
