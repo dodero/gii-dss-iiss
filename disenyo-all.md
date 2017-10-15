@@ -130,11 +130,9 @@ _¿De qué fecha data cada paradigma?_
 
 ![Diseño de un handler](./figuras/handler.png)
 
-- __Identifiable__: Clase cliente que necesita identificar a sus objetos a 
-  través de algún atributo identificador
+- __Identifiable__: Clase cliente que necesita identificar a sus objetos a través de algún atributo identificador
 
-- __Handler__: Interfaz para declarar los identificadores de los objetos de
-   la clase `Identifiable`
+- __Handler__: Interfaz para declarar los identificadores de los objetos de la clase `Identifiable`
 
 - __ConcreteHandler__: Implementación concreta de la interfaz `Handler`
 
@@ -186,10 +184,8 @@ __Consistencia con `equals`__:
 
 ## Reutilización y flexibilidad
 
--  __Flexibilidad__: Adaptarse a cambios de requisitos y construir 
-       software fácil de cambiar
--  __Reutilización__: Construir software fácil de reutilizar sin
-       tener que cambiar los módulos ya escritos
+-  __Flexibilidad__: Adaptarse a cambios de requisitos y construir software fácil de cambiar
+-  __Reutilización__: Construir software fácil de reutilizar sin tener que cambiar los módulos ya escritos
 
 # Caso práctico 2
 
@@ -197,8 +193,7 @@ __Consistencia con `equals`__:
 
 ## Framework de pruebas unitarias
 
-- JUnit es un framework en Java que sirve para diseñar, construir y
-ejecutar **pruebas unitarias**
+- JUnit es un framework en Java que sirve para diseñar, construir y ejecutar **pruebas unitarias**
 - Una prueba unitaria comprueba la corrección de un _módulo_ de software en cuanto a funcionalidades que ofrece.
 - En el caso de Java, las pruebas unitarias comprueban la corrección de cada uno de los métodos de _cada clase_.
 - ¿Cómo funciona?
@@ -408,9 +403,20 @@ public class ShoppingCartTest extends TestCase {
 Ahora agrupamos varios casos de prueba en una misma _suite_:
 
 ```java
+import junit.framework.Test;
+import junit.framework.TestSuite;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+
+public class EcommerceTestSuite extends TestSuite {
+    //...
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        suite.addTest(ShoppingCartTest.suite());
+        return suite;
+    }
+}
 
 public class MyTestRunner {
   public static void main(String[] args) {
@@ -500,14 +506,11 @@ public class ShoppingCartTest {
   }
 ```
 
-
 ### Arquitectura del framework
 
 ![Clases del framework jUnit](./figuras/junit-patterns.png)
 
 En la arquitectura del framework se observan diversos patrones: Composite, Command, Adapter, Factory, Decorator, etc.
-
-  
 
 ## Bibliotecas y frameworks
 
@@ -523,54 +526,51 @@ En la arquitectura del framework se observan diversos patrones: Composite, Comma
 > 
 > -- <cite>[E. Gamma et al.](#gamma)</cite>
 
--   El framework proporciona unas guías arquitectónicas (diseño empaquetado) para dividir el diseño en clases abstractas y definir sus _responsabilidades_ y _colaboraciones_.
--   El framework se debe personalizar definiendo subclases y combinando
-    instancias, o bien configurando valores que definen el comportamiento por defecto
-
+- El framework proporciona unas guías arquitectónicas (diseño empaquetado) para dividir el diseño en clases abstractas y definir sus _responsabilidades_ y _colaboraciones_.
+- El framework se debe personalizar definiendo subclases y combinando instancias, o bien configurando valores que definen el comportamiento por defecto
 
 #### Principios de diseño
 
--   Datos encapsulados
--   Interfaces y clases abstractas
--   Métodos polimórficos
--   Delegación
+- Datos encapsulados
+- Interfaces y clases abstractas
+- Métodos polimórficos
+- Delegación
 
 #### Herramientas de diseño
 
--   __Patrones__: elementos reutilizables de diseño 
--   __Frameworks__: colecciones de patrones abstractos a aplicar
-
+- __Patrones__: elementos reutilizables de diseño 
+- __Frameworks__: colecciones de patrones abstractos a aplicar
 
 #### Framework vs. biblioteca
 
--   API orientado a objetos
--   Flujo de control invertido
--   Programador cliente (código específico) vs. de programador de bibliotecas (código reutilizable)
+- API orientado a objetos
+- Flujo de control invertido
+- Programador cliente (código específico) vs. programador de bibliotecas (código reutilizable)
 
 #### Flujo de control en un framework
 
 ![Flujo de control en una framework](./figuras/framework.png)
 
-
 ### Principios y técnicas de un framework
 
--   Abstracción
-    -  Clases y componentes abstractos
-    -  Interfaces abiertas
-    -  Uso de patrones de diseño
-    -  Componentes de un dominio específico
+- Abstracción
+  - Clases y componentes abstractos
+  - Interfaces abiertas
+  - Uso de patrones de diseño
+  - Componentes de un dominio específico
 
--   Máxima cohesión, mínimo acoplamiento
-    -  Minimizar dependencias: Una clase presenta una dependencia con otra clase si la primera usa una instancia de la segunda.
-    -  Cuando no se pueden eliminar las dependencias, mantener las abstractas e _inyectar_ las concretas.
-    -  **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
-
-
+- Máxima cohesión, mínimo acoplamiento
+  - Minimizar dependencias: Una clase presenta una dependencia con otra clase si la primera usa una instancia de la segunda.
+  - Cuando no se pueden eliminar las dependencias, mantener las abstractas e _inyectar_ las concretas.
+  - **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
 
 # Caso práctico 3
+
 <a id="knights"></a>
+
 ## Ejemplo: Caballeros de la mesa redonda
-### Tomado de <a id="bibliografia#spring">Spring in Action</a>
+
+### Tomado de <a id="bibliografia.html#spring">Spring in Action</a>
 
 Añadir pruebas unitarias a la solución siguiente:
 
@@ -587,7 +587,6 @@ public class KnightOfTheRoundTable {
     return quest.embark();
   }
 }
-  
 
 public class HolyGrailQuest {
   public HolyGrailQuest() {}
@@ -598,7 +597,7 @@ public class HolyGrailQuest {
     ...
     return grail;
   }
-}  
+}
 ```
 
 ### Diseño de pruebas con jUnit 3
@@ -618,14 +617,11 @@ public class KnightOfTheRoundTableTest extends TestCase {
 }
 ```
 
--   Instanciación de `HolyGrail`
+- Instanciación de `HolyGrail`
 
--   Cada vez que se prueba `KnightOfTheRoundTable`, también se prueba
-    `HolyGrailQuest`.
+- Cada vez que se prueba `KnightOfTheRoundTable`, también se prueba `HolyGrailQuest`.
 
--   No se puede pedir a `HolyGrailQuest` que se comporte de otra
-    forma (v.g. devolver null o elevar una excepción)
-
+- No se puede pedir a `HolyGrailQuest` que se comporte de otra forma (v.g. devolver null o elevar una excepción)
 
 Ocultar la implementación detrás de una interfaz:
 
@@ -633,7 +629,7 @@ Ocultar la implementación detrás de una interfaz:
 public interface Knight {
   Object embarkOnQuest() throws QuestFailedException;
 }
-    
+
 public class KnightOfTheRoundTable implements Knight {
   private String name;
   private Quest quest;
@@ -644,13 +640,13 @@ public class KnightOfTheRoundTable implements Knight {
   public Object embarkOnQuest() throws QuestFailedException {
     return quest.embark();
   }
-}    
+}
 
 public interface Quest {
   abstract Object embark()
     throws QuestFailedException;
 }
-    
+
 public class HolyGrailQuest implements Quest {
   public HolyGrailQuest() {}
   public Object embark() throws QuestFailedException {
@@ -660,9 +656,8 @@ public class HolyGrailQuest implements Quest {
 }
 ```
 
--   El `Knight` aún recibe un tipo específico de `Quest`
--   ¿Debe ser el caballero responsable de obtener un desafío?
-
+- El `Knight` aún recibe un tipo específico de `Quest`
+- ¿Debe ser el caballero responsable de obtener un desafío?
 
 ```java
 public class KnightOfTheRoundTable implements Knight {
@@ -680,42 +675,36 @@ public class KnightOfTheRoundTable implements Knight {
 }
 ```
 
--   El caballero sólo sabe del desafío a través de su interfaz `Quest`.
+- El caballero sólo sabe del desafío a través de su interfaz `Quest`.
 
--   Puede asignársele cualquier implementación de `Quest`
-    (`HolyGrailQuest`, `RescueDamselQuest`, etc.)
+- Puede asignársele cualquier implementación de `Quest`
+ (`HolyGrailQuest`, `RescueDamselQuest`, etc.)
 
 ![](./figuras/di-knight.png)
-
 
 ## Inyección de dependencias
 
 ![](./figuras/dep-injection.png)
 
--   Inversión de control: base de la inyección de dependencias
+- __Inversión de control__: base de la inyección de dependencias
 
 > The question is: "what aspect of control are they inverting?" [...] Early user interfaces were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With graphical (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework
 > 
 > <cite> Martin Fowler</cite>, http://martinfowler.com/articles/injection.html  
 
--   Una aplicación son dos o más clases que colaboran.
--   Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa que coordina los objetos.
--   Inversión de la responsabilidad de cómo un objeto obtiene
-    referencias a los objetos con los que colabora
--   Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su
-    interfaz, no por su implementación, ni por cómo fueron instanciados. Entonces la dependencia puede cambiarse por una implementación distinta (incluso en tiempo de ejecución)
+- Una aplicación son dos o más clases que colaboran.
+- Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa que coordina los objetos.
+- Inversión de la responsabilidad de cómo un objeto obtiene referencias a los objetos con los que colabora
+- Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su interfaz, no por su implementación, ni por cómo fueron instanciados. Entonces la dependencia puede cambiarse por una implementación distinta (incluso en tiempo de ejecución)
 - _Hollywood Principle: Don't call us, we'll call you"._
-
 
 ## Discusión sobre la reutilización
 
 > We most likely would have been better off not attempting to create a reusable function in the first place 
-> 
+>
 > -- <cite>Roger Sessions, The Misuse of Reuse [1]</cite>
 
-
 [1] http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html
-
 
 ### Factorizar una función
 
@@ -725,10 +714,10 @@ public class KnightOfTheRoundTable implements Knight {
 
 ### Ventajas (supuestas) de reutilizar:
 
-__Ahorro__: Si $\exists s$ sistemas $\wedge ~ coste(Function~1) = c$ €
+__Ahorro__:
 
-$\Rightarrow$
-ahorro = $c \times (s-1)$ €
+Si $\exists s$ sistemas $\wedge ~ coste(Function~1) = c$ €
+$\Rightarrow$ ahorro = $c \times (s-1)$ €
 
 
 ### Amenazas (reales):
@@ -740,31 +729,29 @@ ahorro = $c \times (s-1)$ €
 - La seguridad es inversamente proporcional a la complejidad del sistema.
 - Se incrementan los costes de llevar los sistemas a la nube.
 
-###Conclusión
+### Conclusión
 
 No crear funciones reutilizables en primer lugar
 
 Aplicar el principio __YAGNI__: __You Ain't Gonna Need It__
 
-
-
 # Caso práctico 4
+
 <a id="guitarras"></a>
 
 ## Guitarras Paco
 
 El cliente (Paco) quiere:
 
--   Mantener un inventario de guitarras
+- Mantener un inventario de guitarras
 
--   Encontrar guitarras para sus clientes
+- Encontrar guitarras para sus clientes
 
 Problemas de la aplicación heredada:
 
--   Caso de uso: un cliente busca una guitarra flamenca ‘Valeriano
-    Bernal’, pero no encuentra ninguna
+- Caso de uso: un cliente busca una guitarra flamenca ‘Valeriano Bernal’, pero no encuentra ninguna
 
--   ¿Problemas?
+- ¿Problemas?
 
 ### Una aplicación heredada
 
@@ -778,10 +765,10 @@ Problemas de la aplicación heredada:
 ### Implementación: Guitarra
 
 ```java
-  public class Guitar {     
+  public class Guitar {
      private String serialNumber, builder, model, type, backWood, topWood;
      private double price;
-        
+
      public Guitar(String serialNumber, double price,
                         String builder, String model, String type,
                         String backWood, String topWood) {
@@ -793,7 +780,7 @@ Problemas de la aplicación heredada:
         this.backWood = backWood;
         this.topWood = topWood;
      }
-          
+
      public String getSerialNumber() {return serialNumber;}
      public double getPrice() {return price;}
      public void setPrice(float newPrice) {
@@ -806,7 +793,6 @@ Problemas de la aplicación heredada:
      public String getTopWood() {return topWood;}
   }
 ```
-
 
 ### Implementación: Inventario
 
@@ -862,56 +848,51 @@ public class Inventory {
 
 ## Algunos problemas
 
--   Se compara el fabricante sin tener en cuenta mayúsculas/minúsculas
+- Se compara el fabricante sin tener en cuenta mayúsculas/minúsculas
 
--   Se comparan todos los campos sin tener en cuenta
+- Se comparan todos los campos sin tener en cuenta
     mayúsculas/minúsculas
 
--   No hay definidas constantes para cada fabricante
+- No hay definidas constantes para cada fabricante
 
 ¿Estas soluciones abordan el verdadero problema?
 
 Preguntar a Paco...
-
 
 ### Preguntar al cliente
 
 Preguntemos a Paco, que no tiene por qué saber nada de objetos ni bases
 de datos:
 
--   ¿Sólo vendes guitarras?
+- ¿Sólo vendes guitarras?
 
--   ¿Cómo actualizas el inventario?
+- ¿Cómo actualizas el inventario?
 
--   ¿Cómo funciona la búsqueda de guitarras?
+- ¿Cómo funciona la búsqueda de guitarras?
 
--   ¿Necesitarás informes de inventario y de ventas?
+- ¿Necesitarás informes de inventario y de ventas?
 
 ### Respuestas del cliente
 
 Paco dice que:
 
--   Los clientes no siempre conocen las características exactas de la
-    guitarra que quieren
+- Los clientes no siempre conocen las características exactas de la guitarra que quieren
 
--   Los clientes suelen buscar guitarras dentro de un rango de precios
+- Los clientes suelen buscar guitarras dentro de un rango de precios
 
--   Suele haber más de una guitarra que casa con las necesidades del
-    cliente
+- Suele haber más de una guitarra que casa con las necesidades del cliente
 
--   Sí, necesito informes y demás, pero ¡la prioridad nº 1 es encontrar
-    las guitarras!
+- Sí, necesito informes y demás, pero ¡la prioridad nº 1 es encontrar las guitarras!
 
 ## Ejercicio
 
 Hacer refactoring de la aplicación heredada de Guitarras Paco
 
-
-
 # Caso práctico 5:
-<a id="figuras"></a>
-## Figuras geométricas
 
+<a id="figuras"></a>
+
+## Figuras geométricas
 
 [Uncle Bob Martin principles](http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod)
 
