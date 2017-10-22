@@ -1015,9 +1015,57 @@ public final class BankAccount implements Comparable {
 
 ### Tomado de <a id="bibliografia#spring">Spring in Action</a>
 
-### Diseño
+Añadir pruebas unitarias a la solución siguiente:
 
-Ocultando la implementación con interfaces:
+```java
+public class KnightOfTheRoundTable {
+  private String name;
+  private HolyGrailQuest quest;
+  public KnightOfTheRoundTable(String name) {
+    this.name = name;
+    quest = new HolyGrailQuest();
+  }
+  public HolyGrail embarkOnQuest()
+      throws GrailNotFoundException {
+    return quest.embark();
+  }
+}
+
+public class HolyGrailQuest {
+  public HolyGrailQuest() {}
+  public HolyGrail embark() throws GrailNotFoundException {
+    HolyGrail grail = null;
+    // Look for grail
+    ...
+    return grail;
+  }
+}
+```
+
+### Construir pruebas con jUnit 3
+
+¿Dónde está el acoplamiento?
+
+```java
+import junit.framework.TestCase;
+public class KnightOfTheRoundTableTest extends TestCase {
+  public void testEmbarkOnQuest() throws GrailNotFoundException {
+    KnightOfTheRoundTable knight =
+        new KnightOfTheRoundTable("CruzadoMagico");
+    HolyGrail grail = knight.embarkOnQuest();
+    assertNotNull(grail);
+    assertTrue(grail.isHoly());
+  }
+}
+```
+
+- Instanciación de `HolyGrail`
+
+- Cada vez que se prueba `KnightOfTheRoundTable`, también se prueba `HolyGrailQuest`.
+
+- No se puede pedir a `HolyGrailQuest` que se comporte de otra forma (v.g. devolver null o elevar una excepción)
+
+### Ocultar la implementación detrás de una interfaz
 
 ```java
 public interface Knight {
@@ -1029,12 +1077,10 @@ public class KnightOfTheRoundTable implements Knight {
   private Quest quest;
   public KnightOfTheRoundTable(String name) {
     this.name = name;
+    quest = new HolyGrailQuest();
   }
   public Object embarkOnQuest() throws QuestFailedException {
     return quest.embark();
-  }
-  public void setQuest(Quest quest) {
-    this.quest = quest;
   }
 }
 
@@ -1050,7 +1096,28 @@ public class HolyGrailQuest implements Quest {
     return new HolyGrail();
   }
 }
-```  
+```
+
+- El `Knight` aún recibe un tipo específico de `Quest`
+- ¿Debe ser el caballero responsable de obtener un desafío?
+
+### Inyectar dependencias
+
+```java
+public class KnightOfTheRoundTable implements Knight {
+  private String name;
+  private Quest quest;
+  public KnightOfTheRoundTable(String name) {
+    this.name = name;
+  }
+  public Object embarkOnQuest() throws QuestFailedException {
+    return quest.embark();
+  }
+  public void setQuest(Quest quest) {
+    this.quest = quest;
+  }
+}
+```
 
 -   El caballero no es el responsable de averiguar su misión.
 -   El caballero sólo sabe de su misión a través de la interfaz `Quest`.
@@ -1097,7 +1164,6 @@ public class KnightApp {
 }
 ```
 
-
 ### Ejemplo: Logger
 
 ```java
@@ -1135,8 +1201,132 @@ public class MyPart {
 }
 ```
 
-Esta clase sigue usando `new` para ciertos elementos de la interfaz.
-Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
+Esta clase sigue usando `new` para ciertos elementos de la interfaz. Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
+
+### Decoradores en TypeScript
+
+Los decoradores de TypeScript son una forma de modificar programáticamente la definición de una clase
+
+La definición de una clase describe la _forma_ de la clase, es decir, sus métodos y propiedades. Sólo cuando se instancie la clase, estas propiedades y métodos estarán disponibles.
+
+
+Los __decoradores__ permiten inyectar código en la definición real de una clase.
+
+Pueden emplearse sobre:
+- definiciones de clase
+- definiciones de propiedades
+- definiciones de funciones
+- parámetros de métodos
+
+Los decoradores de TypeScript se llaman __atributos__ en C# y __anotaciones__ en Java
+
+Los decoradores de TypeScript son una característica __experimental__ del compilador y se han propuesto como parte del estándar __ECMAScript 7__. Deben activarse modificando el parámetro `experimentalDecorators` en `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es3",
+    "sourceMap": true,
+    "experimentalDecorators": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
+```
+
+#### Declaración
+
+```typescript
+function simpleDecorator(constructor: Function) {
+  console.log('simpleDecorator called.');
+}
+```
+
+#### Uso
+
+```typescript
+@simpleDecorator
+class ClassWithSimpleDecorator {
+
+}
+```
+
+¿Cuál es la salida del siguiente código TypeScript?
+
+```typescript
+let instance_1 = new ClassWithSimpleDecorator();
+let instance_2 = new ClassWithSimpleDecorator();
+console.log(`instance_1: ${instance_1}`);
+console.log(`instance_2 : ${instance_2}`);
+```
+
+```text
+simpleDecorator called.
+instance_1 : [object Object]
+instance_2 : [object Object]
+```
+
+#### Decoradores mútiples
+
+¿Cuál es la salida del siguiente código TypeScript?
+
+```typescript
+function simpleDecorator(constructor: Function) {
+  console.log('simpleDecorator called.');
+}
+
+function secondDecorator(constructor: Function) {
+  console.log('secondDecorator called.')
+}
+
+@simpleDecorator
+@secondDecorator
+class ClassWithMultipleDecorators {
+}
+
+let instance_1 = new ClassWithMultipleDecorators();
+console.log(`instance_1: ${instance_1}`);
+```
+
+```text
+secondDecorator called.
+simpleDecorator called.
+instance_1 : [object Object]
+```
+
+#### Factorías de decoradores
+
+- Los decoradores pueden aceptar parámetros
+- Una factoría de decoradores es una función que devuelve el propio decorador.
+
+##### Ejemplo de factoría de decoradores
+
+```typescript
+function decoratorFactory(name: string) {
+  return function (constructor: Function ) {
+    console.log(`decorator function called with: ${name}`);
+  }
+}
+
+@decoratorFactory('testName')
+class ClassWithDecoratorFactory {
+}
+```
+Salida:
+
+```text
+decorator function called with: testName
+```
+
+#### Tipos de decoradores
+
+- Decoradores de clases
+- Decoradores de propiedades
+- Decoradores de propiedades estáticas
+- Decoradores de métodos
+- Decoradores de parámetros
 
 # Caso 4 - Código duplicado
 
