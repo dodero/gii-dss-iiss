@@ -1025,8 +1025,7 @@ public class KnightOfTheRoundTable {
     this.name = name;
     quest = new HolyGrailQuest();
   }
-  public HolyGrail embarkOnQuest()
-      throws GrailNotFoundException {
+  public HolyGrail embarkOnQuest() throws GrailNotFoundException {
     return quest.embark();
   }
 }
@@ -1153,6 +1152,7 @@ La inyección de la dependencia concreta la hace el contenedor (_spring_ en este
 ```java
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+
 public class KnightApp {
   public static void main(String[] args) throws Exception {
     BeanFactory factory =
@@ -1166,20 +1166,22 @@ public class KnightApp {
 
 ### Ejemplo: Logger
 
+También se puede inyectar la dependencia en el constructor.
+
 ```java
 import java.util.logging.Logger;
 
 public class MyClass {
-    private final static Logger logger;
-    public MyClass(Logger logger) {
-            this.logger = logger;
-            // write an info log message
-            logger.info("This is a log message.")
-    }
+  private final static Logger logger;
+  public MyClass(Logger logger) {
+      this.logger = logger;
+      // write an info log message
+      logger.info("This is a log message.")
+  }
 }
 ```
 
-Un _contenedor de dependencias_ en el framework debe responsabilizarse de crear las instancias de `Logger` e inyectarlas en su sitio (normalmente vía _reflexión_)
+Un _contenedor de dependencias_ en el framework debe responsabilizarse de crear las instancias de `Logger` e inyectarlas en su sitio (normalmente vía _reflexión_ o _introspección_)
 
 ### Dependencias en Java
 
@@ -1187,21 +1189,21 @@ Estándar de Java (JSR 330) para describir las dependencias de una clase con ano
 
 ```java
 public class MyPart {
-    @Inject private Logger logger;
-    // inject class for database access
-    @Inject private DatabaseAccessClass dao;
-    @Inject
-    public void createControls(Composite parent) {
-        logger.info("UI will start to build");
-        Label label = new Label(parent, SWT.NONE);
-        label.setText("Eclipse 4");
-        Text text = new Text(parent, SWT.NONE);
-        text.setText(dao.getNumber());
-    }
+  @Inject private Logger logger;
+  // inject class for database access
+  @Inject private DatabaseAccessClass dao;
+  @Inject
+  public void createControls(Composite parent) {
+    logger.info("UI will start to build");
+    Label label = new Label(parent, SWT.NONE);
+    label.setText("Eclipse 4");
+    Text text = new Text(parent, SWT.NONE);
+    text.setText(dao.getNumber());
+  }
 }
 ```
 
-Esta clase sigue usando `new` para ciertos elementos de la interfaz. Esto significa que no pensamos reemplazarlos ni al hacer pruebas.
+Esta clase sigue usando `new` para ciertos elementos de la interfaz. Esto significa que no pensamos reemplazarlos ni siquiera para hacer pruebas.
 
 ### Decoradores en TypeScript
 
@@ -1305,7 +1307,7 @@ instance_1 : [object Object]
 
 ```typescript
 function decoratorFactory(name: string) {
-  return function (constructor: Function ) {
+  return function (constructor: Function) {
     console.log(`decorator function called with: ${name}`);
   }
 }
