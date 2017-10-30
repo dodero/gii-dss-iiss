@@ -1316,6 +1316,7 @@ function decoratorFactory(name: string) {
 class ClassWithDecoratorFactory {
 }
 ```
+
 Salida:
 
 ```text
@@ -1338,7 +1339,7 @@ decorator function called with: testName
 
 ### Implementación de nóminas v0.1
 
- - ¿Dónde hay código duplicado?
+- ¿Dónde hay código duplicado?
 
 ```java
   public class Empleado {
@@ -1375,10 +1376,11 @@ decorator function called with: testName
 
 - Código duplicado en los constructores de las clases y subclases
 - Refactorizar delegando hacia la superclase
-- Ahora incluimos un método para el cálculo de la nómina mensual...      
 
 ### Nóminas v0.2
 
+- Requisito: los trabajadores autónomos cobran por horas (no tienen un salario fijo bruto)
+- Incluimos el método `computeMonthlySalary` para el cálculo de la nómina mensual
 - ¿Están descohesionadas las clases?
 
 ```java
@@ -1404,10 +1406,11 @@ decorator function called with: testName
     public Autonomo(String id, String name, String vat) {
         super(id,name);
         this.vatCode = vat;
+        this.workingHours = 0.0;
     }
     public float computeMonthlySalary() {
         return workingHours*Company.getHourlyRate()*(1.0+Company.getVatRate());
-    }    
+    }
     @Override
     public void print() {
         super.print();
@@ -1422,7 +1425,7 @@ decorator function called with: testName
       a.print();  System.out.println();
     }
   }
-``` 
+```
 
 - ¿Todos los empleados deben tener un salario anual bruto? Los autónomos no...
 - El método de cálculo del salario está descohesionado
@@ -1446,9 +1449,21 @@ decorator function called with: testName
   public class Autonomo extends Empleado {
     String vatCode;
     float workingHours;
-    /* ... */
+    public Autonomo(String id, String name, String vat) {
+        super(id,name);
+        this.vatCode = vat;
+        this.workingHours = 0.0;
+    }
+    public void addWorkingHours(float workingHours){
+      this.workingHours += workingHours;
+    }
     public float computeMonthlySalary() {
         return workingHours*Company.getHourlyRate()*(1.0+Company.getVatRate());
+    }
+    @Override
+    public void print() {
+        super.print();
+        System.out.print(" "+vatCode);
     }
   }
   public class Prueba {
@@ -1461,10 +1476,9 @@ decorator function called with: testName
       a.print(); System.out.println(" Salario: "+a.computeMonthlySalary()+" EUR");
     }
   }
-``` 
+```
 
-
-##Refactoring
+## <span style="color:blue;">Refactoring</span>
 
 <a id="refactoring"></a>
 
@@ -1472,49 +1486,45 @@ decorator function called with: testName
 >
 > —- <cite>[M. Fowler](www.refactoring.com), www.refactoring.com</cite>
 
--   Pequeñas transformaciones
--   Mantienen el sistema funcional
+- Pequeñas transformaciones
+- Mantienen el sistema funcional
 
-
-## Código duplicado
+## <span style="color:blue;">Código duplicado</span>
 
 <a id="duplcode"></a>
 ###¿Por qué no duplicar?
 
--   Mantenimiento
--   Cambios (no sólo a nivel de código)
--   Trazabilidad
+- Mantenimiento
+- Cambios (no sólo a nivel de código)
+- Trazabilidad
 
-###Causas de la duplicación
+### Causas de la duplicación
 
--   __Impuesta__: No hay elección
--   __Inadvertida__: No me he dado cuenta
--   __Impaciencia__: No puedo esperar
--   __Simultaneidad__: Ha sido otro
+- __Impuesta__: No hay elección
+- __Inadvertida__: No me he dado cuenta
+- __Impaciencia__: No puedo esperar
+- __Simultaneidad__: Ha sido otro
 
+### <span style="color:blue;">Principio DRY – *Don't Repeat Yourself!*</span>
 
-###Principio DRY – *Don't Repeat Yourself!*
-
-###Duplicación impuesta
+### Duplicación impuesta
 
 La gestión del proyecto así nos lo exige:
 
--   Representaciones múltiples de la información (v.g. un TAD para guardar elementos de distintos tipos)
--   Documentación del código
--   Casos de prueba
--   Características del lenguaje (v.g. C/C++ header files, IDL specs)
+- Representaciones múltiples de la información – v.g. un TAD para guardar elementos de distintos tipos; el esquema de una BD configurado en la BD y en el código fuente a través de un [ORM](http://www.agiledata.org/essays/mappingObjects.html)
+- Documentación del código – v.g. código incrustado en javadocs
+- Casos de prueba
+- Características del lenguaje (v.g. C/C++ header files, IDL specs)
 
-####Técnicas de solución
+#### Técnicas de solución
 
--   Generadores de código: para evitar duplicar representaciones múltiples de la información
--   Herramientas de ingeniería inversa: para generar código a partir de un esquema de BD
--   Plantillas: Java, C++, etc.
--   Metadatos: En Java, anotaciones @
--   [Programación literaria](http://www.literateprogramming.com/)
--   Herramientas de documentación (v.g. [asciidoctor](http://asciidoctor.org/):
-    [include](http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files) file y
-    [source code](http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#source-code) formatting)
--   Ayuda del IDE
+- __Generadores de código__: para evitar duplicar representaciones múltiples de la información
+- Herramientas de __ingeniería inversa__: para generar código a partir de un esquema de BD – v.g. [jeddict](https://jeddict.github.io/) para crear clases JPA, visualizar y modificar BDs y automatizar la generación de código Java EE.
+- __Plantillas__: Tipos genéricos del lenguaje (Java, C++, TypeScript, etc.) o mediante un motor de plantillas – v.g. [Apache Velocity](http://velocity.apache.org/) template language ([VTL](http://velocity.apache.org/engine/2.0/user-guide.html#velocity-template-language-vtl-an-introduction))
+- __Metadatos__: Anotaciones @ en Java, decoradores en TypeScript, etc.
+- Herramientas de __documentación__ (v.g. [asciidoctor](http://asciidoctor.org/): [inclusión de ficheros](http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files) y [formateo de código fuente](http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#source-code)).
+- Herramientas de __[programación literaria](http://www.literateprogramming.com/)__
+- Ayuda del __IDE__
 
 ### Duplicación inadvertida
 
@@ -1522,7 +1532,7 @@ Normalmente tiene origen en un diseño inapropiado.
 
 Fuente de numerosos problemas de integración.
 
-**Ejemplo: versión 1**
+#### Ejemplo: código duplicado – versión 1
 
 ```java
   public class Line {
@@ -1548,10 +1558,9 @@ Fuente de numerosos problemas de integración.
 
 A veces se puede optar por violar DRY por razones de rendimiento.
 
+#### Ejemplo: aplicando memoization – versión 2
 
-**Ejemplo: versión 2**
-
-Aplicando [_memoization_](https://en.wikipedia.org/wiki/Memoization) - cachear los resultados de cómputos costosos
+[_Memoization_](https://en.wikipedia.org/wiki/Memoization): cachear los resultados de cómputos costosos
 
 ```java
   public class Line {
@@ -1572,13 +1581,13 @@ Aplicando [_memoization_](https://en.wikipedia.org/wiki/Memoization) - cachear l
        return length;
     }
   }
-```  
+```
 
-Es menos problemático si queda dentro de los límites de la clase/módulo.
+La técnica de memoization es menos problemática si queda dentro de los límites de la clase/módulo.
 
 Otras veces no merece la pena violar DRY por rendimiento: ¡las cachés y los optimizadores de código también hacen su labor!
 
-###Principio de acceso uniforme
+### <span style="color:blue;">Principio de acceso uniforme</span>
 
 > All services offered by a module should be available through a uniform notation, which does not betray whether they are implemented through storage or through computation
 >
@@ -1586,7 +1595,7 @@ Otras veces no merece la pena violar DRY por rendimiento: ¡las cachés y los op
 
 Conviene aplicar el principio de acceso uniforme para que sea más fácil añadir mejoras de rendimiento (v.g. caching)
 
-**Ejemplo: versión 3 en C#**
+#### Ejemplo: acceso uniforme en C# – versión 3
 
 ```csharp
 public class Line {
@@ -1607,62 +1616,64 @@ public class Line {
   public double Length {
     get { return Start.distanceTo(End); }
   }
-}   
+}
 ```
 
-### Otros motivos de duplicación
-
-__Impaciencia__
+### Duplicación por impaciencia
 
 - Los peligros del *copy&paste*
 - "Vísteme despacio que tengo prisa" (_shortcuts make for long delays_). Ejemplos:
   - Meter el `main` de Java en cualquier clase
   - Fiasco del año 2000
 
-__Simultaneidad__
+### Duplicación por simultaneidad
 
--   No resoluble a nivel de técnicas de construcción
--   Hace falta metodología, gestión de equipos + herramientas de comunicación
+- No resoluble a nivel de técnicas de construcción
+- Hace falta metodología, gestión de equipos + herramientas de comunicación
 
-
-## Ortogonalidad
+## <span style="color:blue;">Ortogonalidad</span>
 
 <a id="ortogonalidad"></a>
 
-Dos componentes A y B son ortogonales ($A \perp B$) si los cambios en uno no afectan al otro. Suponen más independencia, menos acoplamiento. Por ejemplo:
+Dos componentes A y B son ortogonales ($A \perp B$) si los cambios en uno no afectan al otro. Suponen más independencia y menos acoplamiento. Por ejemplo:
 
--   La base de datos debe ser ortogonal a la interfaz de usuario
--   En un helicóptero, los mandos de control no suelen ser ortogonales
+- La base de datos debe ser ortogonal a la interfaz de usuario
+- En un helicóptero, los mandos de control no suelen ser ortogonales
 
+### Beneficios de la ortogonalidad
 
-### Beneficios
+#### Mayor productividad
 
-Mayor **productividad**:
+- Es más fácil escribir un componente pequeño y auto-contenido que un bloque muy grande de código. El tiempo de desarrollo y __pruebas__ se reduce
+- Se pueden combinar unos componentes con otros más fácilmente. Mayor __reutilización__.
+- Si $A \perp B$, el componente A sirve para $m$ propósitos y B sirve para $n$, entonces $A \cup B$ sirve para $m \times n$ propósitos.
+- La falta de cohesión perjudica la reutilización – v.g. ¿y si hay que hacer una nueva versión gráfica de una aplicación de línea de comandos? (los `System.out.println` pueden descohesionar)
 
- -  Es más fácil escribir un componente pequeño y auto-contenido que un bloque muy grande de código. El tiempo de desarrollo y pruebas se reduce
- -  Se puede combinar unos componentes con otros más fácilmente. Mayor reutilización.
- -  Si $A \perp B$, el componente A sirve para $m$ propósitos y B sirve para $n$, entonces $A \cup B$ sirve para $m \times n$ propósitos.
- -  La falta de cohesión perjudica la reutilización. v.g. ¿y si hay que hacer una nueva versión gráfica de una aplicación de línea de comandos? (los `System.out.println` pueden descohesionar)
+#### Menor riesgo
 
-Menor <span>**riesgo**</span>:
+- Defectos aislados. Menor __fragilidad__ del sistema global
+- Más fácil de __probar__, pues será más fácil construir pruebas individuales de cada uno de sus componentes (e.g. _mocking_ es más sencillo)
 
- -  Defectos aislados. Menor fragilidad del sistema global
- -  Más fácil de probar, pues será más fácil construir pruebas individuales de cada uno de sus componentes (e.g. _mocking_ es más sencillo)
+### Niveles de aplicación de la ortogonalizad
 
+La ortogonalidad es aplicable a:
 
-La ortogonalidad es aplicable a la gestión de proyectos, el diseño, la codificación, las pruebas y la documentación.
+- la gestión de proyectos
+- el diseño
+- la codificación
+- las pruebas
+- la documentación
 
-A nivel de diseño, patrones y arquitecturas como MVC facilitan la construcción de componentes ortogonales.
+A nivel de _diseño_, los patrones de diseño y las arquitecturas como MVC facilitan la construcción de componentes ortogonales.
 
-### Codificación
+### Técnicas de codificación
 
 Técnicas de codificación para fomentar la ortogonalidad:
 
--   Evitar datos globales y _singletons_: v.g. ¿y si hay que hacer una versión
-    *multithreaded* de una aplicación?
--   Usar métodos plantilla y estrategias — Aplicar DRY
--   Desacoplar: Ley de <span>*Demeter*</span>—No hables con extraños
--   Inyectar: pasar explícitamente el contexto (dependencia) como parámetro a los constructores
+- Evitar datos globales y _singletons_: v.g. ¿y si hay que hacer una versión *multithreaded* de una aplicación?
+- Usar métodos plantilla y estrategias — Aplicar DRY
+- Desacoplar: Ley de <span>*Demeter*</span>—No hables con extraños
+- Inyectar: pasar explícitamente el contexto (dependencia) como parámetro a los constructores
 
 #### Desacoplar - ley de Demeter
 
@@ -1680,14 +1691,17 @@ __Ejemplo__:
   }
 ```
 
-- Definir un método `User.hasPermission()`
-
+Refactorización: definir un método `User.hasPermission()`
 
 #### Inyectar el contexto
 
 Pasar explícitamente el contexto (dependencia) como parámetro a los constructores de la clase
 
-__Ejemplo__:
+##### Ejemplo: patrón estrategia
+
+En el patrón de diseño _strategy_, pasar el contexto a la estrategia en su creación
+
+##### Ejemplo: caballeros de la mesa redonda
 
 ```java
 public interface Knight {
@@ -1715,15 +1729,14 @@ public interface Quest {
 }
 ```
 
-
 #### Ley de Demeter para funciones
 
 Los métodos de un objeto solo deben hacer llamadas a métodos...
 
-1. _propios_ 
-2. de objetos pasados como _parámetros_
-3. de objetos _creados_ por ellos mismos
-4. de objetos _declarados_ en el mismo método
+caso 1. __propios__ 
+caso 2. de objetos pasados como __parámetros__
+caso 3. de objetos __creados__ por ellos mismos
+caso 4. de objetos __declarados__ en el mismo método
 
 ```java
 class Demeter {
@@ -1733,47 +1746,50 @@ class Demeter {
 
   void example(B b) {
     C c;
-    int f = func();     // (1)
-    b.invert();      // (2)
+    int f = func();  // (caso 1)
+    b.invert();      // (caso 2)
     a = new A();
-    a.setActive();      // (3)
-    c.print();          // (4)
+    a.setActive();   // (caso 3)
+    c.print();       // (caso 4)
 }
 ```
 
 #### Críticas a la ley de Demeter
 
- -   La ley de Demeter, ¿realmente ayuda a crear código más mantenible?
+ La ley de Demeter, ¿realmente ayuda a crear código más mantenible?
 
-__Ejemplo__: violación de la ley de Demeter:
+##### Ejemplo: pintar gráficos de grabadoras
 
-Pintar un gráfico con los datos registrados por una serie de grabadoras (_Recorder_) dispersas por el mundo. Cada grabadora está en una ubicación (_Location_), que tiene una zona horaria (_TimeZone_). Los usuarios seleccionan (_Selection_) una grabadora y pintan sus datos etiquetados con la zona horaria correcta...
+- Pintar un gráfico con los datos registrados por una serie de grabadoras (`Recorder`) dispersas por el mundo.
+- Cada grabadora está en una ubicación (`Location`), que tiene una zona horaria (`TimeZone`).
+- Los usuarios seleccionan (`Selection`) una grabadora y pintan sus datos etiquetados con la zona horaria correcta...
 
-```java
+  ```java
   public void plotDate(Date aDate, Selection aSelection) {
     TimeZone tz = aSelection.getRecorder().getLocation().getZone();
   }
-```
+  ```
 
-  -  Multiplicidad de dependencias: `plotDate` $\dashrightarrow$ `Selection`, `Recorder`, `Location`, `TimeZone`. Si cambia la implementación de `Location` de forma que ya no incluye directamente una `TimeZone`, hay que cambiar `plotDate`
+##### Críticas
 
-  - Añadir un método *delegado* `getTimeZone` a `Selection`. Así `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`.
+- Multiplicidad de dependencias: `plotDate` $\dashrightarrow$ `Selection`, `Recorder`, `Location`, `TimeZone`.
+- Si cambia la implementación de `Location` de forma que ya no incluye directamente una `TimeZone`, hay que cambiar `plotDate`
+- Añadir un método *delegado* `getTimeZone` a `Selection`. Así `plotDate` no se entera de si la `TimeZone` le llega desde `Recorder` o desde un objeto contenido en `Recorder`.
 
-  - ```java
-    public void plotDate(Date aDate, TimeZone tz) {
-       /* ... */
-    }
-    plotDate(someDate, someSelection.getTimeZone());
-    ````
-
-Costes de espacio y ejecución de métodos <span>*wrapper*</span> que reenvían la petición al objeto delegado. Violar la ley de Demeter para mejorar el rendimiento
-
-Desnormalización de BBDD
+  ```java
+  public void plotDate(Date aDate, TimeZone tz) {
+    /* ... */
+  }
+  plotDate(someDate, someSelection.getTimeZone());
+  ```
+  Ahora `plotDate` $\dashrightarrow$ `Selection`, `TimeZone`, pero se han eliminado las restantes dependencias.
+- Costes de espacio y ejecución de métodos *wrapper* que reenvían la petición al objeto delegado: violar la ley de Demeter para mejorar el __rendimiento__
+- Otros ejemplos de mejora del rendimiento: desnormalización de BBDD
 
 ### Toolkits y bibliotecas
 
--   Usar metadatos (@tag) para propósitos específicos: e.g. persistencia de objetos, transacciones, etc.
--   Aspect-Oriented Programming (AOP)
+- Usar metadatos (@tag) para propósitos específicos – v.g. persistencia de objetos, transacciones, etc.
+- Aspect-Oriented Programming (AOP)
 
 # Caso 5 - Ortogonalidad con aspectos
 

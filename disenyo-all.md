@@ -716,8 +716,7 @@ public class KnightOfTheRoundTable implements Knight {
 
 __Ahorro__:
 
-Si $\exists s$ sistemas $\wedge ~ coste(Function~1) = c$ €
-$\Rightarrow$ ahorro = $c \times (s-1)$ €
+Si $\exists s$ sistemas $\wedge ~ coste(Function~1) = c$ € $\Rightarrow$ ahorro = $c \times (s-1)$ €
 
 
 ### Amenazas (reales):
