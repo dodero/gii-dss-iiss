@@ -887,39 +887,41 @@ Paco dice que:
 
 Hacer refactoring de la aplicación heredada de Guitarras Paco
 
-# Caso práctico 5:
+# Caso práctico 5
 
 <a id="figuras"></a>
 
 ## Figuras geométricas
 
-[Uncle Bob Martin principles](http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod)
+[Uncle Bob Martin principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design))
+
+[comment]: http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod
 
 ## Principio de responsabilidad única 
 
 __SRP: *Single responsibility Principle*__
 
 > A class should have onlye one reason to change
-> <cite>Uncle Bob Martin, </cite>
+> <cite>-- Uncle Bob Martin</cite>
 
--   Una clase que modela intereses múltiples genera acoplamiento entre
-    los intereses
--   Un cambio en algún interés obligará a cambios accidentales en los
-    clientes que no dependen de dicho interés
-    
-<!-- -   Los módulos enmarañados que nunca cambian no son problemáticos-->
+- Una clase que modela múltiples aspectos genera acoplamiento entre los distintos aspectos
+- Un cambio en algún aspecto obligará a cambios accidentales en los clientes que no dependen de dicho aspecto
 
-SRP es lo mismo que el principio de __cohesión__ de [DeMarco](#demarco)
+<!-- Los módulos enmarañados que nunca cambian no son problemáticos-->
 
+SRP es lo mismo que el principio de __cohesión__ de [DeMarco](bibliografia.html#demarco)
 
-###Ejemplo: Shapes v1 en Java
+### Ejemplo: Shapes v1 en Java
+
 <a id="shapesV1"></a>
-¿Qué parte no cumple SRP en el ejemplo de las figuras? 
 
-¿Cuántas responsabilidades tienen las clases que implementan la interfaz `Shape`? ¿Cuáles son?
- 
+- ¿Cuántas responsabilidades tienen las clases que implementan la interfaz `Shape`?
+- ¿Cuáles son estas responsabilidades?
+- ¿Qué parte no cumple SRP en el ejemplo? 
+
 ```java
 package shapes;
+
 interface Shape {
   double area();
   void draw();
@@ -950,8 +952,7 @@ class Rectangle extends RectParallelogram {...}
 
 abstract class ClosedCurve implements Shape {...}
 
-class Circle
-    extends ClosedCurve {
+class Circle extends ClosedCurve {
   double getRadius() {...}
   Point getCenter() {...}
   double area() {...}
@@ -974,15 +975,14 @@ class Ellipse extends ClosedCurve {
 - Dos responsabilidades: geometría computacional + dibujo en pantalla
 - Todas las figuras tienen métodos `draw` y `toString` (dibujar en pantalla) además del método `area` que calcula el área (geometría computacional) $\rightarrow$ Violación del SRP
 
-####Solución:
+#### Solución
 
 Patrones de diseño: _visitor_
 
-####Otros ejemplos
+#### Otros ejemplos
 
-  - ActiveRecord viola SRP. Sustituir por DAO
-   
-     
+- ActiveRecord viola SRP. Sustituir por DAO
+
 ## Principio de Abierto-Cerrado
 
 __OCP: *Open-Closed Principle*__
@@ -991,20 +991,16 @@ __OCP: *Open-Closed Principle*__
 > 
 > <cite>B. Meyer, [Object Oriented Software Construction](#meyer)</cite>
 
+- Si un cambio en un sitio origina una cascada de cambios en otros puntos del sistema, el resultado es un sistema frágil y rígido
+- Es difícil averiguar todos los puntos que requieren cambios
+-   Código cerrado para modificaciones, pero abierto para extensión mediante delegación en vertical (subclases) u horizontal (composición)
 
--   Si un cambio en un sitio origina una cascada de cambios en otros
-    puntos del sistema, el resultado es un sistema frágil y rígido
 
--   Es difícil averiguar todos los puntos que requieren cambios
-
--   Código cerrado para modificaciones, pero abierto para extensión
-    mediante delegación en vertical (subclases) u horizontal (composición)
+### Ejemplo: Shapes versión 2 en C#
 
 ¿Qué parte no cumple OCP en el ejemplo? 
 
-### Ejemplo: Shapes versión 2 en C# #
-
-Versión imperativa (sin objetos):
+#### Versión imperativa (sin objetos):
 
 ```csharp
 enum ShapeType {circle, square};
@@ -1051,9 +1047,10 @@ void DrawAllShapes(ShapePointer list[], int n)
 
 - `DrawAllShapes` no está cerrado para modificaciones cuando aparecen nuevos tipos de `Shape`
 
-####Solución
+#### Solución
 
-- __Abstracción__ (ocultación de la implementación): clase abstracta y métodos polimórfico: patrones de diseño _template method_ y/o _strategy_
+- __Abstracción__ (ocultación de la implementación): clase abstracta y métodos polimórficos.
+- __Patrones de diseño__: _template method_ y/o _strategy_
 
 Aplicando el OCP...
 
@@ -1063,7 +1060,7 @@ public interface Shape
   void Draw();
 }
 
-public class Square : Shape
+public class Square: Shape
 {
   public void Draw()
   {
@@ -1071,7 +1068,7 @@ public class Square : Shape
   }
 }
 
-public class Circle : Shape
+public class Circle: Shape
 {
   public void Draw()
   {
@@ -1088,13 +1085,12 @@ public void DrawAllShapes(IList shapes)
 
 - Si queremos ampliar el comportamiento de `DrawAllShapes`, solo tenemos que añadir una nueva clase derivada de `Shape`
 - Si se aplica bien OCP, los cambios de un cierto tipo obligan a añadir nuevo código, no a modificar el existente
- 
->  In general, no matter how "closed" a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!
+
+> In general, no matter how _closed_ a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!
 > 
 > Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
 > 
-> Bob C. Martin
-
+> <cite>-- Bob C. Martin</cite>
 
 ## Principo de segregación de interfaces
 
@@ -1104,78 +1100,82 @@ __ISP: *Interface Segregation Principle*__
 >
 > <cite>Bob C. Martin</cite>
 
--   Las interfaces son para los clientes, no para hacer jerarquías
--   Evitar interfaces gruesas con muchos métodos (descohesionadas)
--   Los cambios en los métodos ignorados pueden provocar cambios en un
-    cliente que no los usa
--   La interfaz de una clase puede dividirse en bloques de métodos relacionados. Unos clientes usan un bloque y otros clientes usan otro bloque. Si un cliente necesita conocer una interfaz no cohesionada, debe hacerlo combinando una o más clases (sus interfaces)
--   ISP es a las interfaces lo que SRP es a clases y métodos
--   Violar el ISP es muy común en lenguajes de tipos estáticos (C++, Java, C#). Los lenguajes dinámicos ayudan algo más a no violar el ISP (con los _mixins_)
+- Las interfaces son para los __clientes__, no para hacer jerarquías
+- Evitar interfaces __gruesas__ con muchos métodos (descohesionadas)
+- Los cambios en los métodos ignorados pueden provocar cambios en un cliente que no los usa
+- La interfaz de una clase puede dividirse en __bloques__ de métodos relacionados. Unos clientes usan un bloque y otros clientes usan otro bloque. Si un cliente necesita conocer una interfaz no cohesionada, debe hacerlo combinando una o más clases (sus interfaces)
+- ISP es a las interfaces lo que SRP es a clases y métodos
+- Violar el ISP es muy común en lenguajes de tipos estáticos (C++, Java, C#). Los lenguajes dinámicos (Ruby, Scala) ayudan algo más a no violar el ISP (v.g. con los _mixins_)
 
-
-### Ejemplo:
+### Ejemplo: puertas de seguridad
 
 Una implementación de puertas de seguridad con temporizador (`TimedDoor`) que hace sonar una alarma cuando la puerta está abierta durante un cierto tiempo.
 
-`TimedDoor` se comunica con un `Timer` para registrar un temporizador que, cuando salta, avisa a un `TimerClient`.
+#### Diseño
 
-Con la siguiente solución un `TimerClient` puede registrarse a sí mismo  en un `Timer` y recibir un mensaje `Timeout()`.
+- `TimedDoor` se comunica con `Timer` para registrar un temporizador
+- Cuando salta el temporizador, avisa a un `TimerClient`
+- Con la siguiente solución, un `TimerClient` puede registrarse a sí mismo en un `Timer` y recibir un mensaje `Timeout()`.
 
+  ![Puertas de seguridad](./figuras/isp-timer-door.png)
 
-![Puertas de seguridad](./figuras/isp-timer-door.png)
+#### Implementación inicial
 
 ```csharp
 public class Timer {
-  public void Register(int timeout, TimerClient client)
-  { /*code*/ }
+  public void Register(int timeout, TimerClient client) {
+    /*code*/ 
+  }
 }
+
 public interface TimerClient {
     void TimeOut();
 }
 ```
 
-¿Problemas? ¿Qué pasa si cambia la implementación de `TimerClient`?
+- Si se cierra la puerta antes de que venza el timeout $t_0$ y se vuelve a abrir, se registra uno nuevo $t_1$ antes de que el antiguo haya expirado.
+- Cuando el primer temporizador $t_0$ expira, se produce la llamada a `Timeout()` de `TimedDoor` y no debería.
+- Así que cambiamos la implementación:
 
-Por ejemplo, en la implementación anterior, si se cierra la puerta antes de que venza el timeout y se vuelve a abrir, se registra el nuevo antes de que el antiguo haya expirado. Cuando el primero expira se produce la llamada a `Timeout()` de `TimedDoor` y no debería. Así que cambiamos la implementación:
-
+#### Implementación mejorada
 
 ```csharp
 public class Timer {
-  public void Register(int timeout, int timeOutId, TimerClient client)
-    {/*code*/}
+  public void Register(int timeout, int timeOutId, TimerClient client) {
+    /*code*/
+  }
 }
 public interface TimerClient {
   void TimeOut(int timeOutID);
 }
 ```
 
-- El cambio afecta a los usuarios de `TimerClient`, pero también a `Door` y a los clientes de `Door` (y no debería)  
- 
+¿En qué ha afectado el __cambio en la implementación__ de `TimerClient`?
+
+- El cambio afecta a los usuarios de `TimerClient`, pero también a `Door` y a los clientes de `Door` (y no debería)
 - El problema es que `Door` depende de `TimerClient` y no todas las variedades de puerta son de seguridad (con temporizador)
-- Si hacen falta más variedades de puerta, todas ellas deberán implementar implementaciones degeneradas de `Timeout` 
+- Si hacen falta más variedades de puerta, todas ellas deberán implementar implementaciones degeneradas de `Timeout`
 - Las interfaces empiezan a engrosarse. Esto puede acabar violando también el LSP
 
+#### Rediseño: puertas de seguridad
 
-####Solución
+__Delegación__ a través del patrón adapter (de objetos o de clases)
 
--   __Delegación__ a través del patrón adapter (de objetos o de clases)
+- Versión adaptador de clases (por herencia):
 
-  -  Versión adaptador de clases (por herencia):
+   ![Puertas de seguridad - adaptador de clases](./figuras/isp-timer-door-class-adapter.png)
 
-    ![Puertas de seguridad - adaptador de clases](./figuras/isp-timer-door-class-adapter.png)
+- Versión adaptador de objetos (por composición):
 
-  -  Versión adaptador de objetos (por composición):
+  ![Puertas de seguridad - adaptador de objetos](./figuras/isp-timer-door-object-adapter.png)  
 
-    ![Puertas de seguridad - adaptador de objetos](./figuras/isp-timer-door-object-adapter.png)  
-
-
-
-## Aplicación OCP y SRP
+## Aplicación de OCP y SRP
 
 ### Ejemplo: [Shapes versión 1](#shapesV1)
 
 ```java
 package shapes;
+
 interface Shape {
   double area();
   void draw();
@@ -1227,8 +1227,8 @@ class Ellipse extends ClosedCurve {
 }
 ```
 
-Las funcionalidades para pintar (`draw`) y para imprimir (`toString`) pueden descohesionar las clases y atentar contra OCP y SRP. Saquémoslas fuera utilizando **aspectos**:
-
+- Las funcionalidades para pintar (`draw`) y para imprimir (`toString`) pueden descohesionar las clases y atentar contra OCP y SRP.
+- Saquémoslas fuera utilizando **aspectos**:
 
 ```java
 // Ficheros <X>ToString.aj (uno por aspecto)
@@ -1253,8 +1253,8 @@ aspect EllipseToString {
 package drawing;
 interface Drawable {
   void draw();
-}     
-   
+}
+
 // Ficheros Drawable<X>.aj
 package shapes.drawing; // para todos los draw()...
 import drawing.Drawable;
@@ -1280,7 +1280,6 @@ aspect DrawableEllipse extends DrawableShape {
   String Ellipse. makeDetails (String indent){...} }
 ```
 
-
 ## Principio de sustitución de Liskov
 
 __LSP: *Liskov Substitution Principle*__
@@ -1289,7 +1288,7 @@ __LSP: *Liskov Substitution Principle*__
 > 
 > <cite>Barbara Liskov, </cite>
 
--   Si una función $f$ depende de una clase base $B$ y hay una $D$ derivada de $B$, las instancias de $D$ no deben alterar el comportamiento definido por $B$ de modo que $f$ deje de funcionar
+Si una función $f$ depende de una clase base $B$ y hay una $D$ derivada de $B$, las instancias de $D$ no deben alterar el comportamiento definido por $B$ de modo que $f$ deje de funcionar
 
 <!--
 -   Posibilidad de sustitución depende del contexto: En otro programa
