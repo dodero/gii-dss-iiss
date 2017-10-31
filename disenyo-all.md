@@ -1107,6 +1107,11 @@ __ISP: *Interface Segregation Principle*__
 - ISP es a las interfaces lo que SRP es a clases y métodos
 - Violar el ISP es muy común en lenguajes de tipos estáticos (C++, Java, C#). Los lenguajes dinámicos (Ruby, Scala) ayudan algo más a no violar el ISP (v.g. con los _mixins_)
 
+### Ejemplo: acoplamiento contexto-strategy
+
+- ¿Cómo se comunican _Strategy_ y _Context_ (acoplado/desacoplado)?
+- _Context_ Puede definir una interfaz que le permita a _Strategy_ acceder a sus datos
+
 ### Ejemplo: puertas de seguridad
 
 Una implementación de puertas de seguridad con temporizador (`TimedDoor`) que hace sonar una alarma cuando la puerta está abierta durante un cierto tiempo.
