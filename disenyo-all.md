@@ -512,13 +512,13 @@ public class ShoppingCartTest {
 
 En la arquitectura del framework se observan diversos patrones: Composite, Command, Adapter, Factory, Decorator, etc.
 
-## Bibliotecas y frameworks
+## <span style="color:blue;">Bibliotecas y frameworks</span>
 
 ### Biblioteca
 
 ![Flujo de control en una biblioteca](./figuras/biblioteca.png)
 
-### Frameworks
+### <span style="color:blue;">Frameworks</span>
 
 #### Definición de *framework*
 
@@ -682,7 +682,7 @@ public class KnightOfTheRoundTable implements Knight {
 
 ![](./figuras/di-knight.png)
 
-## Inyección de dependencias
+## <span style="color:blue;">Inyección de dependencias</span>
 
 ![](./figuras/dep-injection.png)
 
@@ -698,7 +698,7 @@ public class KnightOfTheRoundTable implements Knight {
 - Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su interfaz, no por su implementación, ni por cómo fueron instanciados. Entonces la dependencia puede cambiarse por una implementación distinta (incluso en tiempo de ejecución)
 - _Hollywood Principle: Don't call us, we'll call you"._
 
-## Discusión sobre la reutilización
+## <span style="color:blue;">Discusión sobre la reutilización</span>
 
 > We most likely would have been better off not attempting to create a reusable function in the first place 
 >
@@ -897,7 +897,7 @@ Hacer refactoring de la aplicación heredada de Guitarras Paco
 
 [comment]: http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod
 
-## Principio de responsabilidad única 
+## <span style="color:blue;">Principio de responsabilidad única </span>
 
 __SRP: *Single responsibility Principle*__
 
@@ -983,7 +983,7 @@ Patrones de diseño: _visitor_
 
 - ActiveRecord viola SRP. Sustituir por DAO
 
-## Principio de Abierto-Cerrado
+## <span style="color:blue;">Principio de Abierto-Cerrado</span>
 
 __OCP: *Open-Closed Principle*__
 
@@ -996,7 +996,7 @@ __OCP: *Open-Closed Principle*__
 -   Código cerrado para modificaciones, pero abierto para extensión mediante delegación en vertical (subclases) u horizontal (composición)
 
 
-### Ejemplo: Shapes versión 2 en C#
+### Ejemplo: Shapes versión 2 en C++
 
 ¿Qué parte no cumple OCP en el ejemplo? 
 
@@ -1092,7 +1092,7 @@ public void DrawAllShapes(IList shapes)
 > 
 > <cite>-- Bob C. Martin</cite>
 
-## Principo de segregación de interfaces
+## <span style="color:blue;">Principo de segregación de interfaces</span>
 
 __ISP: *Interface Segregation Principle*__
 
@@ -1285,7 +1285,7 @@ aspect DrawableEllipse extends DrawableShape {
   String Ellipse. makeDetails (String indent){...} }
 ```
 
-## Principio de sustitución de Liskov
+## <span style="color:blue;">Principio de sustitución de Liskov</span>
 
 __LSP: *Liskov Substitution Principle*__
 
@@ -1317,29 +1317,29 @@ public class Shape {
   }
 }
 
-public class Circle : Shape {
+public class Circle: Shape {
   private Point center;
   private double radius;
-  
-  public Circle() : base(ShapeType.circle) {}
+
+  public Circle(): base(ShapeType.circle) {}
   public void Draw() {/* draws the circle */}
 }
 
-public class Square : Shape {
+public class Square: Shape {
   private Point topLeft;
   private double side;
-  public Square() : base(ShapeType.square) {}
+  public Square(): base(ShapeType.square) {}
   public void Draw() {/* draws the square */}
 }
 ```
 
 - `DrawShape` viola claramente el OCP
-- Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` 
-- Esta violación de LSP además provoca la violación de OCP en `DrawShape`
+- Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` (violación del LSP)
+- Esta violación de LSP es la que provoca la violación de OCP en `DrawShape`
 
 - Violación más sutil de LSP...
 
-### Ejemplo: 
+### Ejemplo: rectángulos versión 1
 
 De momento solo necesitamos rectángulos y escribimos esta versión:
 
@@ -1353,77 +1353,77 @@ public class Rectangle {
     get { return width; }
     set { width = value; }
   }
-  
+
   public double Height {
     get { return height; }
     set { height = value; }
   }
-}   
+}
 ```
 
 Un día hace falta manejar cuadrados además de rectángulos.
-Normalmente, un cuadrado es un rectángulo, así que hacemos uso de la herencia (relación **es-un**):
+
+Geométricamente, un cuadrado es un rectángulo, así que hacemos uso de la herencia (relación **es-un**):
 
 ```java
-public class Square extends Rectangle {
+public class Square: Rectangle {
    ...
 }
 ```
 
+#### Problema: cuadrados como rectángulos
 
-Problemas...
+- Un cuadrado podría ser un rectángulo, pero definitivamente un objeto `Square` **no es un** objeto `Rectangle`
 
--   Un cuadrado podría ser un rectángulo, pero
-    definitivamente un objeto `Square` **no es un** objeto
-    `Rectangle`
-    
--   Un `Square` no tiene propiedades `height`y `width`. Pero
-    supongamos que no nos importa el desperdicio de memoria.
-    Aún así, `Square` heredará los métodos accesores de `Rectangle. 
-    Así que hacemos:
-    
-  ```csharp
-    public new double Width
+- Un `Square` no tiene propiedades `height`y `width`. Pero supongamos que no nos importa el desperdicio de memoria.
+- `Square` heredará los métodos accesores de `Rectangle`.
+- Así que hacemos lo siguiente...
+
+### Ejemplo: rectángulos versión 2
+
+```csharp
+public class Square: Rectangle {
+  public new double Width
   {
-    set
-    {
+    set {
       base.Width = value;
       base.Height = value;
     }
   }
   public new double Height
   {
-    set
-    {
+    set {
       base.Height = value;
       base.Width = value;
     }
-  ```
+  }
+}
+```
 
--   El comportamiento de un objeto `Square` no es
-    consistente con el de un objeto `Rectangle`:
-    
-    ```csharp
-    Square s = new Square();
+- El comportamiento de un objeto `Square` no es consistente con el de un objeto `Rectangle`:
+
+  ```csharp
+  Square s = new Square();
   s.SetWidth(1);   // fija ambos
   s.SetHeight(2);  // fija ambos
-  
+
   void f(Rectangle r)
   {
     r.SetWidth(32); // calls Rectangle.SetWidth
   }
-    ```
-    
-    ¿Qué sucede si pasamos un `Square` a la función `f`?
+  ```
 
-    ¡No cambia `Height`! Los métodos `Width`y `Height` no se declararon `virtual` en `Rectangle`. Cuando la creación de una clase derivada provoca cambios en la clase base, es síntoma de un mal diseño.
-    
--   El LSP pone en evidencia que la relación **es-un** tiene
-    que ver con el comportamiento público extrínseco, del que los
-    clientes dependen.
+- ¿Qué sucede si pasamos un `Square` a la función `f`?
 
+  ¡No cambia `Height`!
 
-### Ejemplo:
+- Podría argumentarse que el error era que los métodos `Width`y `Height` no se declararon `virtual` en `Rectangle`.
+
+Sin embargo, cuando la creación de una clase derivada provoca cambios en la clase base, es síntoma de un __mal diseño__.
+
+El LSP pone en evidencia que la relación **es-un** tiene que ver con el comportamiento público extrínseco, del que los clientes dependen.
+
+### Ejemplo: rectángulos versión 3
 
 ```csharp
 public class Rectangle
@@ -1443,20 +1443,18 @@ public class Rectangle
   }
 }
 
-public class Square : Rectangle
+public class Square: Rectangle
 {
   public override double Width
   {
-    set
-    {
+    set {
       base.Width = value;
       base.Height = value;
     }
   }
   public override double Height
   {
-    set
-    {
+    set {
       base.Height = value;
       base.Width = value;
     }
@@ -1477,17 +1475,18 @@ void g(Rectangle r)
     throw new Exception("Bad area!");
 }
 ```
+
 ¿Qué pasa si llamamos a `g(new Square(3))`?
 
 El autor de `g` asumió que cambiar el ancho de un rectángulo deja intacto el alto. Si pasamos un cuadrado esto no es así 
 
-Violación de LSP: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`) de forma que `g` deja de funcionar.
+__Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`) de forma que `g` deja de funcionar.
 
 ¿Quién tiene la culpa?
 
 - ¿El autor de `g` por asumir que "en un rectángulo su ancho y alto son independientes" (_invariante_)?
 - ¿El autor de `Square` por violar el invariante?
-- ¿De qué clase ha violado el invariante? ¡De `Rectangle` y no de `Square`!
+- ¿De qué clase se ha violado el invariante? ¡De `Rectangle` y no de `Square`!
 
 Para evaluar si un diseño es apropiado, no se debe tener en cuenta la solución por sí sola, sino en términos de los _supuestos razonables_ que hagan los usuarios del diseño.
 
@@ -1495,7 +1494,7 @@ Para evaluar si un diseño es apropiado, no se debe tener en cuenta la solución
 
 - Robert C. Martin & Micah Martin: [Agile Principles, Patterns and Practices in C#](#unclebob), Prentice Hall, 2006
 
-### Diseño por Contrato
+### <span style="color:blue;">Diseño por Contrato</span>
 
 Relación entre LSP y el **_Design-By-Contract_** (DBC) de *Bertrand
 Meyer*:
@@ -1504,33 +1503,23 @@ Meyer*:
 > 
 > –– <cite>B. Meyer</cite>
 
--   Métodos de clase declaran *precondiciones* y *postcondiciones*
-    al redefinir una operación en una subclase derivada
+- Métodos de clase declaran *precondiciones* y *postcondiciones* al redefinir una operación en una subclase derivada
+  - las **precondiciones** sólo pueden sustituirse por otras más débiles/laxas
+  - las **postcondiciones** sólo pueden sustituirse por otras más fuertes/estrictas
 
-    -   las **precondiciones** sólo pueden sustituirse por otras más
-        débiles/laxas
+#### Ejemplo: rectángulos
 
-    -   las **postcondiciones** sólo pueden sustituirse por otras más
-        fuertes/estrictas
+- Postcondición del _setter_ de `Rectangle.Width`
+  (En C++ sería `Rectangle::SetWidth(double w)`):
+    `assert((Width == w) && (Height == old.Height));`
 
-Ejemplo:
+- Postcondición del setter de `Square.Witdh` 
+  En C++ sería `Square::SetWidth(double w)`):
+    `assert(Width==w);`
 
-   -  Postcondición del _setter_ de `Rectangle.Width`
-      (En C++ sería `Rectangle::SetWidth(double w)`):
-     
-        assert((Width == w) && (Height == old.Height));
+- La postcondición de `Square::SetWidth(double w)` viola el  contrato de la clase base porque es más débil que la de `Rectangle`
 
-   -  Postcondición del setter de `Square.Witdh`
-      (En C++ sería `Square::SetWidth(double w)`):
-     
-        assert(Width==w);
-
-   -  La postcondición de `Square::SetWidth(double w)` viola el 
-      contrato de la clase base porque es más débil que la de
-      `Rectangle`
-
-
-## Principio de Inversión de Dependencias
+## <span style="color:blue;">Principio de Inversión de Dependencias</span>
 
 __DIP: *Dependency Inversion Principle*__
 
@@ -1561,7 +1550,7 @@ __Diseño invertido__:
 -   El cliente puede definir la abstracción que necesita (ISP)
 -   Cada nivel es intercambiable por un sustituto
 
-### Heurística _ingenua_:
+### <span style="color:blue;">Heurística _ingenua_</span>:
 
 - Ninguna variable debería guardar una referencia a una clase concreta
 - Ninguna clase debería ser derivada de una clase concreta

@@ -1786,18 +1786,18 @@ class Demeter {
 - Costes de espacio y ejecución de métodos *wrapper* que reenvían la petición al objeto delegado: violar la ley de Demeter para mejorar el __rendimiento__
 - Otros ejemplos de mejora del rendimiento: desnormalización de BBDD
 
-### Toolkits y bibliotecas
-
-- Usar metadatos (@tag) para propósitos específicos – v.g. persistencia de objetos, transacciones, etc.
-- Aspect-Oriented Programming (AOP)
-
 # Caso 5 - Ortogonalidad con aspectos
 
 <a id="aspectos"></a>
 
+## Toolkits y bibliotecas
+
+- Usar metadatos (@tag) para propósitos específicos – v.g. persistencia de objetos, transacciones, etc.
+- Aspect-Oriented Programming (AOP)
+
 ## Editor de figuras
 
-### Ejemplo:
+### Ejemplo: editor de figuras
 
 ```java
 class Line implements FigureElement{
@@ -1836,11 +1836,9 @@ class Line {
 
   void setP1(Point p1) {
     this.p1 = p1;
-
   }
   void setP2(Point p2) {
     this.p2 = p2;
-
   }
 }
 
@@ -1852,11 +1850,9 @@ class Point {
 
   void setX(int x) {
     this.x = x;
-
   }
   void setY(int y) {
     this.y = y;
-
   }
 }
 ```
@@ -1869,6 +1865,8 @@ Implementamos `MoveTracking`.  ¿Qué dependencias aparecen?
 ### Implementación sin aspectos
 
 #### Versión 1 sin aspectos
+
+Solo detecta el cambio de los extremos de una línea.
 
 `Line` $\dashrightarrow$ `MoveTracking`
 
@@ -1897,11 +1895,9 @@ class Point {
 
   void setX(int x) {
     this.x = x;
-
   }
   void setY(int y) {
     this.y = y;
-
   }
 }
 
@@ -1921,6 +1917,8 @@ class MoveTracking {
 ```
 
 #### Versión 2 sin aspectos
+
+También detecta el cambio de coordenadas de un punto.
 
 `Line` $\dashrightarrow$ `MoveTracking`
 `Point` $\dashrightarrow$ `MoveTracking`
@@ -2037,11 +2035,9 @@ La no ortogonalidad de `MoveTracking` con respecto a `Line` y `Point` hace que l
 
 El cambio de implementación del seguimiento de los cambios para el refresco en pantalla ha dado lugar a modificaciones en todas las clases: `Line`, `Point` y `MoveTracking`
 
-### <span style="color:blue;">Implementación con aspectos</span>
+### <span style="color:blue;">Programación orientada a aspectos</span>
 
 La __programación orientada a aspectos__ (_AOP_) es un paradigma de programación cuyo objetivo es incrementar la modularidad (ortogonalidad) de las implementaciones mediante la separación de aspectos _transversales_ (_cross-cutting concerns_).
-
-#### <span style="color:blue;">Terminología</span>
 
 ![terminología sobre AOP](./figuras/aspectj-terminology.png)
 
@@ -2049,6 +2045,8 @@ La __programación orientada a aspectos__ (_AOP_) es un paradigma de programaci�
 - __joinpoint__ = especificación declarativa de un punto en la ejecución de un programa (por ejemplo, la ejecución de un método, el manejo de una excepción, etc.)
 - __advice__ = acción a tomar por la especificación de un aspecto dado en un determinado _joinpoint_
 - __pointcut__ = predicado que define cuándo se aplica un _advice_ de un aspecto en un _jointpoint_ determinado. Se asocia un _advice_ con la expresión de un _pointcut_ y se ejecuta el _advice_ en todos los _joinpoint_ que cumplan la expresión del _pointcut_.
+
+### Implementación con aspectos
 
 En el ejemplo anterior, las clases `Line` y `Point` no se ven afectadas:
 
