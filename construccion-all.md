@@ -1850,21 +1850,27 @@ class Point {
   int getX() { return x; }
   int getY() { return y; }
 
-  void setX(int x) {    
+  void setX(int x) {
     this.x = x;
 
   }
-  void setY(int y) {    
+  void setY(int y) {
     this.y = y;
 
   }
 }
 ```
-Implementamos `MoveTracking`
+
+Implementamos `MoveTracking`.  ¿Qué dependencias aparecen?
+
+- `Line` $\dashrightarrow$ `MoveTracking`
+- `Point` $\dashrightarrow$ `MoveTracking`
 
 ### Implementación sin aspectos
 
-#### Versión 1
+#### Versión 1 sin aspectos
+
+`Line` $\dashrightarrow$ `MoveTracking`
 
 ```java
 class Line {
@@ -1889,11 +1895,11 @@ class Point {
   int getX() { return x; }
   int getY() { return y; }
 
-  void setX(int x) {    
+  void setX(int x) {
     this.x = x;
 
   }
-  void setY(int y) {    
+  void setY(int y) {
     this.y = y;
 
   }
@@ -1906,15 +1912,18 @@ class MoveTracking {
     flag = true;
   }
 
-  public static boolean testAndClear() {    boolean result = flag;
+  public static boolean testAndClear() {
+    boolean result = flag;
     flag = false;
     return result;
   }
 }
 ```
 
-#### Versión 2
+#### Versión 2 sin aspectos
 
+`Line` $\dashrightarrow$ `MoveTracking`
+`Point` $\dashrightarrow$ `MoveTracking`
 
 ```java
 class Line {
@@ -1939,11 +1948,11 @@ class Point {
   int getX() { return x; }
   int getY() { return y; }
 
-  void setX(int x) {    
+  void setX(int x) {
     this.x = x;
     MoveTracking.setFlag(); //añadido
   }
-  void setY(int y) {    
+  void setY(int y) {
     this.y = y;
     MoveTracking.setFlag(); //añadido
   }
@@ -1964,6 +1973,8 @@ class MoveTracking {
 }
 ```
 
+#### Versión 3 sin aspectos
+
 Las colecciones de figuras son complejas. Las estructuras de objetos son jerárquicas y se producen eventos asíncronos:
 
 ![colección de figuras](./figuras/aspectj-2.png)
@@ -1972,9 +1983,7 @@ La versión 2 hace que un cambio en cualquier elemento provoque un refresco de t
 
 Mejor monitorizar las figuras que cambian...
 
-#### Versión 3
-
-Cambiar el método `setFlag` por `collectOne`, indicando la figura que se mueve.
+Decidimos modificar la implementación: cambiar el método `setFlag` por `collectOne`, indicando la figura que se mueve.
 
 ```java
 class Line {
@@ -1999,11 +2008,11 @@ class Point {
   int getX() { return x; }
   int getY() { return y; }
 
-  void setX(int x) {    
+  void setX(int x) {
     this.x = x;
     MoveTracking.collectOne(this); // modificado
   }
-  void setY(int y) {    
+  void setY(int y) {
     this.y = y;
     MoveTracking.collectOne(this); // modificado
   }
@@ -2024,11 +2033,24 @@ class MoveTracking {
 }
 ```
 
-El cambio de implementación del seguimiento de los cambios para el refresco en pantalla ha dado lugar a modificaciones en todos los módulos (clases): `Line`, `Point` y `MoveTracking`
+La no ortogonalidad de `MoveTracking` con respecto a `Line` y `Point` hace que la solicitud de un cambio de implementación (el seguimiento de los cambios en las figuras para el refresco en pantalla) provoque un camnbio en los otros módulos (clases).
 
-### Implementación con aspectos
+El cambio de implementación del seguimiento de los cambios para el refresco en pantalla ha dado lugar a modificaciones en todas las clases: `Line`, `Point` y `MoveTracking`
 
-Las clases `Line` y `Point` no se ven afectadas:
+### <span style="color:blue;">Implementación con aspectos</span>
+
+La __programación orientada a aspectos__ (_AOP_) es un paradigma de programación cuyo objetivo es incrementar la modularidad (ortogonalidad) de las implementaciones mediante la separación de aspectos _transversales_ (_cross-cutting concerns_).
+
+#### <span style="color:blue;">Terminología</span>
+
+![terminología sobre AOP](./figuras/aspectj-terminology.png)
+
+- __aspect__ = modularización de un aspecto de interés (_concern_) que afecta a varias clases o módulos
+- __joinpoint__ = especificación declarativa de un punto en la ejecución de un programa (por ejemplo, la ejecución de un método, el manejo de una excepción, etc.)
+- __advice__ = acción a tomar por la especificación de un aspecto dado en un determinado _joinpoint_
+- __pointcut__ = predicado que define cuándo se aplica un _advice_ de un aspecto en un _jointpoint_ determinado. Se asocia un _advice_ con la expresión de un _pointcut_ y se ejecuta el _advice_ en todos los _joinpoint_ que cumplan la expresión del _pointcut_.
+
+En el ejemplo anterior, las clases `Line` y `Point` no se ven afectadas:
 
 ```java
 class Line {
@@ -2060,7 +2082,9 @@ class Point {
 }
 ```
 
-#### Versión 1
+#### Versión 1 con aspectos
+
+`Line` $\not\dashrightarrow$ `MoveTracking`
 
 ```java
 aspect MoveTracking {
@@ -2081,7 +2105,10 @@ aspect MoveTracking {
 }
 ```
 
-#### Versión 2
+#### Versión 2 con aspectos
+
+`Line` $\not\dashrightarrow$ `MoveTracking`
+`Point` $\not\dashrightarrow$ `MoveTracking`
 
 ```java
 aspect MoveTracking {
@@ -2104,7 +2131,10 @@ aspect MoveTracking {
 }
 ```
 
-#### Versión 3
+#### Versión 3 con aspectos
+
+`Line` $\perp$ `MoveTracking`
+`Point` $\perp$ `MoveTracking`
 
 Versión más ortogonal. Todos los cambios están concentrados en un solo aspecto.
 
@@ -2124,12 +2154,16 @@ aspect MoveTracking {
      call(void Point.setX(int))   ||
      call(void Point.setY(int)));
 
-
   after(FigureElement fe): move(fe) {
     movees.add(fe);
   }
 }
 ```
+
+### Ejercicios: AspectJ y Spring AOP
+
+- [Introducción a AspectJ](http://www.baeldung.com/aspectj)
+- [Introducción a Spring AOP](http://www.baeldung.com/spring-aop)
 
 ## Aserciones
 
@@ -2144,10 +2178,9 @@ aspect MoveTracking {
 
 Ejemplos de situaciones que "no van a ocurrir nunca":
 
--   Con dos dígitos para el año basta
--   Esta aplicación nunca va a usarse en el extranjero
--   Este contador nunca va a ser negativo
-
+- Con dos dígitos para el año basta
+- Esta aplicación nunca va a usarse en el extranjero
+- Este contador nunca va a ser negativo
 
 Añadir __aserciones__ al código para chequear esas situaciones:
 
