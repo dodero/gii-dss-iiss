@@ -2193,11 +2193,11 @@ Añadir __aserciones__ al código para chequear esas situaciones:
     }
 ```
 
-### Invariantes
+### Aserciones e invariantes
 
 Las aserciones sirven para expresar invariantes
 
-__Invariante__ = condición que se puede considerar cierta durante la ejecución de un programa o de parte del mismo. Es una aserción lógica que se mantiene siempre cierta durante una cierta fase de la ejecución
+__Invariante__ = condición que se puede considerar cierta durante la ejecución de un programa o de parte del mismo. Es un predicado lógico que se debe mantener siempre cierto durante una cierta fase de la ejecución.
 
 Por ejemplo, una _invariante de bucle_ es una condición que es cierta al principio y al final de cada ejecución de un bucle
 
@@ -2207,91 +2207,90 @@ Forma 1:
 
 ```java
     assert Expression1 ;
-``` 
+```
 
 Forma 2:
 
-```
+```java
     assert Expression1 : Expression2 ;
 ```
 
--   `Expression1` es `boolean`
-
--   `Expression2` devuelve un valor que es pasado al constructor de
-    `AssertionError`, que usa una representación en forma de string del
-    valor como detalle del mensaje
+- `Expression1` es `boolean`
+- `Expression2` devuelve un valor que es pasado al constructor de `AssertionError`, que usa una representación en forma de string del valor como detalle del mensaje
 
 Notificar al compilador que las acepte:
 
-    javac -source 1.4 *.java
+```shell
+  javac -source 1.4 *.java
+```
 
 Y en tiempo de ejecución:
 
-    java [ -enableassertions | -ea  ] [:<package name>"..." | :<class name> ]
-    java [ -disableassertions | -da ] [:<package name>"..." | :<class name> ]
-
+```shell
+  java [ -enableassertions | -ea  ] [:<package name>"..." | :<class name> ]
+  java [ -disableassertions | -da ] [:<package name>"..." | :<class name> ]
+```
 
 #### No son para gestión de errores
 
 ```java
-    try {
-      BufferedReader in =
-        new BufferedReader(new InputStreamReader(System.in));
-      String input;
-      System.out.print("Please Type Something here: ");
-      input = in.readLine();
-      assert((input.equalsIgnoreCase("Y") ||
-             (input.equalsIgnoreCase("N"));   /* bad idea! */
-      ...
-    } catch (Exception ex) {
-      System.out.print("We've had an Exception: " + ex.getMessage());
-    }
+  try {
+    BufferedReader in =
+      new BufferedReader(new InputStreamReader(System.in));
+    String input;
+    System.out.print("Please Type Something here: ");
+    input = in.readLine();
+    assert((input.equalsIgnoreCase("Y") ||
+            (input.equalsIgnoreCase("N"));   /* bad idea! */
+    ...
+  } catch (Exception ex) {
+    System.out.print("We've had an Exception: " + ex.getMessage());
+  }
 ```
 
 #### Efectos colaterales
 
 ```java
-    while (Iterator i.hasNext() {
-      assert(i.next() != null); /* side effect */
-      Object obj = i.next();
-      // ...
-    }
+  while (Iterator i.hasNext() {
+    assert(i.next() != null); /* side effect */
+    Object obj = i.next();
+    // ...
+  }
 
-
-    while (Iterator i.hasNext() {
-      Object obj = i.next();
-      assert(obj != null);
-      // ...
-    }
+  while (Iterator i.hasNext() {
+    Object obj = i.next();
+    assert(obj != null);
+    // ...
+  }
 ```
 
-### Invariantes
+### Tipos de invariantes
 
 #### Invariantes internas
 
 Cambiar los comentarios que indicaban invariantes
 
 ```java
-    if (i % 3 == 0) {
-      ...
-    } else if (i % 3 == 1) {
-      ...
-    } else { // We know (i % 3 == 2)
-      ...
-    }
+  if (i % 3 == 0) {
+    ...
+  } else if (i % 3 == 1) {
+    ...
+  } else { // We know (i % 3 == 2)
+    ...
+  }
 ```
 
 Mejor con aserciones:
 
 ```java
-    if (i % 3 == 0) {
-      ...
-    } else if (i % 3 == 1) {
-      ...
-    } else {
-      assert i % 3 == 2 : i;
-      ...
-    }
+  if (i % 3 == 0) {
+    ...
+  } else if (i % 3 == 1) {
+    ...
+  } else {
+    assert i % 3 == 2 : i;
+    ...
+  }
 ```
 
 #### Invariantes de control de flujo
@@ -2299,67 +2298,67 @@ Mejor con aserciones:
 Para **selectivas**:
 
 ```java
-    switch(suit) {
-      case Suit.CLUBS:
-        ...
-        break;
-      case Suit.DIAMONDS:
-        ...
-        break;
-      case Suit.HEARTS:
-        ...
-        break;
-      case Suit.SPADES:
-        ...
-    }
-``` 
+  switch(suit) {
+    case Suit.CLUBS:
+      ...
+      break;
+    case Suit.DIAMONDS:
+      ...
+      break;
+    case Suit.HEARTS:
+      ...
+      break;
+    case Suit.SPADES:
+      ...
+  }
+```
 
 - Añadir:
 
   ```java
-      default:
-        assert false : suit;
+    default:
+      assert false : suit;
   ```
 
 - o también:
 
   ```java
-      default:
-        throw new AssertionError(suit);
+    default:
+      throw new AssertionError(suit);
   ```
 
 Puntos **inalcanzables**:
 
 ```java
-    void foo() {
-      for (...) {
-        if (...)
-          return;
-      }
-      assert false; // Execution should never reach this point!!!
+  void foo() {
+    for (...) {
+      if (...)
+        return;
     }
+    assert false; // Execution should never reach this point!!!
+  }
 ```
 
 #### Invariantes de clase
 
 Son un tipo de invariantes internas que se aplican a todas las instancias de una clase, en todos los momentos, excepto cuando una instancia está en transición de un estado consistente a otro.
 
-Por ejemplo, en un árbol binario equilibrado, una invariante de clase puede indicar que está ordenado y equilibrado.
+Por ejemplo, en un árbol binario equilibrado, una invariante de clase puede indicar que está ordenado y equilibrado:
 
-```java
-    // Returns true if this tree is properly balanced
-    private boolean isBalanced() {
-       ...
-    }
-```
-
-Todo método público y constructor debe llamar a `assert balanced();` antes del `return`.
+- Código en Java:
+  ```java
+      // Returns true if this tree is properly balanced
+      private boolean isBalanced() {
+        ...
+      }
+  ```
+- Todo constructor y método público debe llamar a `assert balanced();` antes del `return`.
 
 Es recomendable incluir comprobaciones de invariantes de clase al principio de los métodos de clases cuyo estado es modificable por otras clases.
 
 #### *Idiom* para definir aserciones finales
 
-A veces hace falta guardar datos antes de hacer un cómputo, para poder luego comprobar una condición cuando éste se haya completado. Ejemplo de cómo hacerlo con una _inner class_ que guarda el estado de variables:
+A veces hace falta guardar datos antes de hacer un cómputo, para poder luego comprobar una condición cuando el cómputo se haya completado. Ejemplo de cómo hacerlo con una _inner class_ que guarda el estado de variables:
 
 ```java
   void foo(int[] array) {
@@ -2387,9 +2386,7 @@ A veces hace falta guardar datos antes de hacer un cómputo, para poder luego co
 
 <a id="contracts"></a>
 
-### Ejemplo: Cuenta Bancaria
-
-__Sin contratos__
+### Ejemplo: Cuenta Bancaria sin contratos
 
 ```eiffel
 class ACCOUNT feature
@@ -2397,28 +2394,28 @@ class ACCOUNT feature
     owner: PERSON
     minimum_balance: INTEGER is 1000
     open (who: PERSON) is
-            -- Assign the account to owner who.
+    -- Assign the account to owner who.
           do
             owner := who
         end
     deposit (sum: INTEGER) is
-            -- Deposit sum into the account.
+    -- Deposit sum into the account.
           do
             add (sum)
         end
     withdraw (sum: INTEGER) is
-            -- Withdraw sum from the account.
+    -- Withdraw sum from the account.
           do
             add (-sum)
         end
     may_withdraw (sum: INTEGER): BOOLEAN is
-            -- Is there enough money to withdraw sum?
+     -- Is there enough money to withdraw sum?
          do
             Result := (balance >= sum + minimum_balance)
          end
 feature {NONE}
     add (sum: INTEGER) is
-            -- Add sum to the balance.
+    -- Add sum to the balance.
          do
             balance := balance + sum
         end
@@ -2429,7 +2426,7 @@ end -- class ACCOUNT
 - `feature { NONE }` son privados
 - `make` para definir el constructor
 
-__Con contratos__
+### Ejemplo: Cuenta Bancaria con contratos
 
 ```eiffel
 class ACCOUNT create
@@ -2438,7 +2435,7 @@ feature
     ... Attributes as before:
          balance , minimum_balance , owner , open ...
     deposit (sum: INTEGER) is
-            -- Deposit sum into the account.
+    -- Deposit sum into the account.
          require
             sum >= 0
          do
@@ -2447,7 +2444,7 @@ feature
             balance = old balance + sum
         end
     withdraw (sum: INTEGER) is
-            -- Withdraw sum from the account.
+    -- Withdraw sum from the account.
          require
             sum >= 0
             sum <= balance - minimum_balance
@@ -2460,7 +2457,7 @@ feature
 feature {NONE}
     add ... -- As before
     make (initial: INTEGER) is
-            -- Initialize account with balance initial.
+    -- Initialize account with balance initial.
          require
             initial >= minimum_balance
          do
@@ -2471,7 +2468,7 @@ invariant
 end -- class ACCOUNT
 ```
 
-Forma corta del contrato:
+__Forma corta__ del contrato:
 
 ```eiffel
 class interface ACCOUNT create
@@ -2775,7 +2772,6 @@ private void logError(Exception e) {
 
 ¿No queda más fácil de comprender, modificar y depurar?
 
-
 ### Excepciones en Java
 
 -   **Checked**: instancias de clases derivadas de `java.lang.Throwable`
@@ -3005,7 +3001,6 @@ public class MetricsCalculator
 ```
 
 ¿Qué sucede si `calculator.xProjection(null, new Point(12, 13))`?
-
 
 Devolver null es malo, pero ¡pasar un valor null es peor!
 
