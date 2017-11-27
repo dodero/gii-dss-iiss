@@ -2163,7 +2163,7 @@ aspect MoveTracking {
 - [Introducción a AspectJ](http://www.baeldung.com/aspectj)
 - [Introducción a Spring AOP](http://www.baeldung.com/spring-aop)
 
-## Aserciones
+## <span style="color:blue;">Aserciones</span>
 
 <a id="assert"></a>
 
@@ -2218,13 +2218,13 @@ Forma 2:
 - `Expression1` es `boolean`
 - `Expression2` devuelve un valor que es pasado al constructor de `AssertionError`, que usa una representación en forma de string del valor como detalle del mensaje
 
-Notificar al compilador que las acepte:
+En versiones antiguas del JDK, notificar al compilador que las acepte:
 
 ```shell
   javac -source 1.4 *.java
 ```
 
-Y en tiempo de ejecución:
+Las aserciones en Java imponen un alto coste en rendimiento y puede ser conveniente desabilitarlas en tiempo de ejecución:
 
 ```shell
   java [ -enableassertions | -ea  ] [:<package name>"..." | :<class name> ]
@@ -2268,7 +2268,7 @@ Y en tiempo de ejecución:
 
 #### Invariantes internas
 
-Cambiar los comentarios que indicaban invariantes
+Sustituir los comentarios que indicaban invariantes:
 
 ```java
   if (i % 3 == 0) {
@@ -2345,16 +2345,16 @@ Son un tipo de invariantes internas que se aplican a todas las instancias de una
 
 Por ejemplo, en un árbol binario equilibrado, una invariante de clase puede indicar que está ordenado y equilibrado:
 
-- Código en Java:
+- Añadir código en Java:
   ```java
-      // Returns true if this tree is properly balanced
-      private boolean isBalanced() {
-        ...
-      }
+  // Returns true if this tree is properly balanced
+  private boolean isBalanced() {
+    ...
+  }
   ```
-- Todo constructor y método público debe llamar a `assert balanced();` antes del `return`.
+- Todo constructor y método _público_ debe llamar a `assert isBalanced();` antes del `return`.
 
-Es recomendable incluir comprobaciones de invariantes de clase al principio de los métodos de clases cuyo estado es modificable por otras clases.
+Es recomendable incluir comprobaciones de invariantes de clase al principio de los métodos de clases cuyo estado es modificable por otras clases (v.g. _setters_).
 
 #### *Idiom* para definir aserciones finales
 
@@ -2382,9 +2382,63 @@ A veces hace falta guardar datos antes de hacer un cómputo, para poder luego co
      }
 ```
 
-## Contratos
+## <span style="color:blue;">Programación por contratos</span>
 
 <a id="contracts"></a>
+
+### Contrato
+
+- Un contrato entre dos partes define derechos y responsabilidades por ambas partes
+- Define las repercusiones por incumplimiento del contrato
+
+### Design By Contract (DBC)
+
+- Desarrollado para lenguaje *Eiffel* por Bertrand Meyer
+- Documentar y aceptar los derechos y responsabilidades de cada módulo de software para asegurar la correción de un programa
+- Un programa correcto es aquél que hace nada más y nada menos que lo que dice hacer
+
+### Precondiciones, postcondiciones e invariantes
+
+#### Precondición
+
+- Qué debe ser cierto antes de llamar a una rutina/método (sus requisitos)
+- Una rutina jamás debe ser llamada si se violan sus precondiciones
+- Es responsabilidad del que la llama hacer que se cumplan
+
+#### Postcondición
+
+- Qué garantiza la rutina: estado del mundo cuando la rutina/método termina
+- Implica que la rutina debe finalizar: no puede haber bucles ifinitos
+
+#### Invariante de clase
+
+- Condición que se cumple para todas las instancias de la clase, desde la perspectiva del llamador
+- Durante el procesamiento interno, la invariante puede no cumplirse, pero sí cuando la rutina termina y se devuelve el control al llamador
+- Una clase no puede dar permiso de escritura sin restricciones sobre las propiedades (_data members_) que participan en la definición de la invariante
+
+### Ejemplo: Raíz cuadrada en Eiffel
+
+```eiffel
+sqrt: DOUBLE is
+  -- Square root routine
+  require
+    sqrt_arg_must_be_positive: Current >= 0;
+  --- ...
+  --- calculate square root here
+  --- ...
+  ensure
+    ((Result*Result) - Current).abs <= epsilon*Current.abs;
+  -- Result should be within error tolerance
+end;
+```
+
+Si el usuario introduce un número negativo en la consola, es responsabilidad del código que llama a `sqrt` que dicho valor no se pase nunca a `sqrt`. Opciones:
+
+- Terminar
+- Emitir una advertencia y leer otro número
+- Pasar el número a complejo (ponerlo  en positivo y añadir una _i_)
+
+Si se llega a pasar un número negativo, Eiffel imprime el error `sqrt_arg_must_be_positive` en tiempo de ejecición y una traza de la pila (En otros lenguajes, como Java, se devolvería un `Nan`).
 
 ### Ejemplo: Cuenta Bancaria sin contratos
 
@@ -2395,17 +2449,17 @@ class ACCOUNT feature
     minimum_balance: INTEGER is 1000
     open (who: PERSON) is
     -- Assign the account to owner who.
-          do
+        do
             owner := who
         end
     deposit (sum: INTEGER) is
     -- Deposit sum into the account.
-          do
+        do
             add (sum)
         end
     withdraw (sum: INTEGER) is
     -- Withdraw sum from the account.
-          do
+        do
             add (-sum)
         end
     may_withdraw (sum: INTEGER): BOOLEAN is
@@ -2493,65 +2547,6 @@ feature
     may_withdraw ...
 end -- class ACCOUNT
 ```
-
-### Programación por contratos
-
-__Contrato__
-
--   Un contrato entre dos partes define derechos y responsabilidades por
-    ambas partes
--   Define las repercusiones por incumplimiento del contrato
-
-__*Design By Contract*__
-
--   Desarrollado para lenguaje *Eiffel* por Bertrand Meyer
--   Documentar y aceptar los derechos y responsabilidades de cada módulo de software para asegurar la correción de un programa
--   Un programa correcto es aquél que hace nada más y nada menos que lo que dice hacer
-
-### Precondiciones, postcondiciones e invariantes
-
-__Precondición__
-
--   Qué debe ser cierto antes de llamar a una rutina/método
-    (sus requisitos)
--   Una rutina jamás debe ser llamada si se violan sus precondiciones
--   Es responsabilidad del que la llama hacer que se cumplan
-
-__Postcondición__
-
--   Qué garantiza la rutina: estado del mundo cuando la rutina/método termina
--   Implica que la rutina debe finalizar: no puede haber bucles ifinitos
-
-__Invariante de clase__
-
--   Condición que se cumple para todas las instancias de la clase, desde la perspectiva del llamador
--   Durante el procesamiento interno, la invariante puede no cumplirse, pero sí cuando la rutina termina y se devuelve el control al llamador
--   Una clase no puede dar permiso de escritura sin restricciones a propiedades (_data members_) que participen en la invariante
-
-### Ejemplo: Eiffel
-
-```eiffel
-sqrt: DOUBLE is
-  -- Square root routine
-  require
-    sqrt_arg_must_be_positive: Current >= 0;
-  --- ...
-  --- calculate square root here
-  --- ...
-  ensure
-    ((Result*Result) - Current).abs <= epsilon*Current.abs;
-  -- Result should be within error tolerance
-end;
-```
-
-Si el usuario introduce un número negativo en la consola, es responsabilidad del código que llama a `sqrt` que dicho valor no se pase nunca a `sqrt`. Opciones:
-
-- Terminar
-- Emitir una advertencia y leer otro número
-- Pasar el número a complejo (ponerlo  en positivo y añadir una _i_)
-
-Si se llega a pasar un número negativo, Eiffel imprime el error `sqrt_arg_must_be_positive` en tiempo de ejecición y una traza de la pila (En otros lenguajes, como Java, se devolvería un `Nan`).
-
 
 ### Ejemplo: Java + iContract
 
@@ -2697,23 +2692,37 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
   // ...
 -->
 
+### Actividad: ¿Hay contratos en C++?
+
+Ver el video de J. D. García sobre [Contracts programming after C++17](https://www.youtube.com/watch?v=IBas3S2HtdU): Desde el minuto 4'10''
+
 ### Aserciones versus contratos
 
--   No hay soporte para propagar aserciones por una jerarquía de herencia: si se redefine un método con contrato, las aserciones que implementan el contrato no serán llamadas correctamente (excepto si se duplican en el código)
+- No hay soporte para propagar aserciones por una jerarquía de herencia: si se redefine un método con contrato, las aserciones que implementan el contrato no serán llamadas correctamente (excepto si se duplican en el código)
+- No hay soporte para valores *antiguos*: si se implementara un contrato mediante aserciones, habría que añadir código a la precondición para guardar la información que quiera usarse en la postcondición. (v.g. `variable@pre` en *iContract* versus `old expression` en Eiffel)
+- El sistema de runtime y las bibliotecas no están diseñadas para dar soporte a contratos, así que estos no se chequean. Y es precisamente en la frontera entre el cliente y la biblioteca donde hay más problemas.
 
--   No hay soporte para valores *antiguos*: si se implementara un
-    contrato mediante aserciones, habría que añadir código a la
-    precondición para guardar la información que quiera usarse en
-    la postcondición. (v.g. `variable@pre` en *iContract* versus
-    `old expression` en Eiffel)
+### Redefinición de contratos
 
--   El sistema de runtime y las bibliotecas no están diseñadas para dar soporte a contratos, así que estos no se chequean. Y es precisamente en la frontera entre el cliente y la biblioteca donde hay más problemas.
+> A routine redeclaration [in a derivative] may only replace the original precondition by one equal or weaker, and the original post-condition by one equal or stronger
+> 
+> –– <cite>B. Meyer</cite>
 
-## Errores y Excepciones
+Métodos de clase declaran *precondiciones* y *postcondiciones* al redefinir una operación en una subclase derivada
+
+- las **precondiciones** sólo pueden sustituirse por otras más débiles/laxas
+- las **postcondiciones** sólo pueden sustituirse por otras más fuertes/estrictas
+
+
+## <span style="color:blue;">Errores y Excepciones</span>
 
 <a id="errores"></a>
 
 ### Tratamiento de errores
+
+#### Códigos de error
+
+Un ejemplo habitual de tratamiento de errores con __códigos de error__:
 
 ```java
 if (deletePage(page) == E_OK) {
@@ -2732,7 +2741,24 @@ if (deletePage(page) == E_OK) {
 }
 ```
 
-Excepciones en lugar de códigos de error:
+Con esta técnica creamos _imanes de dependencias_:
+
+```java
+public enum Error {
+  OK,
+  INVALID,
+  NO_SUCH,
+  LOCKED,
+  OUT_OF_RESOURCES,
+  WAITING_FOR_EVENT;
+}
+```
+
+Los programadores intentan evitar añadir nuevos motivos de error, porque eso significa tener que volver a compilar y desplegar todo el código.
+
+#### Excepciones
+
+Usar __excepciones__ en lugar de códigos de error:
 
 ```java
 try {
@@ -2747,7 +2773,11 @@ catch (Exception e) {
 
 ¿No queda más claro?
 
-### Ubicación de bloques try/catch
+Ventaja: las nuevas excepciones son derivadas de una clase base `Exception`, lo que facilita la definición de nuevos motivos de error.
+
+¿Dónde se produce el error?
+
+#### Separar la función y el tratamiento de errores
 
 ```java
 public void delete(Page page) {
@@ -2774,101 +2804,92 @@ private void logError(Exception e) {
 
 ### Excepciones en Java
 
--   **Checked**: instancias de clases derivadas de `java.lang.Throwable`
-    (menos `RuntimeException`). Deben declararse en el método mediante
-    `throws` y obligan al llamador a tratar la excepción.
+- **Checked**: instancias de clases derivadas de `java.lang.Throwable` (menos `RuntimeException`). Deben declararse en el método mediante `throws` y obligan al llamador a tratar la excepción.
 
--   **Unchecked**: instancias de clases derivadas de
-    `java.lang.RuntimeException`. No se declaran en el método y no
-    obligan al llamador a tratar la excepción.
+- **Unchecked**: instancias de clases derivadas de `java.lang.RuntimeException`. No se declaran en el método y no obligan al llamador a tratar la excepción.
 
--   Elevar una excepción *e* es:
+Elevar una excepción `e` implica:
 
-    -   Deshacer (roll back) la llamada a un método
+- Deshacer (_roll back_) la llamada a un método
+- hasta que se encuentre un bloque catch para el tipo de `e`
+- y, si no se encuentra, la excepción es capturada por la JVM, que detiene el programa
 
-    -   hasta que se encuentre un bloque catch para el tipo de *e*
-
-    -   y si no se encuentra, la excepción es capturada por la JVM que
-        detiene el programa
-
-
-### Tratar excepciones
+#### Tratamiento de excepciones en Java
 
 ```java
-      try {
-         /* guarded region that can send
-            IOException or SecurityException */
-      }
-      catch (IOException e) {
-         /* decide what to do when an IOException
-            or a sub-class of IOException occurs */
-      }
-      catch (Exception e){
-         // Treats any others exception including Security
-      }
-      finally{
-          // in all cases execute this
-      }
+  try {
+      /* guarded region that can send
+        IOException or Exception */
+  }
+  catch (IOException e) {
+      /* decide what to do when an IOException
+        or a sub-class of IOException occurs */
+  }
+  catch (Exception e) {
+      // Treats any others exception
+  }
+  finally{
+      // in all cases execute this
+  }
 ```
 
 ### Recomendaciones
 
-Incluir el contexto
+Incluir el __contexto__ de la ejecución:
 
--   Incluir información suficiente con cada excepción para determinar el
-    motivo y la ubicación de un error
--   No basta con el *stack trace*
--   Escribir mensajes informativos: operación fallida y tipo de fallo
+- Incluir información suficiente con cada excepción para determinar el motivo y la ubicación de un error
+- No basta con el *stack trace*
+- Escribir mensajes informativos: operación fallida y tipo de fallo
 
-Solo usar excepciones unchecked
+Usar solamente excepciones __unchecked__
 
--   C\#, C++, Python o Ruby no ofrecen excepciones checked.
--   Los beneficios de las checked en Java son mínimos
--   Se paga el precio de violar el principio OCP (Open-Closed Principle): si lanzamos una excepción checked desde un método y el `catch`está tres niveles por encima, hay que declarar la excepción en la signatura de todos los métodos que can entre medias. Esto significa que un cambio en un nivel bajo del software puede forzar cambios en niveles altos
+- C\#, C++, Python o Ruby no ofrecen excepciones _checked_.
+- Los beneficios de las checked en Java son mínimos
+- Se paga el precio de violar el principio OCP (Open-Closed Principle): si lanzamos una excepción _checked_ desde un método y el `catch` está tres niveles por encima, hay que declarar la excepción en la signatura de todos los métodos que van entre medias. Esto significa que un cambio en un nivel bajo del software puede forzar cambios en niveles altos
 
+### Transformación de excepciones
 
-### Transformar checked a unchecked
+#### Checked vs unchecked
 
-__Problema__: Muchas APIs de Java lanzan excepciones checked cuando deberían ser unchecked
+Muchas APIs de Java lanzan excepciones checked cuando deberían ser unchecked
 
-Al ejecutar una consulta mediante `executeQuery` en el API de JDBC se
-lanza una excepción `java.sql.SQLException` (de tipo checked) si la SQL
-es errónea.
+__Ejemplo__: Al ejecutar una consulta mediante `executeQuery` en el API de JDBC se lanza una excepción `java.sql.SQLException` (de tipo checked) si la SQL es errónea.
 
-__Solución__: Transformar las excepciones checked en unchecked:
+##### Solución
+
+Transformar las excepciones checked en unchecked:
 
 ```java
-    try {
-      // Codigo que genera la excepcion checked
-    } catch (Exception ex) {
-      throw new RuntimeException("Excepcion unchecked",ex)
-    }
+  try {
+    // Codigo que genera la excepcion checked
+  } catch (Exception ex) {
+    throw new RuntimeException("Unchecked exception", ex)
+  }
 ```
 
-
-### Ejemplo
+#### Excepciones encapsuladas
 
 Criticar la siguiente implementación:
 
 ```java
-    ACMEPort port = new ACMEPort(12);
-    try {
-      port.open();
-    } catch (DeviceResponseException e) {
-      reportPortError(e);
-      logger.log("Device response exception", e);
-    } catch (ATM1212UnlockedException e) {
-      reportPortError(e);
-      logger.log("Unlock exception", e);
-    } catch (GMXError e) {
-      reportPortError(e);
-      logger.log("Device response exception");
-    } finally {
-      ...
-    }
+  ACMEPort port = new ACMEPort(12);
+  try {
+    port.open();
+  } catch (DeviceResponseException e) {
+    reportPortError(e);
+    logger.log("Device response exception", e);
+  } catch (ATM1212UnlockedException e) {
+    reportPortError(e);
+    logger.log("Unlock exception", e);
+  } catch (GMXError e) {
+    reportPortError(e);
+    logger.log("Device response exception");
+  } finally {
+    ...
+  }
 ```
 
-Mucha duplicación de código
+Excesiva duplicación de código: llamada a `reportError()`
 
 Excepción encapsulada:
 
@@ -2888,7 +2909,7 @@ Excepción encapsulada:
       public LocalPort(int portNumber) {
         innerPort = new ACMEPort(portNumber);
       }
-      public void open() {
+      public void open() throws PortDeviceFailure {
         try {
           innerPort.open();
         } catch (DeviceResponseException e) {
@@ -2903,18 +2924,18 @@ Excepción encapsulada:
     }
 ```
 
+- La encapsulación de excepciones es recomendable cuando se usa un API de terceros, para minimizar las dependencias con respecto al API elegido. 
+- También facilitan la implementación de _mocks_ del componente que proporciona el API para construir pruebas.
 
-### Excepciones excepcionales
+### Las excepciones son excepcionales
 
-__Recomendación de uso__: Usar excepciones para problemas
-excepcionales (eventos inesperados)
+__Recomendación de uso__: Usar excepciones para problemas excepcionales (eventos inesperados)
 
-__Ejemplo__: ¿Usar excepciones cuando se intenta abrir un fichero para leer y el
-fichero no existe?
+__Ejemplo__: ¿Usar excepciones cuando se intenta abrir un fichero para leer y el fichero no existe?
 
 Depende de si el fichero debe estar ahí
 
--   Usando excepciones:
+- Usando excepciones:
 
   ```java
   public void open_passwd() throws FileNotFoundException {
@@ -2924,7 +2945,7 @@ Depende de si el fichero debe estar ahí
   }
   ```
 
--   Sin usar excepciones:
+- Sin usar excepciones:
 
   ```java
   public boolean open_user_file(String name)
@@ -2937,9 +2958,13 @@ Depende de si el fichero debe estar ahí
   }
   ```
 
-### Uso de null
+## Uso de null
 
-#### No devolver null
+Obtener un _null_ cuando no se espera puede ser un quebradero de cabeza para el tratamiento de errores
+
+### Principio general: no devolver null
+
+Este código puede parecer inofensivo, pero es maligno:
 
 ```java
 public void registerItem(Item item) {
@@ -2957,13 +2982,12 @@ public void registerItem(Item item) {
 
 ¿Qué pasa si `persistentStore` es null?
 
--  ¿Se nos ha olvidado un 'if null'?
--  Peligro de `NullPointerException`
--  El problema no es que se haya olvidado uno, sino que hay demasiados
--  En su lugar, elevar una excepción o devolver un objeto *especial*
+- Peligro de `NullPointerException`
+- ¿Se nos ha olvidado añadir un `if null`?
+- El problema no es que se haya olvidado uno, sino que hay demasiados
+- En su lugar, elevar una excepción o devolver un objeto *especial*
 
-
-__Ejemplo__: no devolver
+### No devolver null
 
 Evitar:
 
@@ -2990,7 +3014,7 @@ public List<Employee> getEmployees() {
 }
 ```
 
-#### No pasar valores null
+### No pasar valores null
 
 ```java
 public class MetricsCalculator
@@ -3000,11 +3024,15 @@ public class MetricsCalculator
 }
 ```
 
-¿Qué sucede si `calculator.xProjection(null, new Point(12, 13))`?
+¿Qué sucede si llamamos a `xProjection()` así...?
+
+```java
+  calculator.xProjection(null, new Point(12, 13))
+```
 
 Devolver null es malo, pero ¡pasar un valor null es peor!
 
-Mejor así…?
+¿Es mejor así...?
 
 ```java
 public class MetricsCalculator
@@ -3021,7 +3049,7 @@ public class MetricsCalculator
 
 ¿Qué curso de acción tomar ante un `InvalidArgumentException`? ¿Hay alguno?
 
-__Alternativa con aserciones__
+#### Alternativa con aserciones
 
 (*solo para JDK $\geq$ 5.0*)
 
@@ -3038,13 +3066,21 @@ public class MetricsCalculator
 
 Es una buena forma de documentar, pero no resuelve el problema
 
-En la mayoría de lenguajes no hay forma satisfactoria de tratar con nulls pasados como argumento
-accidentalmente.
+### Optionals
 
+- En la mayoría de lenguajes no hay forma satisfactoria de tratar con _nulls_ pasados como argumento accidentalmente.
+- Para eso están los _options_ u _optionals_, disponibles actualmente en muchos languajes:
+  - [Scala `Option`](https://www.tutorialspoint.com/scala/scala_options.htm)
+  - [Java 8](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) `java.util.Optional`
+  - C++17 `std::optional`
+- [TypeScript recomienda usar `undefined`](https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines#null-and-undefined) (algo que no se ha inicializado) en lugar de `null` (algo que no está disponible)
 
-__[Scala options](https://www.tutorialspoint.com/scala/scala_options.htm)__
+#### [Scala Options](https://www.tutorialspoint.com/scala/scala_options.htm)
 
-`Option[T]` es un contenedor de un valor opcional de tipo T. Si el valor de tipo T está presente, Option[T] es una intancia de `Some[T]` que contiene el valor presente de tipo T. Si el valor está ausente, `Option[T]` es el objeto `None`.
+En Scala, `Option[T]` es un contenedor de un valor opcional de tipo T.
+
+- Si el valor de tipo T está presente, `Option[T]` es una intancia de `Some[T]` que contiene el valor presente de tipo T.
+- Si el valor está ausente, `Option[T]` es el objeto `None`.
 
 ```scala
 object Demo {
@@ -3074,14 +3110,210 @@ object Demo {
 }
 ```
 
+#### Java 8 Optionals
+
+From [Java 8 Optional in Depth](https://www.mkyong.com/java8/java-8-optional-in-depth/)
+
+##### Ejemplo sin `Optional`
+
+Programa de prueba:
+
+```java
+public class MobileTesterWithoutOptional {
+  public static void main(String[] args) {
+    ScreenResolution resolution = new ScreenResolution(750,1334);
+    DisplayFeatures dfeatures = new DisplayFeatures("4.7", resolution);
+    Mobile mobile = new Mobile(2015001, "Apple", "iPhone 6s", dfeatures);
+
+    MobileService mService = new MobileService();
+
+    int mobileWidth = mService.getMobileScreenWidth(mobile);
+    System.out.println("Apple iPhone 6s Screen Width = " + mobileWidth);
+
+    ScreenResolution resolution2 = new ScreenResolution(0,0);
+    DisplayFeatures dfeatures2 = new DisplayFeatures("0", resolution2);
+    Mobile mobile2 = new Mobile(2015001, "Apple", "iPhone 6s", dfeatures2);
+    int mobileWidth2 = mService.getMobileScreenWidth(mobile2);
+    System.out.println("Apple iPhone 16s Screen Width = " + mobileWidth2);
+  }
+}
+```
+
+Dependencias: `MobileService` $\dashrightarrow$ `DisplayFeatures`, `ScreenResolution`
+
+Cantidad de código _boilerplate_ para comprobar los nulos en la clase principal:
+
+```java
+public class MobileService {
+  public int getMobileScreenWidth(Mobile mobile){
+    if(mobile != null){
+      DisplayFeatures dfeatures = mobile.getDisplayFeatures();
+      if(dfeatures != null){
+        ScreenResolution resolution = dfeatures.getResolution();
+        if(resolution != null){
+          return resolution.getWidth();
+        }
+      }
+    }
+    return 0;
+  }
+}
+```
+
+Clases de utilidad:
+
+```java
+public class ScreenResolution {
+  private int width;
+  private int height;
+
+  public ScreenResolution(int width, int height){
+    this.width = width;
+    this.height = height;
+  }
+  public int getWidth() {
+    return width;
+  }
+  public int getHeight() {
+    return height;
+  }
+}
+
+public class DisplayFeatures {
+  private String size; // In inches
+  private ScreenResolution resolution;
+
+  public DisplayFeatures(String size, ScreenResolution resolution){
+    this.size = size;
+    this.resolution = resolution;
+  }
+  public String getSize() {
+    return size;
+  }
+  public ScreenResolution getResolution() {
+    return resolution;
+  }
+}
+
+public class Mobile {
+  private long id;
+  private String brand;
+  private String name;
+  private DisplayFeatures displayFeatures;
+  // Likewise we can see Memory Features, Camera Features etc.
+
+  public Mobile(long id, String brand, String name, DisplayFeatures displayFeatures){
+    this.id = id;
+    this.brand = brand;
+    this.name = name;
+    this.displayFeatures = displayFeatures;
+  }
+  public long getId() {
+    return id;
+  }
+  public String getBrand() {
+    return brand;
+  }
+  public String getName() {
+    return name;
+  }
+  public DisplayFeatures getDisplayFeatures() {
+    return displayFeatures;
+  }
+}
+```
+
+##### Ejemplo con `Optionals`
+
+Uso de métodos de `Optional` en el programa de prueba:
+
+```java
+public class MobileTesterWithOptional {
+  public static void main(String[] args) {
+  ScreenResolution resolution = new ScreenResolution(750,1334);
+  DisplayFeatures dfeatures = new DisplayFeatures("4.7", Optional.of(resolution));
+  Mobile mobile = new Mobile(2015001, "Apple", "iPhone 6s", Optional.of(dfeatures));
+
+  MobileService mService = new MobileService();
+
+  int width = mService.getMobileScreenWidth(Optional.of(mobile));
+  System.out.println("Apple iPhone 6s Screen Width = " + width);
+
+  Mobile mobile2 = new Mobile(2015001, "Apple", "iPhone 6s", Optional.empty());
+  int width2 = mService.getMobileScreenWidth(Optional.of(mobile2));
+  System.out.println("Apple iPhone 16s Screen Width = " + width2);
+  }
+}
+```
+
+Menos código _boilerplate_ en la clase principal:
+
+```java
+public class MobileService {
+  public Integer getMobileScreenWidth(Optional<Mobile> mobile){
+  return mobile.flatMap(Mobile::getDisplayFeatures)
+     .flatMap(DisplayFeatures::getResolution)
+     .map(ScreenResolution::getWidth)
+     .orElse(0);
+  }
+}
+```
+
+
+Clases de utilidad:
+
+```java
+import java.util.Optional;
+
+public class DisplayFeatures {
+  private String size; // In inches
+  private Optional<ScreenResolution> resolution;
+  public DisplayFeatures(String size, Optional<ScreenResolution> resolution){
+    this.size = size;
+    this.resolution = resolution;
+  }
+  public String getSize() {
+    return size;
+  }
+  public Optional<ScreenResolution> getResolution() {
+    return resolution;
+  }
+}
+
+public class Mobile {
+  private long id;
+  private String brand;
+  private String name;
+  private Optional<DisplayFeatures> displayFeatures;
+  // Like wise we can see MemoryFeatures, CameraFeatures etc.
+  // For simplicity, using only one Features
+  public Mobile(long id, String brand, String name, Optional<DisplayFeatures> displayFeatures){
+    this.id = id;
+    this.brand = brand;
+    this.name = name;
+    this.displayFeatures = displayFeatures;
+  }
+  public long getId() {
+    return id;
+  }
+  public String getBrand() {
+    return brand;
+  }
+  public String getName() {
+    return name;
+  }
+  public Optional<DisplayFeatures> getDisplayFeatures() {
+    return displayFeatures;
+  }
+}
+```
+
 ### Fronteras
 
 Tensión proveedor-cliente
 
--   Los proveedores de packages y frameworks quieren amplia
-    aplicabilidad
--   Los clientes quieren una interfaz centrada en sus necesidades
-    particulares
+- Los proveedores de packages y frameworks quieren amplia aplicabilidad
+- Los clientes quieren una interfaz centrada en sus necesidades particulares
 
 __Ejemplo__: La interfaz [`java.util.Map`](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html)
 
@@ -3110,6 +3342,7 @@ wait(long timeout, int nanos) void – Object
 ```
 
 Construimos un `Map` y lo pasamos.
+
 - Diseño A: Ninguno de los receptores deberá poder borrar algo del map. ¡Pero hay un `clear()`!
 - Diseño B: solo algunos tipos de objetos deben poderse guardar. ¡Los tipos no están restringidos!
 
@@ -3117,19 +3350,19 @@ Construimos un `Map` y lo pasamos.
 
 - JDK < 5.0:
 
-      ```java
-      Map sensors = new HashMap();
-      ...
-      Sensor s = (Sensor)sensors.get(sensorId);
-      ```
+  ```java
+  Map sensors = new HashMap();
+  ...
+  Sensor s = (Sensor)sensors.get(sensorId);
+  ```
 
-- JDK >= 5.0:
+- JDK $\geq$ 5.0:
 
-      ```java
-      Map<Sensor> sensors = new HashMap<Sensor>();
-      ...
-      Sensor s = sensors.get(sensorId);
-      ```
+  ```java
+  Map<Sensor> sensors = new HashMap<Sensor>();
+  ...
+  Sensor s = sensors.get(sensorId);
+  ```
 
 __Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
 
@@ -3143,11 +3376,10 @@ __Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
   }
 ```
 
--   La interfaz `Map` queda oculta
--   Filtramos los métodos que no nos sirven
--   Más fácil de hacer evolucionar sin impacto en el resto de la
-    aplicación
--   El casting queda confinado en la clase Sensors, que es más seguro
+- La interfaz `Map` queda oculta
+- Filtramos los métodos que no nos sirven
+- Más fácil de hacer evolucionar sin impacto en el resto de la aplicación
+- El casting queda confinado en la clase Sensors, que es más seguro
 
 __Interfaces de frontera__: No todo uso de `Map` o interfaz de
 frontera debe quedar encapsulado. Sólo es un consejo para no ’pasarla’
