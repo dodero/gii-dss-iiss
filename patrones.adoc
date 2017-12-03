@@ -1,0 +1,80 @@
+Patrones de diseño
+==================
+:source-highlighter: highlight.js
+:stem:
+
+## Visitor
+
+.Cómputo sobre un arbol sintáctico
+====
+Imprimir el resultado de un cierto cómputo (por ejemplo, multiplicar por dos) sobre todos los valores de un árbol sintáctico AST (_Abstract Syntax Tree_)
+====
+ 
+.Doblar nodos - versión 1
+[source,ruby]
+----
+class IntegerNode
+  def initialize(value)
+    @value = value
+  end
+
+  def double
+    @value * 2
+  end
+end
+
+class Ast
+  def initialize
+    @nodes = []
+    @nodes << IntegerNode.new(2)
+    @nodes << IntegerNode.new(3)
+  end
+
+  def print_double
+    @nodes.each do |node|
+      puts node.double
+    end
+  end
+end
+
+ast = Ast.new
+ast.print_double # => 4 6
+----
+
+Above solution works. Now let’s try to print triple the value. In order to do that we need to change class IntegerNode. And IntegerNode has knowledge of how to print triple value. Tomorrow if we have another node called FloatNode then that node will have knowledge about how to double and triple the value.
+
+Nodes are merely storing information. And the representation of data should be separate from the data itself. So IntegerNode and FloatNode should not know about how to double and triple.
+
+To take the data representation code out of nodes we can make use of visitor pattern . Visitor pattern uses double dispatch .
+
+Before we look at “double dispatch” let’s first look at “single dispatch”.
+
+[source,ruby]
+----
+
+----
+
+
+[source,ruby]
+----
+
+----
+
+
+
+[source,ruby]
+----
+
+----
+
+
+[source,ruby]
+----
+
+----
+
+
+[source,ruby]
+----
+
+----

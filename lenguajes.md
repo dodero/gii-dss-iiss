@@ -2,7 +2,10 @@
 
 ## Técnicas
 
-- [Anónimos y cierres](#anonimos): Java lambdas, Ruby procs y blocks, Scala
+- [Anónimos y cierres](#anonimos):
+  - Funciones anónimas
+  - Java lambdas
+  - Ruby procs y blocks
 - Mixins:
   - [Ruby modules](http://ruby-doc.com/docs/ProgrammingRuby/html/tut_modules.html)
   - [Scala traits](http://docs.scala-lang.org/tutorials/tour/traits)
@@ -27,7 +30,7 @@
 4. [Scala tour](http://docs.scala-lang.org/tutorials/tour/tour-of-scala)
 5. [Scala exercises](https://www.scala-exercises.org/std_lib/)
 
-# <span style="color:blue;"><a id="informes">Anónimos y cierres</a></span>
+# <span style="color:blue;"><a id="anonimos">Anónimos y cierres</a></span>
 
 ## Factorización de funciones
 
