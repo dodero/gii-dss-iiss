@@ -8,7 +8,7 @@
   - Ruby procs y blocks
 - Mixins:
   - [Ruby modules](http://ruby-doc.com/docs/ProgrammingRuby/html/tut_modules.html)
-  - [Scala traits](http://docs.scala-lang.org/tutorials/tour/traits)
+  - [Scala traits](https://docs.scala-lang.org/tour/traits.html)
     - Ejemplo: [Traits exercise](https://www.scala-exercises.org/std_lib/traits)
     - Ejemplo: [Stackable Traits pattern](http://www.artima.com/scalazine/articles/stackable_trait_pattern.html)
     - Lectura: [Herencia vs. composición con Scala mixins](http://baddotrobot.com/blog/2014/09/22/scala-mixins/)
@@ -17,10 +17,9 @@
 
 ## Paradigmas
 
- - Objetos
- - Eventos
- - Funcional
-
+- Objetos
+- Eventos
+- Funcional
 
 ## Ejercicios
 
@@ -540,17 +539,6 @@ El método `find` itera y aplica el test del bloque a cada elemento `song` de la
 - El control vuelve al método después del `yield`
 - Al bloque se le pueden pasar parámetros
 
-Ejemplo de `yield`:
-
-```ruby
-def three_times
-  yield
-  yield
-  yield
-end
-three_times { puts "Hello" }
-```
-
 Ejemplo: fibonacci
 
 ```ruby
@@ -564,6 +552,17 @@ end
 fib_up_to(1000) {|f| print f, " " }
 
 #Salida => 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
+```
+
+Ejemplo de `yield`:
+
+```ruby
+def three_times
+  yield
+  yield
+  yield
+end
+three_times { puts "Hello" }
 ```
 
 Ejemplo: implementación de `Array.find`
@@ -582,32 +581,56 @@ end
 
 Ejemplos: iterar con bloques
 
-```ruby
-[ 1, 3, 5, 7, 9 ].each {|i| printf i, " " }
+- Iterar sobre un array con `each`
 
-#Salida => 1 3 5 7 9
-```
+  `Array#each`: recibe un array y aplica el bloque a cada item, sin modificar el array ni crear un nuevo objeto; devuelve el mismo array.
 
-```ruby
-f = File.open("testfile")
-f.each do |line|
-  puts line
-end
-f.close
-f = File.open("testfile")
-f.each {|line| puts line}
-f.close
-```
+  ```ruby
+  [ 1, 3, 5, 7, 9 ].each {|i| printf i, " " }
+  #Salida => 1 3 5 7 9
+  Array a = [ 1, 2, 3, 4 ]
+  a.each {|i| puts i*2 }
+  #Salida => 2 4 6 8
+  #Devuelve => [1, 2, 3, 4]
+  a
+  #Devuelve => [1, 2, 3, 4]
+  ```
+- Iterar sobre un fichero con `each`
 
-```ruby
-["H", "A", "L"].collect {|x| x.succ }
-# Salida => [''I'', ''B'', ''M'']
-```
+  `File#each`: recibe el contenido de un fichero de texto y aplica el bloque a cada línea.
+
+  ```ruby
+  f = File.open("testfile")
+  f.each do |line|
+    puts line
+  end
+  f.close
+  f = File.open("testfile")
+  f.each {|line| puts line}
+  f.close
+  ```
+
+- Iterar sobre un array con `collect`
+
+  `Array#collect`: aplica el bloque a todos los items y devuelve el nuevo array modificado; hace lo mismo que `Array#map`
+
+  ```ruby
+  ["H", "A", "L"].collect {|x| x.succ }
+  # Salida => [''I'', ''B'', ''M'']
+  Array a = [ 1, 2, 3, 4 ]
+  a.collect {|i| puts i*2}
+  #Salida => 2 4 6 8
+  #Devuelve => [nil, nil, nil, nil]
+  a.collect {|i| i.succ}
+  #Devuelve => [2, 3, 4, 5]
+  a
+  #Devuelve => [1, 2, 3, 4]
+  ```
 
 ##### Procs y lambdas
 
-- En Ruby, una función anónima o _lambda_ es simplemente un tipo especial de objeto __`Proc`__
-- Sintaxis:
+- En Ruby, una función anónima o _lambda_ es simplemente un tipo especial de objeto `Proc`
+- Definición de procs/lambdas:
   ```ruby
   # sin argumentos:
   say_something = -> { puts "This is a lambda" }
@@ -622,20 +645,27 @@ f.close
   say_something.call
   say_something.()
   say_something[]
-  say_something.===
 
   say_otherwise = Proc.new { puts "This is a proc" }
   say_otherwise.call
 
   times_two = ->(x) { x * 2 }
-  times_two.call(10) 
+  times_two.call(10)
   ```
 - Los `proc` no se preocupan de los argumentos:
   ```ruby
-  t = Proc.new { |x,y| puts "I don't care about arguments!" }
-  t.call
+  t = Proc.new { |x,y| puts "I don't care about args!" }
+  t.call #Salida: I don't care about args!
+  t.call(10) #Salida: I don't care about args!
+  t.call(10,10) #Salida: I don't care about args!
+  t.call(10,10) #Salida: I don't care about args!
+
+  s = ->(x,y) { puts "I care about args" }
+  s.call # ArgumentError: wrong number of arguments (given 0, expected 2)
+  s.call(10) # ArgumentError: wrong number of arguments (given 1, expected 2)
+  s.call(10,10) # Salida: I care about args
   ```
-- Los proc retornan del método actual:
+- Los `proc` retornan del método actual; los lambda retornan de la función anónima:
   ```ruby
   # funciona:
   my_lambda = -> { return 1 }
@@ -645,7 +675,7 @@ f.close
   my_proc = Proc.new { return 1 }
   puts "Proc result: #{my_proc.call}"
   ```
-- Si el proc está dentro de un método, la llamada a `return` es equivalente a retornar de ese método:
+- Si el `proc` está dentro de un método, la llamada a `return` es equivalente a retornar de ese método:
   ```ruby
   def call_proc
     puts "Before proc"
@@ -656,6 +686,16 @@ f.close
 
   puts call_proc
   # Prints "Before proc" but not "After proc"
+
+  def call_lambda
+    puts "Before lambda"
+    my_lambda = lambda { return 2 }
+    my_lambda.call
+    puts "After lambda"
+  end
+
+  puts call_lambda
+  # Prints "Before lambda" and "After lambda"
   ```
 
 __Diferencias__ entre `Proc` y `lambda`:
@@ -663,6 +703,122 @@ __Diferencias__ entre `Proc` y `lambda`:
 - Las lambdas se definen con `-> {}` y los procs con `Proc.new {}`
 - Los `Proc` retornan del método actual, las lambdas retornan de la propia función lambda
 - Los `Proc` no se preocupan del número correcto de argumentos, las lambdas elevan una excepción
+
+#### Paso de bloques como parámetros
+
+- Simplemente, se añade al final de la llamada a un método 
+- ¿Dónde se llama al bloque? Donde el método indique con `yield`
+- El bloque (realmente un objeto `Proc`) se pasa como una especie de parámetro no declarado
+
+Ejemplos:
+
+- Llamada a un bloque sin parámetros
+
+    ```ruby
+    def run_it
+      puts("Before the yield")
+      yield
+      puts("After the yield")
+    end
+    ```
+
+    ```ruby
+    run_it do
+      puts('Hello')
+      puts('Coming to you from inside the block')
+    end
+    ```
+
+  Salida:
+
+    ```text
+    Before the yield
+    Hello
+    Coming to you from inside the block
+    After the yield
+    ```
+
+- Cualquier método puede recibir un bloque como parámetro implícito, pero no lo ejecuta si no hace `yield`:
+
+  ```ruby
+  def run_it
+  end
+
+  run_it do
+    puts('Hello')
+  end
+
+  # => No genera salida
+  ```
+
+- Con `yield`:
+
+  ```ruby
+  def run_it
+    yield if block_given?
+  end
+
+  run_it do
+    puts('Hello')
+  end
+  ```
+
+  Salida:
+
+  ```text
+    Hello
+  ```
+
+- Llamada a un bloque con parámetros:
+
+  ```ruby
+  def run_it_with_parameter
+    puts('Before the yield')
+    yield(24)
+    puts('After the yield')
+  end
+
+  run_it_with_parameter do |x|
+    puts('Hello from inside the proc')
+    puts("The value of x is #{x}")
+  end
+  ```
+
+  Salida:
+
+    ```text
+    Before the yield
+    Hello from inside the proc
+    The value of x is 24
+    After the yield
+    ```
+
+- Hacer explícito el bloque pasado como parámetro usando _ampersand_: explicitamos que se espera que el método reciba un parámetro de tipo bloque
+
+  ```ruby
+  def run_it_with_parameter(&block)
+    puts('Before the call')
+    block.call(24)
+    puts('After the call')
+  end
+  ```
+
+- Convertir un `Proc` o un lambda en un bloque pasado como parámetro:
+
+  ```ruby
+  my_proc = Proc.new {|x| puts("The value of x is #{x}")}
+  run_it_with_parameter(&my_proc)
+  my_lambda = lambda {|x| puts("The value of x is #{x}")}
+  run_it_with_parameter(&my_lambda)
+  ```
+  Salida (en ambos casos):
+
+    ```text
+    Before the call
+    The value of x is 24
+    After the call
+    ```
+
 
 ### Lecturas recomendadas
 
@@ -710,118 +866,7 @@ class PlainTextFormatter
     context.text.each do |line|
 ```
 
-#### Procs
-- Proc = objeto función = objeto que solo contiene un trozo de código 
- 
-```ruby
-hello = lambda do
-  puts('Hello')
-  puts('I am inside a proc')
-end
-```
 
-#### Blocks
-
-- Code block = Función anónima, cierre o lambda
-- Es la parte `do` ... `end`
-- Simplificada como  `{` ... `}`
-
-```ruby
-hello = lambda {
-  puts('Hello, I am inside a proc')
-}
-```
-
-- Parametrizable
-
-```ruby
-multiply = lambda {|x, y| x * y}
-
-n = multiply.call(20, 3)
-puts(n)  #60
-n = multiply.call(10, 50)
-puts(n)  #500
-```
-
-#### Llamada 
-
-```ruby
-name = 'John'
-proc = Proc.new do
-  name = 'Mary'
-end
-
-proc.call
-puts(name)
-```
-
-
-#### Paso de bloques como parámetros
-
-- Simplemente, se añade al final de la llamada a un método 
-- ¿Dónde se llama al bloque? Donde el método indique con `yield`
-- El bloque (realmente un objeto `Proc`) se pasa como una especie de parámetro invisible
- 
-```ruby
-def run_it
-  puts("Before the yield")
-  yield
-  puts("After the yield")
-end
-```
-```ruby
-run_it do
-  puts('Hello')
-  puts('Coming to you from inside the block')
-end
-```
-Salida:
-
-```
-Before the yield
-Hello
-Coming to you from inside the block
-After the yield
-```
-
-- Llamada a un bloque con parámetros:
-
-```ruby
-def run_it_with_parameter
-  puts('Before the yield')
-  yield(24)
-  puts('After the yield')
-end
-
-run_it_with_parameter do |x|
-  puts('Hello from inside the proc')
-  puts("The value of x is #{x}")
-end
-```
-Salida:
-
-```
-Before the yield
-Hello from inside the proc
-The value of x is 24
-After the yield
-```
-
-- Hacer explícito el bloque pasado como parámetro: _ampersand_
-
-```ruby
-def run_it_with_parameter(&block)
-  puts('Before the call')
-  block.call(24)
-  puts('After the call')
-end
-```
-Y para convertir un `Proc` en un bloque pasado como parámetro:
-
-```ruby
-my_proc = lambda {|x| puts("The value of x is #{x}")}
-run_it_with_parameter(&my_proc)
-```
 
 ### Versión con interfaces funcionales (Ruby procs + blocks)
 
@@ -872,45 +917,80 @@ report = Report.new do |context|
 end
 ```
 
-<a id="adaptadores">
-# Ejercicio 2 - Cambio de interfaz
-</a>
+# <a id="adaptadores"> Ejercicio 2 - Cambio de interfaz </a>
 
 ## Adaptadores
 
-###Tipos de adaptador:
+### Tipos de adaptador
 
-- Adaptadores de clase
+#### Adaptadores de clase
 
   ![Adaptador de clases](./figuras/classAdapter.png)
 
-- Adaptadores de objeto
+#### Adaptadores de objeto
 
-  ![Adaptador de objetos](./figuras/objectAdapter.png)  
+  ![Adaptador de objetos](./figuras/objectAdapter.png)
 
-### Implementaciones:
+### Implementaciones
 
 - Herencia
 - Composición
 - Herencia múltiple
 - Mixins
 
-### Mixins
+# <span style="color:blue;"><a id="mixins">Mixins</a></span>
+
+## Mixins
 
 En POO, un __mixin__ es una clase con métodos disponibles para otras clases sin tener que ser madre de estas otras (es decir, sin usar la herencia)
 
 - Es una alternativa a la herencia múltiple
 - Es una interfaz con métodos ya implementados
-- No se _heredan_ sino que se _incluyen_
+- No se _heredan_ sino que se __incluyen__
 - Es una forma de implementar el principio de inversión de dependencias (DIP)
 
-### Ejemplo en ruby: `modules` e `include`
+### Mixins en ruby: módulos
+
+En Ruby los mixins se implementan mediante módulos (`module`).
+
+- Un módulo no puede tener instancias (porque no es una clase)
+- Un módulo puede incluirse (`include`) dentro de la definición de una clase
+
+#### Ejemplo: herencia vs mixins
+
+```ruby
+module Debug
+  def whoAmI?
+    "#{self.class.name} (\##{self.object_id}): #{self.to_s}"
+  end
+end
+class MusicWork
+  def initialize(title)
+    @title=title
+  end
+  def to_s
+    @title
+  end
+end
+class Phonograph < MusicWork
+  include Debug
+end
+class EightTrack < MusicWork
+  include Debug
+end
+ph = Phonograph.new("West End Blues")
+et = EightTrack.new("Surrealistic Pillow")
+ph.whoAmI?  # => "Phonograph (#70315984363660): West End Blues"
+et.whoAmI?  # => "EightTrack (#70315996611260): Surrealistic Pillow"
+```
+
+#### Ejemplo: Comparable en ruby
 
 Una manera de implementar un `Comparable` en ruby mediante el módulo [Comparable](https://ruby-doc.org/core-2.2.3/Comparable.html):
 
 ```ruby
 class Student
-  include Comparable # The class Student inherits Comparable module using include keyword
+  include Comparable # The class Student 'inherits' Comparable module using include keyword
   attr_accessor :name, :score
 
   def initialize(name, score)
@@ -942,11 +1022,9 @@ s3.between?(s1,s2) #true
   - el atributo-criterio de comparación
   - En `x <=> y`, `x` es el receptor del mensaje/método e `y` es el argumento
 
+### Ejemplo: Adaptador de interfaz en Ruby
 
-## Módulos Ruby
-
-
-### Interfaz americana
+#### Interfaz americana
 
 ```ruby
 class Renderer
@@ -954,15 +1032,16 @@ class Renderer
     text = text_object.text
     size = text_object.size_inches
     color = text_object.color
-    
+
     # render the text ...
   end
 end
 ```
+
 ```ruby
 class TextObject
   attr_reader :text, :size_inches, :color
-  
+
   def initialize(text, size_inches, color)
     @text = text
     @size_inches = size_inches
@@ -971,20 +1050,20 @@ class TextObject
 end
 ```
 
-### Interfaz británica
+#### Interfaz británica
 
 ```ruby
+# british_text_object.rb
 class BritishTextObject
   attr_reader :string, :size_mm, :colour
-  
+
   # ...
 end
 ```
 
-### Adaptador de interfaz: versión clásica
+#### Adaptador de interfaz: versión clásica
 
 ```ruby
-# british_text_object.rb
 class BritishTextObjectAdapter < TextObject
   def initialize(bto)
     @bto = bto
@@ -993,7 +1072,7 @@ class BritishTextObjectAdapter < TextObject
   def text
     return @bto.string
   end
-  
+
   def size_inches
     return @bto.size_mm / 25.4
   end
@@ -1004,7 +1083,7 @@ class BritishTextObjectAdapter < TextObject
 end
 ```
 
-### Adaptador de interfaz: versión ruby
+### Adaptador de interfaz: versión con módulos
 
 ```ruby
 # Make sure the original class is loaded
@@ -1019,7 +1098,7 @@ class BritishTextObject
   def text
     return string
   end
-  
+
   def size_inches
     return size_mm / 25.4
   end
@@ -1030,8 +1109,7 @@ end
 - la reescritura de métodos modifica la clase, no la declara de nuevo
 - se puede hacer incluso con las clases built-in de la biblioteca de Ruby
 
-
-### Adaptador de interfaz: instancias únicas 
+### Adaptador de interfaz: instancia única
 
 ```ruby
 bto = BritishTextObject.new('hello', 50.8, :blue)
@@ -1069,6 +1147,59 @@ end
 
 ## Scala Traits
 
+Los `trait`de Scala son similares a las interfaces de Java.
+
+- Las clases y los objetos pueden extender un `trait`
+- Los `trait` no pueden instanciarse
+
+### Ejemplo: Iterador como un `trait`
+
+```scala
+trait Iterator[A] {
+  def hasNext: Boolean
+  def next(): A
+}
+
+class IntIterator(to: Int) extends Iterator[Int] {
+  private var current = 0
+  override def hasNext: Boolean = current < to
+  override def next(): Int =  {
+    if (hasNext) {
+      val t = current
+      current += 1
+      t
+    } else 0
+  }
+}
+
+val iterator = new IntIterator(10)
+println(iterator.next())  // prints 0
+println(iterator.next())  // prints 1
+```
+
+### Ejemplo: Subtipos
+
+Implementación del _polimorfismo de inclusión_ o herencia simple con traits:
+
+```scala
+import scala.collection.mutable.ArrayBuffer
+
+trait Pet {
+  val name: String
+}
+
+class Cat(val name: String) extends Pet
+class Dog(val name: String) extends Pet
+
+val dog = new Dog("Harry")
+val cat = new Cat("Sally")
+
+val animals = ArrayBuffer.empty[Pet]
+animals.append(dog)
+animals.append(cat)
+animals.foreach(pet => println(pet.name))  // Prints Harry Sally
+```
+
 ### Ejemplo: Similarity
 
 ```scala
@@ -1077,6 +1208,7 @@ trait Similarity {
   def isNotSimilar(x: Any): Boolean = !isSimilar(x)
 }
 ```
+
 ```scala
 class Point(xc: Int, yc: Int) extends Similarity {
   var x: Int = xc
@@ -1095,8 +1227,8 @@ object TraitsTest extends App {
 }
 ```
 
-- Polimorfismo usa la herencia
-- Mixin es un mecanismo de reutilización de código
+- El polimorfismo (de inclusión) usa la herencia (simple)
+- Los mixin son un mecanismo de **reutilización de código** sin herencia
 
 ¿Usar traits con comportamiento va contra el principio general de que la [herencia de comportamiento](https://en.wikipedia.org/wiki/Composition_over_inheritance#Benefits) es una mala idea?
 
@@ -1106,7 +1238,7 @@ object TraitsTest extends App {
 
 ### Ejemplo: Iterator
 
-Mixin-class composition
+Cómo reutilizar comportamiento de varios tipos de iteradores a través de un mixin:
 
 ```scala
 abstract class AbsIterator {
@@ -1119,27 +1251,40 @@ trait RichIterator extends AbsIterator {
   def foreach(f: T => Unit) { while (hasNext) f(next) }
 }
 
+class IntIterator(to: Int) extends AbsIterator {
+  type T = Int
+  private var n = 0
+  def hasNext = n < to
+  def next = { val t = n; n += 1; t }
+}
+
 class StringIterator(s: String) extends AbsIterator {
   type T = Char
   private var i = 0
   def hasNext = i < s.length()
   def next = { val ch = s charAt i; i += 1; ch }
-}    
+}
 
 object StringIteratorTest {
-  def main(args: Array[String]) {
-    class Iter extends StringIterator(args(0)) with RichIterator
-    val iter = new Iter
-    iter foreach println
-  }
+  class Iter extends StringIterator("HOLA") with RichIterator
+  val iter = new Iter
+  iter foreach println
 }
-```    
-- [Unit](http://www.scala-lang.org/api/current/scala/Unit.html) en scala: método Java que devuelve `void`
 
-###Diferencia con clase abstracta
+object IntIteratorTest {
+  class Iter extends IntIterator(10) with RichIterator
+  val iter = new Iter
+  iter foreach println
+}
+```
+
+- [Unit](http://www.scala-lang.org/api/current/scala/Unit.html) en scala: subtipo de `AnyVal`; solo hay un valor `()` que es de tipo `Unit`.
+- Un método que devuelve `Unit` es análogo a un método Java que devuelve `void`
+
+### Diferencia con clase abstracta
 
 - [Scala traits vs abstract classes](http://stackoverflow.com/questions/1991042/what-is-the-advantage-of-using-abstract-classes-instead-of-traits)
-- Los constructores de traits no pueden tener parámetros
+- Los constructores de un `trait` no pueden tener parámetros (de momento)
 
 #### Reglas:
 
