@@ -371,7 +371,7 @@ Las funciones no bloqueantes afectan a:
 - El **estado** del programa
 - La lógica de **continuación** del programa
 
-programación secuencial             |  programación asíncrona
+ programación secuencial   |  programación asíncrona
 :-------------------------:|:-------------------------:
 ![Modelo de programación secuencial](./figuras/prog-secuencial.png) | ![Modelo de programación asíncrona](./figuras/prog-asincrona.png)
 
