@@ -391,6 +391,12 @@ Ejemplos: implementaciones de _listener_ del [ejercicio introductorio](#a-idlist
 - Con adaptadores
 - Con funciones anónimas o lambdas
 
+#### Ejemplo: Ajax + jQuery callbacks
+
+- [Ajax](http://learn.jquery.com/ajax/)
+- [jQuery](http://devdocs.io/jquery/)
+- [jQuery Callbacks object](http://devdocs.io/jquery-callbacks-object/)
+
 #### Ejemplo: callback en TypeScript
 
 ```typescript
@@ -439,7 +445,6 @@ El uso de callbacks hace el código complejo, repetitivo y difícil de entender,
 
 - Cualquier función en Ruby puede recibir un **bloque** `do`... `end` como argumento adicional (no explícito) a la llamada
 - Un _thunk_ es como un bloque con un `yield` al final
-
 
 ### Promesas
 
@@ -697,6 +702,10 @@ public static void main(String[] args) throws Exception {
 }
 ```
 
+### Lenguajes, JavaScript
+
+> LECTURA recomendada: [Promises/A+](https://promisesaplus.com/): An open standard for sound, interoperable JavaScript promises.
+
 ## Modelos basados en eventos
 
 Las operaciones disparan eventos de diferentes tipos, que son escuchados por los manejadores (_listeners_) de eventos, que los clientes han registrado en un bus de eventos
@@ -710,3 +719,7 @@ Las operaciones disparan eventos de diferentes tipos, que son escuchados por los
 Los datos fluyen por pipelines y se consumen siguiendo modelos _push_ o _pull_
 
 ![Streams](./figuras/streams.png)
+
+#### Observables
+
+> LECTURA recomendada: [The introduction to Reactive Programming you've been missing (by @andrestaltz)](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)

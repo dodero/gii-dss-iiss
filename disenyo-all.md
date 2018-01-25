@@ -686,7 +686,9 @@ public class KnightOfTheRoundTable implements Knight {
 
 ![](./figuras/dep-injection.png)
 
-- __Inversión de control__: base de la inyección de dependencias
+### Inversión de control
+
+- Es la base de la inyección de dependencias
 
 > The question is: "what aspect of control are they inverting?" [...] Early user interfaces were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With graphical (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework
 > 
@@ -697,6 +699,13 @@ public class KnightOfTheRoundTable implements Knight {
 - Inversión de la responsabilidad de cómo un objeto obtiene referencias a los objetos con los que colabora
 - Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su interfaz, no por su implementación, ni por cómo fueron instanciados. Entonces la dependencia puede cambiarse por una implementación distinta (incluso en tiempo de ejecución)
 - _Hollywood Principle: Don't call us, we'll call you"._
+
+
+### Factorías
+
+Una factoría proporciona un mecanismo de inyección de dependencias, visto desde el lado opuesto (los clientes adquieren las dependencias, no se les inyecta)
+
+Ejemplo: [Spring FactoryBean](http://www.baeldung.com/spring-factorybean)
 
 ## <span style="color:blue;">Discusión sobre la reutilización</span>
 
