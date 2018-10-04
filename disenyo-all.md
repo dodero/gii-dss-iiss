@@ -1,6 +1,16 @@
-# Diseño de Sistemas Software
+# DISEÑO DE SISTEMAS SOFTWARE
 
-## Problemáticas
+## Bloques
+
+1. Principios de diseño OO
+2. Patrones de diseño
+3. Arquitectura de software
+
+<a id="clase01"></a>
+
+## Introducción
+
+### Problemáticas
 
 - Variabilidad
 - Acoplamiento
@@ -9,21 +19,22 @@
 - Reutilización
 - Flexibilidad
 
-## Principios
+### Principios
 
 - Ocultación: OCP, ISP, LSP
 - Cohesión: SRP
 - Ortogonalidad: ISP
 - Delegación
 
-## Técnicas
+### Técnicas
 
 - Refactoring
 - Bibliotecas y frameworks
 - Contratos
 - Inyección de dependencias
+- Patrones
 
-## Paradigmas
+### Paradigmas
 
 - Estructurado (E. W. Dijsktra)
 - Objetos (O. J. Dahl & K. Nygaard)
@@ -31,18 +42,12 @@
 - Aspectos (G. Kiczales)
 - Eventos
 
-## Pregunta
+#### Pregunta
 
 _¿De qué fecha data cada paradigma?_
 _¿Cuál diríais que es el más antiguo?_
 
-## Bloques
-
-1. Principios de diseño OO
-2. Patrones de diseño
-3. Arquitectura de software
-
-### Respuesta
+#### Respuesta
 
 _¿De qué fecha data cada paradigma?_
 
@@ -50,7 +55,7 @@ _¿De qué fecha data cada paradigma?_
 - Objetos (O. J. Dahl & K. Nygaard, 1966)
 - Funcional (J. McCarthy, 1958)
 - Aspectos (G. Kiczales, 1997)
-- Eventos 
+- Eventos
 
 ## Casos prácticos
 
@@ -60,7 +65,7 @@ _¿De qué fecha data cada paradigma?_
 4. [Guitarras Paco](#guitarras)
 5. [Figuras geométricas](#figuras)
 
-# Caso práctico 1
+# CASO PRÁCTICO 1
 
 <a id="handler"></a>
 
@@ -89,7 +94,7 @@ _¿De qué fecha data cada paradigma?_
   }
 ```
 
-####Críticas:
+#### Críticas:
 
 - __Flexibilidad__: El Real Decreto 338/1990 regula el uso de NIFs en lugar de DNIs. ¡Hay que cambiar toda la implementación!
 
@@ -101,7 +106,7 @@ _¿De qué fecha data cada paradigma?_
     Empleado (String nif) {
       this.nif = nif
     }
-    int getNif() { return id; }
+    String getNif() { return id; }
     public String toString() { return nif; }
     public int compareTo(Empleado otro) {
        return nif.compareTo(otro.getNif());
@@ -112,7 +117,7 @@ _¿De qué fecha data cada paradigma?_
   }
 ```
 
-####Críticas:
+#### Críticas:
 
 - __Reutilización__: Posiblemente haya más situaciones (algunas futuras) donde hagan falta _identificadores_ que incluso pueden cambiar. Por ejemplo: números de la seguridad social, tarjetas de identidad, números de cuenta corriente, IBAN, etc.
 
@@ -187,7 +192,7 @@ __Consistencia con `equals`__:
 -  __Flexibilidad__: Adaptarse a cambios de requisitos y construir software fácil de cambiar
 -  __Reutilización__: Construir software fácil de reutilizar sin tener que cambiar los módulos ya escritos
 
-# Caso práctico 2
+# CASO PRÁCTICO 2
 
 <a id="junit"></a>
 
@@ -298,6 +303,8 @@ public class SaludoTest extends TestCase {
     }
 }
 ```
+
+<a id="clase02"></a>
 
 ### Diseño del framework jUnit
 
@@ -564,7 +571,7 @@ En la arquitectura del framework se observan diversos patrones: Composite, Comma
   - Cuando no se pueden eliminar las dependencias, mantener las abstractas e _inyectar_ las concretas.
   - **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
 
-# Caso práctico 3
+# CASO PRÁCTICO 3
 
 <a id="knights"></a>
 
@@ -743,7 +750,7 @@ No crear funciones reutilizables en primer lugar
 
 Aplicar el principio __YAGNI__: __You Ain't Gonna Need It__
 
-# Caso práctico 4
+# CASO PRÁCTICO 4
 
 <a id="guitarras"></a>
 
@@ -896,7 +903,7 @@ Paco dice que:
 
 Hacer refactoring de la aplicación heredada de Guitarras Paco
 
-# Caso práctico 5
+# CASO PRÁCTICO 5
 
 <a id="figuras"></a>
 
