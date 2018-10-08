@@ -614,7 +614,7 @@ public class HolyGrailQuest {
 
 ### Diseño de pruebas con jUnit 3
 
-¿Dónde está el acoplamiento?
+<span style="color:red;">¿Dónde está el acoplamiento?</span>
 
 ```java
 import junit.framework.TestCase;
@@ -669,7 +669,7 @@ public class HolyGrailQuest implements Quest {
 ```
 
 - El `Knight` aún recibe un tipo específico de `Quest`
-- ¿Debe ser el caballero responsable de obtener un desafío?
+- <span style="color:red;">¿Debe ser el caballero responsable de obtener un desafío?</span>
 
 ```java
 public class KnightOfTheRoundTable implements Knight {
@@ -702,16 +702,20 @@ public class KnightOfTheRoundTable implements Knight {
 
 - Es la base de la inyección de dependencias
 
-> The question is: "what aspect of control are they inverting?" [...] Early user interfaces were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With graphical (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework
+> The question is: _what aspect of control are they inverting?_ [...] Early **user interfaces** were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With **graphical** (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework.
 > 
-> <cite> Martin Fowler</cite>, http://martinfowler.com/articles/injection.html  
+> <cite> Martin Fowler, [IoC containers and the DI pattern](http://martinfowler.com/articles/injection.html) [1]</cite>
 
-- Una aplicación son dos o más clases que colaboran.
-- Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa que coordina los objetos.
+[1] http://martinfowler.com/articles/injection.html  
+
+#### IoC–Inversion of Control / DI–Dependency Injection
+
+- Una aplicación está compuesta por dos o más clases que colaboran.
+- Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa o **contenedor** que los coordina.
 - Inversión de la responsabilidad de cómo un objeto obtiene referencias a los objetos con los que colabora
-- Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su interfaz, no por su implementación, ni por cómo fueron instanciados. Entonces la dependencia puede cambiarse por una implementación distinta (incluso en tiempo de ejecución)
+- Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su interfaz, no por su implementación, ni por cómo fueron instanciados.
+- Entonces la dependencia puede cambiarse por una implementación distinta (incluso en **tiempo de ejecución**)
 - _Hollywood Principle: Don't call us, we'll call you"._
-
 
 ### Factorías
 
@@ -723,9 +727,9 @@ Ejemplo: [Spring FactoryBean](http://www.baeldung.com/spring-factorybean)
 
 > We most likely would have been better off not attempting to create a reusable function in the first place 
 >
-> -- <cite>Roger Sessions, The Misuse of Reuse [1]</cite>
+> -- <cite>Roger Sessions, [The Misuse of Reuse](http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html) [2]</cite>
 
-[1] http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html
+[2] http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html
 
 ### Factorizar una función
 
@@ -738,7 +742,6 @@ Ejemplo: [Spring FactoryBean](http://www.baeldung.com/spring-factorybean)
 __Ahorro__:
 
 Si $\exists s$ sistemas $\wedge ~ coste(Function~1) = c$ € $\Rightarrow$ ahorro = $c \times (s-1)$ €
-
 
 ### Amenazas (reales):
 
