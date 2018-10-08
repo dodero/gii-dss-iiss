@@ -8,7 +8,7 @@
 
 <a id="clase01"></a>
 
-## Introducción
+## <span style="color:blue;">Introducción</span>
 
 ### Problemáticas
 
@@ -44,8 +44,8 @@
 
 #### Pregunta
 
-_¿De qué fecha data cada paradigma?_
-_¿Cuál diríais que es el más antiguo?_
+<span style="color:red;">_¿De qué fecha data cada paradigma?_
+_¿Cuál diríais que es el más antiguo?_</span>
 
 #### Respuesta
 
@@ -57,7 +57,7 @@ _¿De qué fecha data cada paradigma?_
 - Aspectos (G. Kiczales, 1997)
 - Eventos
 
-## Casos prácticos
+## <span style="color:blue;">Casos prácticos</span>
 
 1. [Identificadores](#handler)
 2. [Framework de pruebas unitarias](#junit)
@@ -130,8 +130,7 @@ _¿De qué fecha data cada paradigma?_
     `String`, etc.) hacia cualquier tipo básico o clase primitiva,
     sencilla o compuesta.
 
-
-## Patrón Handler
+## <span style="color:blue;">Patrón Handler</span>
 
 ![Diseño de un handler](./figuras/handler.png)
 
@@ -142,7 +141,7 @@ _¿De qué fecha data cada paradigma?_
 - __ConcreteHandler__: Implementación concreta de la interfaz `Handler`
 
 
-### Implementación del patrón
+#### Implementación del patrón
 
 ```java
   interface Handler{
@@ -163,7 +162,7 @@ _¿De qué fecha data cada paradigma?_
   }
 ```
 
-## Ejercicio: `java.lang.Comparable`
+### Ejemplo: Identificadores en Java – `java.lang.Comparable`
 
 Implementar un identificador utilizando `java.lang.Comparable` del JDK.
 
@@ -187,7 +186,7 @@ __Consistencia con `equals`__:
 
 `(x.compareTo(y)=0)` $\Leftrightarrow$ `(x.equals(y))`
 
-## Reutilización y flexibilidad
+## <span style="color:blue;">Reutilización y flexibilidad</span>
 
 -  __Flexibilidad__: Adaptarse a cambios de requisitos y construir software fácil de cambiar
 -  __Reutilización__: Construir software fácil de reutilizar sin tener que cambiar los módulos ya escritos
@@ -201,7 +200,8 @@ __Consistencia con `equals`__:
 - JUnit es un framework en Java que sirve para diseñar, construir y ejecutar **pruebas unitarias**
 - Una prueba unitaria comprueba la corrección de un _módulo_ de software en cuanto a funcionalidades que ofrece.
 - En el caso de Java, las pruebas unitarias comprueban la corrección de cada uno de los métodos de _cada clase_.
-- ¿Cómo funciona?
+
+<span style="color:red;">¿Cómo funciona?</span>
 
 ### ¿Cómo probar `Saludo.java`?
 
@@ -513,6 +513,10 @@ public class ShoppingCartTest {
   }
 ```
 
+### <span style="color:red;">Ejercicio: CreditCardTest</span>
+
+Diseñar y codificar una suite de casos de prueba unitaria para `CreditCard` usando jUnit 4.
+
 ### Arquitectura del framework
 
 ![Clases del framework jUnit](./figuras/junit-patterns.png)
@@ -525,13 +529,17 @@ En la arquitectura del framework se observan diversos patrones: Composite, Comma
 
 ![Flujo de control en una biblioteca](./figuras/biblioteca.png)
 
+#### Flujo de control en un framework
+
+![Flujo de control en una framework](./figuras/framework.png)
+
 ### <span style="color:blue;">Frameworks</span>
 
 #### Definición de *framework*
 
 > Colección de clases e interfaces que cooperan para formar un diseño reutilizable de un tipo específico de software
 > 
-> -- <cite>[E. Gamma et al.](#gamma)</cite>
+> –– <cite>[E. Gamma et al.](bibliografia.html#gamma)</cite>
 
 - El framework proporciona unas guías arquitectónicas (diseño empaquetado) para dividir el diseño en clases abstractas y definir sus _responsabilidades_ y _colaboraciones_.
 - El framework se debe personalizar definiendo subclases y combinando instancias, o bien configurando valores que definen el comportamiento por defecto
@@ -554,22 +562,19 @@ En la arquitectura del framework se observan diversos patrones: Composite, Comma
 - Flujo de control invertido
 - Programador cliente (código específico) vs. programador de bibliotecas (código reutilizable)
 
-#### Flujo de control en un framework
-
-![Flujo de control en una framework](./figuras/framework.png)
-
 ### Principios y técnicas de un framework
 
-- Abstracción
+- **Abstracción**
   - Clases y componentes abstractos
   - Interfaces abiertas
   - Uso de patrones de diseño
   - Componentes de un dominio específico
 
-- Máxima cohesión, mínimo acoplamiento
+- Máxima **cohesión**, mínimo **acoplamiento**
   - Minimizar dependencias: Una clase presenta una dependencia con otra clase si la primera usa una instancia de la segunda.
   - Cuando no se pueden eliminar las dependencias, mantener las abstractas e _inyectar_ las concretas.
-  - **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
+
+- **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
 
 # CASO PRÁCTICO 3
 
@@ -577,7 +582,7 @@ En la arquitectura del framework se observan diversos patrones: Composite, Comma
 
 ## Ejemplo: Caballeros de la mesa redonda
 
-### Tomado de <a id="bibliografia.html#spring">Spring in Action</a>
+**Tomado de [Spring in Action](bibliografia.html#spring)**
 
 Añadir pruebas unitarias a la solución siguiente:
 
