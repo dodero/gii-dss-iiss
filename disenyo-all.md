@@ -15,7 +15,7 @@
 - Variabilidad
 - Acoplamiento
 - Complejidad
-- Robustez 
+- Robustez
 - Reutilización
 - Flexibilidad
 
@@ -694,6 +694,11 @@ public class KnightOfTheRoundTable implements Knight {
 
 ![](./figuras/di-knight.png)
 
+<span style="color:red;">Ejercicio: Discutir el tipo de retorno `Object` de `embarkonQuest`:</span>
+
+- Puede provocar `ClassCastException`
+- Solución: rediseñar la interfaz `Quest`
+
 ## <span style="color:blue;">Inyección de dependencias</span>
 
 ![](./figuras/dep-injection.png)
@@ -703,7 +708,7 @@ public class KnightOfTheRoundTable implements Knight {
 - Es la base de la inyección de dependencias
 
 > The question is: _what aspect of control are they inverting?_ [...] Early **user interfaces** were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With **graphical** (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework.
-> 
+>
 > <cite> Martin Fowler, [IoC containers and the DI pattern](http://martinfowler.com/articles/injection.html) [1]</cite>
 
 [1] http://martinfowler.com/articles/injection.html  
