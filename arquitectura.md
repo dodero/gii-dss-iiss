@@ -28,7 +28,20 @@ La finalidad de la arquitectura es facilitar el desarrollo, despliegue, operaci�
 
 ## Implicaciones de SOLID en arquitectura
 
+### SRPen arquitectura
+
+> A module should be responsible to one, and only one, user/stakeholder/actor.
+> <cite>––Robert C. Martin (2018): [Clean Architecture: A Craftsman's Guide to Software Structure and Design](bibliografia.html#cleanarch)</cite>. 
+
+[Bob Martin's](bibliografia.html#cleanarch) chapter 7
+
+### OCP en arquitectura
+
+[Bob Martin's](bibliografia.html#cleanarch) chapter 8
+
 ### LSP en arquitectura
+
+[Bob Martin's](bibliografia.html#cleanarch) chapter 9
 
 Al pricipio de la OO, el principio LSP nació ligado al uso de la herencia para el diseño software. Hoy día, se considera más ligado al diseño de interfaces e implementaciones:
 
@@ -65,6 +78,8 @@ La LSP debería extenderse hasta el nivel arquitectónico. Una violación de la 
 
 ### ISP en arquitectura
 
+[Bob Martin's](bibliografia.html#cleanarch) chapter 10
+
 ISP = es pernicioso depender de módulos que contienen más de lo que se necesita. Esto es cierto también a nivel arquitectónico
 
 Supongamos que un sistema $S$ quiere incluir un framework $F$ y que los creadores de $F$ lo han acoplado a una base de datos $D$:
@@ -77,6 +92,11 @@ Si $D$ contiene características que $F$ no usa y que a $S$ tampoco le interesan
 - los fallos en $D$ causarán fallos en $F$ y $S$.
 
 Depender de algo que trae "equipaje" que no se necesita puede ser origen de problemas.
+
+### DIP en arquitectura
+
+[Bob Martin's](bibliografia.html#cleanarch) chapter 11
+
 
 ## Principios de Cohesión
 

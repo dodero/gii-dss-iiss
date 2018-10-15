@@ -20,3 +20,5 @@ C. Walls & R. Breidenbach. <a id="spring">Spring in Action.</a> Manning Publicat
 T. DeMarco. <a id="demarco">Structured Analysis and System Specification</a>. Yourdon Press, 1979.
 
 Robert C. Martin & Micah Martin. <a id="unclebob">Agile Principles, Patterns and Practices in C#</a>, Prentice Hall, 2006.
+
+Robert C. Martin. <a id="cleanarch">Clean Architecture: A Craftsman's Guide to Software Structure and Design</a>, Prentice Hall, 2018.

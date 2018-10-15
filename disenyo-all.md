@@ -65,7 +65,7 @@ _¿De qué fecha data cada paradigma?_
 4. [Guitarras Paco](#guitarras)
 5. [Figuras geométricas](#figuras)
 
-# CASO PRÁCTICO 1
+# CASO PRÁCTICO 1: identificadores
 
 <a id="handler"></a>
 
@@ -191,7 +191,7 @@ __Consistencia con `equals`__:
 -  __Flexibilidad__: Adaptarse a cambios de requisitos y construir software fácil de cambiar
 -  __Reutilización__: Construir software fácil de reutilizar sin tener que cambiar los módulos ya escritos
 
-# CASO PRÁCTICO 2
+# CASO PRÁCTICO 2: pruebas unitarias
 
 <a id="junit"></a>
 
@@ -576,7 +576,7 @@ En la arquitectura del framework se observan diversos patrones: Composite, Comma
 
 - **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
 
-# CASO PRÁCTICO 3
+# CASO PRÁCTICO 3: caballeros de la mesa redonda
 
 <a id="knights"></a>
 
@@ -763,7 +763,7 @@ No crear funciones reutilizables en primer lugar
 
 Aplicar el principio __YAGNI__: __You Ain't Gonna Need It__
 
-# CASO PRÁCTICO 4
+# CASO PRÁCTICO 4: guitarras
 
 <a id="guitarras"></a>
 
@@ -916,11 +916,22 @@ Paco dice que:
 
 Hacer refactoring de la aplicación heredada de Guitarras Paco
 
-# CASO PRÁCTICO 5
+# CASO PRÁCTICO 5: figuras geométricas
 
 <a id="figuras"></a>
 
-## Figuras geométricas
+## <span style="color:blue;">Principios SOLID</span>
+
+Los principios SOLID nos dicen:
+
+- Cómo organizar en _módulos_ (en OO, _clases_) las estructuras de datos y las funciones
+- Cómo deben quedar _interconectadas_ las clases
+
+El objetivo de SOLID es crear estructuras software de nivel intermedio que sean:
+
+- tolerantes a los cambios
+- fáciles de comprender
+- la base de componentes útiles para muchos sistemas software
 
 [Uncle Bob Martin principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design))
 
@@ -930,8 +941,8 @@ Hacer refactoring de la aplicación heredada de Guitarras Paco
 
 __SRP: *Single responsibility Principle*__
 
-> A class should have onlye one reason to change
-> <cite>-- Uncle Bob Martin</cite>
+> A class should have only one reason to change
+> <cite>–– Uncle Bob Martin</cite>
 
 - Una clase que modela múltiples aspectos genera acoplamiento entre los distintos aspectos
 - Un cambio en algún aspecto obligará a cambios accidentales en los clientes que no dependen de dicho aspecto
@@ -940,13 +951,15 @@ __SRP: *Single responsibility Principle*__
 
 SRP es lo mismo que el principio de __cohesión__ de [DeMarco](bibliografia.html#demarco)
 
+Consecuencia de la [ley de Conway](http://www.melconway.com/Home/Committees_Paper.html):
+> Organizations which design systems [...] are constrained to produce designs which are copies of the communication structures of these organizations.
+> <cite>–– M. Conway</cite>
+
+[comment]: http://www.melconway.com/Home/Committees_Paper.html
+
 ### Ejemplo: Shapes v1 en Java
 
 <a id="shapesV1"></a>
-
-- ¿Cuántas responsabilidades tienen las clases que implementan la interfaz `Shape`?
-- ¿Cuáles son estas responsabilidades?
-- ¿Qué parte no cumple SRP en el ejemplo? 
 
 ```java
 package shapes;
@@ -1001,16 +1014,32 @@ class Ellipse extends ClosedCurve {
 }
 ```
 
+#### <span style="color:red;">Preguntas</code>
+
+- ¿Cuántas responsabilidades tienen las clases que implementan la interfaz `Shape`?
+- ¿Cuáles son estas responsabilidades?
+- ¿Qué parte no cumple SRP en el ejemplo? 
+
+#### <span style="color:grey;">Respuestas</code>
+
 - Dos responsabilidades: geometría computacional + dibujo en pantalla
 - Todas las figuras tienen métodos `draw` y `toString` (dibujar en pantalla) además del método `area` que calcula el área (geometría computacional) $\rightarrow$ Violación del SRP
 
 #### Solución
 
-Patrones de diseño: _visitor_
+Patrones de diseño: _Visitor_
 
-#### Otros ejemplos
+#### Ejercicio
 
-- ActiveRecord viola SRP. Sustituir por DAO
+- Buscar información de los patrones _ActiveRecord_ y _Data Access Object (DAO)_.
+- Discutir si cumplen o violan el SRP.
+
+#### Implicaciones arquitectónicas
+
+> A module should be responsible to one, and only one, user/stakeholder/actor.
+> <cite>––Robert C. Martin (2018): [Clean Architecture: A Craftsman's Guide to Software Structure and Design](bibliografia.html#cleanarch)</cite>. 
+
+
 
 ## <span style="color:blue;">Principio de Abierto-Cerrado</span>
 
@@ -1020,9 +1049,11 @@ __OCP: *Open-Closed Principle*__
 > 
 > <cite>B. Meyer, [Object Oriented Software Construction](#meyer)</cite>
 
+Para que un sistema software sea fácil de cambiar, debe diseñarse para que permita cambiar el comportamiento del sistema añadiendo código, no cambiando código existente.
+
 - Si un cambio en un sitio origina una cascada de cambios en otros puntos del sistema, el resultado es un sistema frágil y rígido
 - Es difícil averiguar todos los puntos que requieren cambios
--   Código cerrado para modificaciones, pero abierto para extensión mediante delegación en vertical (subclases) u horizontal (composición)
+- Código cerrado para modificaciones, pero abierto para extensión mediante delegación en vertical (subclases) u horizontal (composición)
 
 
 ### Ejemplo: Shapes versión 2 en C++
@@ -1120,6 +1151,10 @@ public void DrawAllShapes(IList shapes)
 > Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
 > 
 > <cite>-- Bob C. Martin</cite>
+
+#### Implicaciones arquitectónicas
+
+OCP es un principio más arquitectónico que de diseño de clases y módulos. Lo veremos más adelante...
 
 ## <span style="color:blue;">Principo de segregación de interfaces</span>
 
