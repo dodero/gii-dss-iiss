@@ -1034,13 +1034,6 @@ Patrones de diseño: _Visitor_
 - Buscar información de los patrones _ActiveRecord_ y _Data Access Object (DAO)_.
 - Discutir si cumplen o violan el SRP.
 
-#### Implicaciones arquitectónicas
-
-> A module should be responsible to one, and only one, user/stakeholder/actor.
-> <cite>––Robert C. Martin (2018): [Clean Architecture: A Craftsman's Guide to Software Structure and Design](bibliografia.html#cleanarch)</cite>. 
-
-
-
 ## <span style="color:blue;">Principio de Abierto-Cerrado</span>
 
 __OCP: *Open-Closed Principle*__
@@ -1238,7 +1231,7 @@ __Delegación__ a través del patrón adapter (de objetos o de clases)
 
   ![Puertas de seguridad - adaptador de objetos](./figuras/isp-timer-door-object-adapter.png)  
 
-## Aplicación de OCP y SRP
+## Aplicación de OCP y SRP con aspectos
 
 ### Ejemplo: [Shapes versión 1](#shapesV1)
 

@@ -20,7 +20,7 @@
 
 - [Herencia](#herencia)
 - [Polimorfismo](#polimorfismo)
-- [Composición](#compisicion)
+- [Composición](#composicion)
 - [Inyección de dependencias](#inyeccion)
 - [Refactoring](#refactoring)
   - [Código duplicado](#duplcode)
@@ -924,10 +924,6 @@ public interface Comparable<T> {
 
 - Consistencia con `equals` (no obligatoria): `(x.compareTo(y)=0)`$\Leftrightarrow$`(x.equals(y))`
 
-Cuando una clase hereda de una clase concreta que implementa `Comparable` y le añade un campo significativo para la comparación, no se puede construir una implementación correcta de `compareTo`. La única alternativa entonces es la composición en lugar de la herencia.
-
-Una alternativa a implementar `Comparable` es pasar un `Comparator` como parámetro (se prefiere __composición__ frente a __herencia__).
-
 ##### Implementación en Java 1.5
 
 - Utilizando _templates_
@@ -946,6 +942,7 @@ public final class BankAccount implements Comparable<BankAccount> {
   @Override
   public int compareTo(BankAccount other) {
     if (this == other) return 0;
+    if (!(other instanceof BankAccount)) return false;
     assert this.equals(other) : "compareTo inconsistent with equals.";
     return this.id.compareTo(other.getId());
   }
@@ -986,6 +983,7 @@ public final class BankAccount implements Comparable {
     String getId() { return id; }
     public int compareTo(Object other) {
       if (this == other) return 0;
+      if (!(other instanceof BankAccount)) return false;
       BankAccount that = (BankAccount)other;
       assert this.equals(that) : "compareTo inconsistent with equals.";
       return this.id.compareTo(that.getId());
@@ -993,7 +991,7 @@ public final class BankAccount implements Comparable {
   public boolean equals(Object other) {
     if (this == other) return true;
     if (!(other instanceof BankAccount)) return false;
-    that = (BankAccount)other:
+    BankAccount that = (BankAccount)other:
     return  ( this.id.equals(that.getId()) );
    }
   public int hashCode() {
@@ -1006,6 +1004,10 @@ public final class BankAccount implements Comparable {
    }
 }
 ```
+
+Cuando una clase hereda de una clase concreta que implementa `Comparable` y le añade un campo significativo para la comparación, no se puede construir una implementación correcta de `compareTo`. La única alternativa entonces es la composición en lugar de la herencia.
+
+Una alternativa a implementar `Comparable` es pasar un `Comparator` como parámetro (se prefiere __composición__ frente a __herencia__).
 
 # Caso 3 - Inyección de dependencias
 
