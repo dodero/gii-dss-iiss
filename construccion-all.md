@@ -942,7 +942,6 @@ public final class BankAccount implements Comparable<BankAccount> {
   @Override
   public int compareTo(BankAccount other) {
     if (this == other) return 0;
-    if (!(other instanceof BankAccount)) return false;
     assert this.equals(other) : "compareTo inconsistent with equals.";
     return this.id.compareTo(other.getId());
   }
@@ -951,13 +950,7 @@ public final class BankAccount implements Comparable<BankAccount> {
     if (this == other) return true;
     if (!(other instanceof BankAccount)) return false;
     BankAccount that = (BankAccount)other;
-    return  ( this.id.equals((that.getId()) );
-   }
-  @Override
-  public int hashCode() {
-    int result = HashCodeUtil.SEED;
-    result = HashCodeUtil.hash( result, id );
-    return result;
+    return this.id.equals(that.getId());
    }
   @Override
   public String toString() {
@@ -983,7 +976,7 @@ public final class BankAccount implements Comparable {
     String getId() { return id; }
     public int compareTo(Object other) {
       if (this == other) return 0;
-      if (!(other instanceof BankAccount)) return false;
+      assert (other instanceof BankAccount) : "compareTo comparing objects of different type";
       BankAccount that = (BankAccount)other;
       assert this.equals(that) : "compareTo inconsistent with equals.";
       return this.id.compareTo(that.getId());
@@ -991,13 +984,8 @@ public final class BankAccount implements Comparable {
   public boolean equals(Object other) {
     if (this == other) return true;
     if (!(other instanceof BankAccount)) return false;
-    BankAccount that = (BankAccount)other:
+    BankAccount that = (BankAccount)other;
     return  ( this.id.equals(that.getId()) );
-   }
-  public int hashCode() {
-    int result = HashCodeUtil.SEED;
-    result = HashCodeUtil.hash( result, id );
-    return result;
    }
    public String toString() {
       return id.toString();
