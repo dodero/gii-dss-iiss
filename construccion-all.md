@@ -924,7 +924,7 @@ public interface Comparable<T> {
 
 - Consistencia con `equals` (no obligatoria): `(x.compareTo(y)=0)`$\Leftrightarrow$`(x.equals(y))`
 
-##### Implementación en Java 1.5
+##### Identificador de BankAccount: Implementación en Java 1.5
 
 - Utilizando _templates_
 - Delegar en `compareTo` y `equals` del tipo de id _envuelto_ (e.g. `String`)
@@ -959,7 +959,7 @@ public final class BankAccount implements Comparable<BankAccount> {
 }
 ```
 
-##### Implementación en Java 1.4
+##### Identificador de BankAccount: Implementación en Java 1.4
 
 - No hay plantillas. La genericidad se consigue con `Object`. Hay que hacer casting.
 - Cuidado con `Boolean` que no implementa `Comparable` en JDK 1.4
@@ -995,7 +995,29 @@ public final class BankAccount implements Comparable {
 
 Cuando una clase hereda de una clase concreta que implementa `Comparable` y le añade un campo significativo para la comparación, no se puede construir una implementación correcta de `compareTo`. La única alternativa entonces es la composición en lugar de la herencia.
 
-Una alternativa a implementar `Comparable` es pasar un `Comparator` como parámetro (se prefiere __composición__ frente a __herencia__).
+Una alternativa (no excluyente) a implementar `Comparable` es pasar un `Comparator` como parámetro (se prefiere __composición__ frente a __herencia__):
+
+- Si `BankAccount` implementa `Comparable`:
+
+  ```java
+  class BankAccountComparator implements java.util.Comparator<BankAccount> {
+      public int compare(BankAccount o1, BankAccount o2) {
+          return compareTo(o1, o2);
+      }
+  }
+  ```
+
+- Si `BankAccount` no implementa `Comparable`:
+
+  ```java
+  class BankAccountComparator implements java.util.Comparator<BankAccount> {
+      public int compare(BankAccount o1, BankAccount o2) {
+          return compareTo(o1.getId(), o2.getId());
+      }
+  }
+  ```
+
+<span style="color:red;">¿Qué ventajas tiene la opción que usa __Composición__ frente a la que usa __Herencia (estática)__?</span>
 
 # Caso 3 - Inyección de dependencias
 
@@ -1194,6 +1216,94 @@ public class MyPart {
 ```
 
 Esta clase sigue usando `new` para ciertos elementos de la interfaz. Esto significa que no pensamos reemplazarlos ni siquiera para hacer pruebas.
+
+### Ejercicio: Identificador de BankAccount con inyección de dependencias
+
+Supongamos que queremos obtener un listado ordenado por fecha de creación de las cuentas bancarias.
+
+<span style="color:red;">¿Cómo afecta este cambio a al versión de `BankAccount` ya implementada con JDK 1.5? Resolver mediante inyección de dependencias</span>
+
+`BankAcccount.java`:
+
+```java
+import java.util.*;
+import java.io.*;
+import java.time.*;
+
+public final class BankAccount implements Comparable<BankAccount> {
+  private final String id;
+  private LocalDate creationDate;
+  private Comparator comparator;
+
+  public BankAccount(String number) {
+    this.id = number;
+    comparator = new BankAccountComparator();
+  }
+
+  public LocalDate getCreationDate() {
+    return creationDate;
+  }
+
+  public void setCreationDate(LocalDate date) {
+    this.creationDate = date;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setComparator(Comparator cmp) {
+    comparator = cmp;
+  }
+
+  @Override
+  public int compareTo(BankAccount other) {
+    if (this == other)
+      return 0;
+    assert this.equals(other) : "compareTo inconsistent with equals.";
+    return comparator.compare(this, other);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other)
+      return true;
+    if (!(other instanceof BankAccount))
+      return false;
+    BankAccount that = (BankAccount) other;
+    return this.id.equals(that.getId());
+  }
+
+  @Override
+  public String toString() {
+    return id.toString();
+  }
+}
+```
+
+`BankAcccountComparator.java`:
+
+```java
+import java.util.*;
+
+class BankAccountComparator implements Comparator<BankAccount> {
+    public int compare(BankAccount o1, BankAccount o2) {
+        return compare(o1, o2);
+    }
+}
+```
+
+`BankAcccountComparatorByCreationDate.java`:
+
+```java
+import java.util.*;
+
+class BankAccountComparatorByCreationDate implements Comparator<BankAccount> {
+    public int compare(BankAccount o1, BankAccount o2) {
+        return o1.getCreationDate().compareTo(o2.getCreationDate());
+    }
+}
+```
 
 ### Decoradores en TypeScript
 
