@@ -22,3 +22,5 @@ T. DeMarco. <a id="demarco">Structured Analysis and System Specification</a>. Yo
 Robert C. Martin & Micah Martin. <a id="unclebob">Agile Principles, Patterns and Practices in C#</a>, Prentice Hall, 2006.
 
 Robert C. Martin. <a id="cleanarch">Clean Architecture: A Craftsman's Guide to Software Structure and Design</a>, Prentice Hall, 2018.
+
+Nathan Rozentals. <a id="typescript">Mastering TypeScript</a>, Packt Publishing, 2nd edition, 2017

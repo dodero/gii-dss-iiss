@@ -1002,7 +1002,7 @@ Una alternativa (no excluyente) a implementar `Comparable` es pasar un `Comparat
   ```java
   class BankAccountComparator implements java.util.Comparator<BankAccount> {
       public int compare(BankAccount o1, BankAccount o2) {
-          return compareTo(o1, o2);
+          return o1.compareTo(o2);
       }
   }
   ```
@@ -1012,7 +1012,7 @@ Una alternativa (no excluyente) a implementar `Comparable` es pasar un `Comparat
   ```java
   class BankAccountComparator implements java.util.Comparator<BankAccount> {
       public int compare(BankAccount o1, BankAccount o2) {
-          return compareTo(o1.getId(), o2.getId());
+          return compare(o1.getId(), o2.getId());
       }
   }
   ```
@@ -1237,7 +1237,7 @@ public final class BankAccount implements Comparable<BankAccount> {
 
   public BankAccount(String number) {
     this.id = number;
-    comparator = new BankAccountComparator();
+    comparator = new BankAccountComparatorById();
   }
 
   public LocalDate getCreationDate() {
@@ -1281,14 +1281,14 @@ public final class BankAccount implements Comparable<BankAccount> {
 }
 ```
 
-`BankAcccountComparator.java`:
+`BankAcccountComparatorById.java`:
 
 ```java
 import java.util.*;
 
-class BankAccountComparator implements Comparator<BankAccount> {
+class BankAccountComparatorById implements Comparator<BankAccount> {
     public int compare(BankAccount o1, BankAccount o2) {
-        return compare(o1, o2);
+        return o1.getId().compareTo(o2.getId());
     }
 }
 ```
@@ -1307,14 +1307,14 @@ class BankAccountComparatorByCreationDate implements Comparator<BankAccount> {
 
 ### Decoradores en TypeScript
 
-Los decoradores de TypeScript son una forma de modificar programáticamente la definición de una clase
+Los decoradores de TypeScript son una forma de modificar programáticamente la definición de una clase.
 
-La definición de una clase describe la _forma_ de la clase, es decir, sus métodos y propiedades. Sólo cuando se instancie la clase, estas propiedades y métodos estarán disponibles.
+La definición de una clase describe la __forma__ de la clase, es decir, sus métodos y propiedades. Sólo cuando se instancie la clase, estas propiedades y métodos estarán disponibles.
 
-
-Los __decoradores__ permiten inyectar código en la definición real de una clase.
+Los decoradores permiten __inyectar__ código en la definición real de una clase.
 
 Pueden emplearse sobre:
+
 - definiciones de clase
 - definiciones de propiedades
 - definiciones de funciones
@@ -1430,6 +1430,10 @@ decorator function called with: testName
 - Decoradores de propiedades estáticas
 - Decoradores de métodos
 - Decoradores de parámetros
+
+#### Lectura recomendada
+
+Nathan Rozentals: <a href="https://www.packtpub.com/mapt/book/application_development/9781786468710">Mastering TypeScript</a>, Packt Publishing, 2nd edition, 2017
 
 # Caso 4 - Código duplicado
 
