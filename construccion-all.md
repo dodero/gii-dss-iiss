@@ -1640,11 +1640,29 @@ Nathan Rozentals: <a href="https://www.packtpub.com/mapt/book/application_develo
 >
 > A change made to the internal structure of the software to make it easier to understand and cheaper to modify without changing its observable behavior
 >
-> – <cite>[M. Fowler (1999): Refactoring...](bibliografia.html#refactoring)</cite>
+> – <cite>[M. Fowler (2008): Refactoring...](bibliografia.html#refactoring)</cite>
 
 
 - Pequeñas transformaciones
 - Mantienen el sistema funcional
+
+<span style="color:red;">¿Cuál es la primera razón para hacer refactoring?</span>
+
+### Motivos para refactoring
+
+- **Código duplicado**
+- Rutinas demasiado largas
+- Bucles demasiado largos o demasiado anidados
+- Clases poco cohesionadas
+- Interfaz de una clase con un nivel de abstracción poco consistente
+- Demasiados parámetros en una lista de parámetros
+- Muchos cambios en una clase tienden a estar compartimentalizados (afectan solo a una parte)
+- Muchos cambios requieren modificaciones en paralelo a varias clases
+- Hay que cambiar jerarquías de herencia en paralelo
+- Hay que cambiar muchas sentencias _case_ en paralelo
+- Etc.
+
+Véase [McConnell(2004): Code Complete](bibliografia.html#codecomplete)
 
 ## <span style="color:blue;">Código duplicado</span>
 
@@ -1664,14 +1682,26 @@ Nathan Rozentals: <a href="https://www.packtpub.com/mapt/book/application_develo
 
 ### <span style="color:blue;">Principio DRY – *Don't Repeat Yourself!*</span>
 
+by [Hunt & Thomas (1999)](bibliografia.html#pragmatic)
+
+> Copy and paste is a design error
+>
+> – <cite> McConnell (1998) </cite>
+
 ### Duplicación impuesta
 
-La gestión del proyecto así nos lo exige:
+La gestión del proyecto así nos lo exige. Algunos ejemplos:
 
-- Representaciones múltiples de la información – v.g. un TAD para guardar elementos de distintos tipos; el esquema de una BD configurado en la BD y en el código fuente a través de un [ORM](http://www.agiledata.org/essays/mappingObjects.html)
-- Documentación del código – v.g. código incrustado en javadocs
-- Casos de prueba
-- Características del lenguaje (v.g. C/C++ header files, IDL specs)
+- Representaciones múltiples de la información:
+  - un TAD para guardar elementos de distintos tipos;
+  - el esquema de una BD configurado en la BD y en el código fuente a través de un [ORM](http://www.agiledata.org/essays/mappingObjects.html)
+- Documentación del código:
+  - código incrustado en javadocs
+- Casos de prueba:
+  - pruebas unitarias con jUnit
+- Características del lenguaje:
+  - C/C++ header files
+  - IDL specs
 
 #### Técnicas de solución
 
@@ -1699,7 +1729,9 @@ Fuente de numerosos problemas de integración.
   }
 ``` 
 
-¿Dónde está la duplicación?
+<span style="color:red;">¿Dónde está la duplicación?</span>
+
+Realmente `length` ya está definido con `start`y `end`. <span style="color:red;">¿Mejor así...?</span>
 
 ```java
   public class Line {
@@ -1711,7 +1743,7 @@ Fuente de numerosos problemas de integración.
   }
 ```  
 
-¿Es conveniente aplicar siempre DRY?
+<span style="color:red;">¿Es conveniente aplicar siempre DRY?</span>
 
 A veces se puede optar por violar DRY por razones de rendimiento.
 
@@ -1808,7 +1840,8 @@ Dos componentes A y B son ortogonales ($A \perp B$) si los cambios en uno no afe
 
 #### Menor riesgo
 
-- Defectos aislados. Menor __fragilidad__ del sistema global
+- Defectos aislados, más fáciles de arreglar
+- Menor __fragilidad__ del sistema global, los problemas provocados por cambios en un área se limitan a ese área
 - Más fácil de __probar__, pues será más fácil construir pruebas individuales de cada uno de sus componentes (e.g. _mocking_ es más sencillo)
 
 ### Niveles de aplicación de la ortogonalizad
@@ -1827,10 +1860,13 @@ A nivel de _diseño_, los patrones de diseño y las arquitecturas como MVC facil
 
 Técnicas de codificación para fomentar la ortogonalidad:
 
-- Evitar datos globales y _singletons_: v.g. ¿y si hay que hacer una versión *multithreaded* de una aplicación?
-- Usar métodos plantilla y estrategias — Aplicar DRY
-- Desacoplar: Ley de <span>*Demeter*</span>—No hables con extraños
-- Inyectar: pasar explícitamente el contexto (dependencia) como parámetro a los constructores
+- Hacer **refactoring**
+- Codificar **patrones** de diseño: strategy, template method, etc.
+- Evitar datos globales y __singletons__: ¿qué pasaría si hubiera que hacer una versión *multithreaded* de una aplicación?
+- **Inyectar**: pasar explícitamente el contexto (dependencia) como parámetro a los constructores
+- Usar **anotaciones** (Java), decoradores (JavaScript) o atributos (C#)
+- **Desacoplar**: Ley de <span>*Demeter*</span>—No hables con extraños
+- Usar programación orientada a **aspectos**
 
 #### Desacoplar - ley de Demeter
 

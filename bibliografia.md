@@ -2,8 +2,7 @@
 
 A. Hunt & D. Thomas. <a id="pragmatic">The Pragmatic Programmer.</a> Addison-Wesley, 1999.
 
-M. Fowler, K. Beck, J. Brant, W. Opdyke & D. Roberts. <a id="refactoring">Refactoring. Improving the Design of Existing Code.</a> Addison-Wesley,
-2008.
+M. Fowler. <a id="refactoring">Refactoring. Improving the Design of Existing Code.</a> Addison-Wesley, 2nd Edition, 2008.
 
 E. Yourdon & L. Constantine. <a id="yourdon">Structured Design: Fundamentals of a Discipline of Computer Program and Systems Design.</a> Prentice Hall, 2nd edition, 1986.
 
@@ -24,3 +23,5 @@ Robert C. Martin & Micah Martin. <a id="unclebob">Agile Principles, Patterns and
 Robert C. Martin. <a id="cleanarch">Clean Architecture: A Craftsman's Guide to Software Structure and Design</a>, Prentice Hall, 2018.
 
 Nathan Rozentals. <a id="typescript">Mastering TypeScript</a>, Packt Publishing, 2nd edition, 2017
+
+Steve McConnel. <a id="codecomplete">Code Complete: A practical handbook of software construction</a>, 2nd edition, 2004.
