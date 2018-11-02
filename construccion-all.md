@@ -327,6 +327,54 @@ Hay diversas técnicas para ocultar la implementación...
    }
 ```
 
+### Uso correcto de la herencia
+
+Hay dos formas de contemplar la herencia:
+
+- Como **tipo**:
+    - Las clases son tipos y las subclases son subtipos
+    - Las clases satisfacen la propiedad de __substitución__ (LSP, Liskov Substitution Principle): toda operación que funciona para un objeto de la clase C también debe funcionar para un objeto de una subclase de C
+
+- Como **estructura**:
+    - La herencia se usa como una forma cualquiera de estructurar programas
+    - Esta visión es **errónea**, pues provoca que no se satisfaga la propiedad LSP
+
+#### Ejemplo: herencia como estructura
+
+```java
+class Account {
+  float balance;
+  float getBalance() { return balance; }
+  void transferIn (float amount) { balance -= amount; }
+}
+
+class VerboseAccount extends Account {
+  void verboseTransferIn (float amount) {
+    super.transferIn(amount);
+    System.out.println("Balance: "+balance);
+  };
+}
+
+class AccountWithFee extends VerboseAccount {
+  float fee = 1;
+  void transferIn (float amount) { super.verboseTransferIn(amount-fee); }
+}
+```
+
+- Todos los objetos $a$ de la clase `Account` deben cumplir que si $b=a.getBalance()$ antes de ejecutar $a.transferIn(s)$ y  $b´=a.getBalance()$ después de ejecutar $a.transferIn(s)$, entonces $b+s=b´$.
+- Sin embargo, con la estructura `AccountWihFee` < `VerboseAccount` < `Account`, un objeto de tipo `AccountWithFee` no funciona bien cuando se contempla como un objeto `Account`. Considérese la siguiente secuencia:
+
+```java
+void f(Account a) {
+  float before = a.getBalance();
+  a.transferIn(10);
+  float after = a.getBalance();
+  // Suppose a is of type AccountWithFee:
+  //   before + 10 != after    !!
+  //   before + 10-1 = after
+}
+```
+
 ## <span style="color:blue">Polimorfismo</span>
 
 <a id="polimorfismo"></a>
@@ -938,7 +986,7 @@ public final class BankAccount implements Comparable<BankAccount> {
   public BankAccount (String number)  {
     this.id = number;
   }
-  String getId() { return id; }
+  public String getId() { return id; }
   @Override
   public int compareTo(BankAccount other) {
     if (this == other) return 0;
@@ -969,27 +1017,27 @@ import java.util.*;
 import java.io.*;
 
 public final class BankAccount implements Comparable {
-    private final String id;
-    public BankAccount (String number)  {
-      this.id = number;
-    }
-    String getId() { return id; }
-    public int compareTo(Object other) {
-      if (this == other) return 0;
-      assert (other instanceof BankAccount) : "compareTo comparing objects of different type";
-      BankAccount that = (BankAccount)other;
-      assert this.equals(that) : "compareTo inconsistent with equals.";
-      return this.id.compareTo(that.getId());
-    }
+  private final String id;
+  public BankAccount (String number)  {
+    this.id = number;
+  }
+  public String getId() { return id; }
+  public int compareTo(Object other) {
+    if (this == other) return 0;
+    assert (other instanceof BankAccount) : "compareTo comparing objects of different type";
+    BankAccount that = (BankAccount)other;
+    assert this.equals(that) : "compareTo inconsistent with equals.";
+    return this.id.compareTo(that.getId());
+  }
   public boolean equals(Object other) {
     if (this == other) return true;
     if (!(other instanceof BankAccount)) return false;
     BankAccount that = (BankAccount)other;
-    return  ( this.id.equals(that.getId()) );
-   }
-   public String toString() {
+    return this.id.equals(that.getId());
+  }
+  public String toString() {
       return id.toString();
-   }
+  }
 }
 ```
 
@@ -1130,10 +1178,10 @@ public class KnightOfTheRoundTable implements Knight {
 }
 ```
 
--   El caballero no es el responsable de averiguar su misión.
--   El caballero sólo sabe de su misión a través de la interfaz `Quest`.
--   El caballero recibe la misión (se le inyecta) a través de `setQuest()`
--   Puede asignársele cualquier implementación de `Quest`
+- El caballero no es el responsable de averiguar su misión.
+- El caballero sólo sabe de su misión a través de la interfaz `Quest`.
+- El caballero recibe la misión (se le inyecta) a través de `setQuest()`
+- Puede asignársele cualquier implementación de `Quest`
     (`HolyGrailQuest`, `RescueDamselQuest`, etc.)
 
 ### Construcción con spring
@@ -1355,7 +1403,7 @@ class ClassWithSimpleDecorator {
 }
 ```
 
-¿Cuál es la salida del siguiente código TypeScript?
+<span style="color:red;">¿Cuál es la salida del siguiente código TypeScript?</span>
 
 ```typescript
 let instance_1 = new ClassWithSimpleDecorator();
@@ -1372,7 +1420,7 @@ instance_2 : [object Object]
 
 #### Decoradores mútiples
 
-¿Cuál es la salida del siguiente código TypeScript?
+<span style="color:red;">¿Cuál es la salida del siguiente código TypeScript?</span>
 
 ```typescript
 function simpleDecorator(constructor: Function) {
@@ -1443,7 +1491,7 @@ Nathan Rozentals: <a href="https://www.packtpub.com/mapt/book/application_develo
 
 ### Implementación de nóminas v0.1
 
-- ¿Dónde hay código duplicado?
+<span style="color:red;">En la siguiente implementación, ¿dónde hay código duplicado?</span>
 
 ```java
   public class Empleado {
@@ -1588,7 +1636,12 @@ Nathan Rozentals: <a href="https://www.packtpub.com/mapt/book/application_develo
 
 > Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior [@Refactoring]
 >
-> —- <cite>[M. Fowler](www.refactoring.com), www.refactoring.com</cite>
+> — <cite>[M. Fowler](www.refactoring.com), www.refactoring.com</cite>
+>
+> A change made to the internal structure of the software to make it easier to understand and cheaper to modify without changing its observable behavior
+>
+> – <cite>[M. Fowler (1999): Refactoring...](bibliografia.html#refactoring)</cite>
+
 
 - Pequeñas transformaciones
 - Mantienen el sistema funcional
