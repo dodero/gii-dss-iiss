@@ -1290,7 +1290,20 @@ class Ellipse extends ClosedCurve {
 ```
 
 - Las funcionalidades para pintar (`draw`) y para imprimir (`toString`) pueden descohesionar las clases y atentar contra OCP y SRP.
-- Saquémoslas fuera utilizando **aspectos**:
+- Saquémoslas fuera utilizando **aspectos**...
+
+### <span style="color:blue;">Orientación a aspectos</span>
+
+La __Orientación a aspectos__ (_AOD_/_AOP_) es un paradigma cuyo objetivo es incrementar la modularidad (ortogonalidad) de los componentes mediante la separación de aspectos _transversales_ (_cross-cutting concerns_).
+
+![terminología sobre AOP](./figuras/aspectj-terminology.png)
+
+- __aspect__ = modularización de un aspecto de interés (_concern_) que afecta a varias clases o módulos
+- __joinpoint__ = especificación declarativa de un punto en la ejecución de un programa (por ejemplo, la ejecución de un método, el manejo de una excepción, etc.)
+- __advice__ = acción a tomar por la especificación de un aspecto dado en un determinado _joinpoint_
+- __pointcut__ = predicado que define cuándo se aplica un _advice_ de un aspecto en un _jointpoint_ determinado. Se asocia un _advice_ con la expresión de un _pointcut_ y se ejecuta el _advice_ en todos los _joinpoint_ que cumplan la expresión del _pointcut_.
+
+### Ejemplo: [Shapes versión 2](#shapesV2) con aspectos
 
 ```java
 // Ficheros <X>ToString.aj (uno por aspecto)
