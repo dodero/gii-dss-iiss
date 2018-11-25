@@ -2617,7 +2617,7 @@ A veces hace falta guardar datos antes de hacer un cómputo, para poder luego co
 #### Postcondición
 
 - Qué garantiza la rutina: estado del mundo cuando la rutina/método termina
-- Implica que la rutina debe finalizar: no puede haber bucles ifinitos
+- Implica que la rutina debe finalizar: no puede haber bucles infinitos
 
 #### Invariante de clase
 
@@ -2652,36 +2652,37 @@ Si se llega a pasar un número negativo, Eiffel imprime el error `sqrt_arg_must_
 ### Ejemplo: Cuenta Bancaria sin contratos
 
 ```eiffel
-class ACCOUNT feature
+class ACCOUNT
+feature
     balance: INTEGER
     owner: PERSON
     minimum_balance: INTEGER is 1000
     open (who: PERSON) is
     -- Assign the account to owner who.
-        do
-            owner := who
-        end
+      do
+        owner := who
+      end
     deposit (sum: INTEGER) is
     -- Deposit sum into the account.
-        do
-            add (sum)
-        end
+      do
+        add (sum)
+      end
     withdraw (sum: INTEGER) is
     -- Withdraw sum from the account.
-        do
-            add (-sum)
-        end
+      do
+        add (-sum)
+      end
     may_withdraw (sum: INTEGER): BOOLEAN is
-     -- Is there enough money to withdraw sum?
-         do
-            Result := (balance >= sum + minimum_balance)
-         end
+    -- Is there enough money to withdraw sum?
+      do
+        Result := (balance >= sum + minimum_balance)
+      end
 feature {NONE}
     add (sum: INTEGER) is
     -- Add sum to the balance.
-         do
-            balance := balance + sum
-        end
+      do
+        balance := balance + sum
+      end
 end -- class ACCOUNT
 ```
 
@@ -2692,68 +2693,70 @@ end -- class ACCOUNT
 ### Ejemplo: Cuenta Bancaria con contratos
 
 ```eiffel
-class ACCOUNT create
+class ACCOUNT
+create
     make
 feature
-    ... Attributes as before:
-         balance , minimum_balance , owner , open ...
+    -- ... Attributes as before:
+      balance, minimum_balance, owner, open ...
     deposit (sum: INTEGER) is
     -- Deposit sum into the account.
-         require
-            sum >= 0
-         do
-            add (sum)
-         ensure
-            balance = old balance + sum
-        end
+      require
+        sum >= 0
+      do
+        add (sum)
+      ensure
+        balance = old balance + sum
+      end
     withdraw (sum: INTEGER) is
     -- Withdraw sum from the account.
-         require
-            sum >= 0
-            sum <= balance - minimum_balance
-         do
-            add (-sum)
-         ensure
-            balance = old balance - sum
-        end
+      require
+        sum >= 0
+        sum <= balance - minimum_balance
+      do
+        add (-sum)
+      ensure
+        balance = old balance - sum
+      end
     may_withdraw ... -- As before
 feature {NONE}
     add ... -- As before
     make (initial: INTEGER) is
-    -- Initialize account with balance initial.
-         require
-            initial >= minimum_balance
-         do
-            balance := initial
-         end
+    -- Initialize account with initial balance.
+      require
+        initial >= minimum_balance
+      do
+        balance := initial
+      end
 invariant
     balance >= minimum_balance
+
 end -- class ACCOUNT
 ```
 
 __Forma corta__ del contrato:
 
 ```eiffel
-class interface ACCOUNT create
+class interface ACCOUNT
+create
     make
 feature
     balance: INTEGER
     ...
     deposit (sum: INTEGER) is
-            -- Deposit sum into the account.
-         require
-            sum >= 0
-         ensure
-            balance = old balance + sum
+    -- Deposit sum into the account.
+      require
+        sum >= 0
+      ensure
+        balance = old balance + sum
     withdraw (sum: INTEGER) is
-            -- Withdraw sum from the account.
-         require
-            sum >= 0
-            sum <= balance - minimum_balance
-         ensure
-            balance = old balance - sum
-
-    may_withdraw ...
+    -- Withdraw sum from the account.
+      require
+        sum >= 0
+        sum <= balance - minimum_balance
+      ensure
+        balance = old balance - sum
+    may_withdraw (...): BOOLEAN is ...
 end -- class ACCOUNT
 ```
 
@@ -2764,22 +2767,22 @@ Java no permite especificar contratos (los _assert_ no son lo mismo). Así que h
 __Ejemplo__: Inserción en una lista ordenada
 
 ```java
-    /**
-     * @invariant forall Node n in elements() |
-     *    n.prev() != null
-     *      implies
-     *         n.value().compare To(n.prev().value()) > 0
-     */
-    public class OrderedList {
-      /**
-       * @pre contains(aNode) == false
-       * @post contains(aNode) == true
-       */
-       public void insertNode(final Node aNode) {
-         // ...
-       }
-       // ...
+/**
+  * @invariant forall Node n in elements() |
+  *    n.prev() != null
+  *      implies
+  *         n.value().compareTo(n.prev().value()) > 0
+  */
+public class OrderedList {
+  /**
+    * @pre contains(aNode) == false
+    * @post contains(aNode) == true
+    */
+    public void insertNode(final Node aNode) {
+      // ...
     }
+    // ...
+}
 ```
 
 Una postcondición puede necesitar expresarse con parámetros pasados a un método para verificar un comportamiento correcto.
@@ -2788,17 +2791,17 @@ Si el método puede cambiar el valor del parámetro pasado (parámetro mutable),
 
 #### Parámetros inmutables
 
-- Eiffel no permiten que se pueda cambiar el valor de un parámetro (es inmutable)
+- Eiffel no permite que se pueda cambiar el valor de un parámetro (es inmutable)
 - En C++ usar `const`
 - Opciones en Java:
   - Usar `final` para marcar un parámetro constante. Sin embargo, las subclases podrían redefinir los parámetros y volver a hacerlos mutables. Además `final` se aplica a la referencia, no al objeto en sí.
   - Usar `variable@pre` de _iContract_
 - Muchos lenguajes funcionales (Lisp, Haskell, Erlang, Clojure, etc.) definen inmutabilidad por defecto
 
-¿Por qué la inmutabilidad?
+##### ¿Por qué la inmutabilidad?
 
 - Por rendimiento (v.g. `String` en Java): si es inmutable, para copiar un objeto basta con copiar la referencia (_interning_)
-- Por _thread-safety_
+- Por _thread-safety_ para código concurrente
 
 #### Código perezoso
 
@@ -2807,7 +2810,7 @@ Si el método puede cambiar el valor del parámetro pasado (parámetro mutable),
 
 ### _Dead programs tell no lies_
 
-El DBC y la programación por contratos son una forma de gestionar los errores mediante
+El diseño y la programación basada en contratos son una forma de gestionar los errores mediante
 _early crash_.
 
 Hay diversas técnicas de gestión de errores (que veremos más adelante), pero en general el principio básico es: cuando el código descubre que sucede algo que supuestamente es imposible o "no debería suceder", el programa ya no es viable: eutanasia.
@@ -2907,9 +2910,9 @@ Ver el video de J. D. García sobre [Contracts programming after C++17](https://
 
 ### Aserciones versus contratos
 
-- No hay soporte para propagar aserciones por una jerarquía de herencia: si se redefine un método con contrato, las aserciones que implementan el contrato no serán llamadas correctamente (excepto si se duplican en el código)
-- No hay soporte para valores *antiguos*: si se implementara un contrato mediante aserciones, habría que añadir código a la precondición para guardar la información que quiera usarse en la postcondición. (v.g. `variable@pre` en *iContract* versus `old expression` en Eiffel)
-- El sistema de runtime y las bibliotecas no están diseñadas para dar soporte a contratos, así que estos no se chequean. Y es precisamente en la frontera entre el cliente y la biblioteca donde hay más problemas.
+- No hay soporte para __propagar__ aserciones por una jerarquía de herencia: si se redefine un método con contrato, las aserciones que implementan el contrato no serán llamadas correctamente (excepto si se duplican en el código)
+- No hay soporte para valores **antiguos**: si se implementara un contrato mediante aserciones, habría que añadir código a la precondición para guardar la información que quiera usarse en la postcondición. (v.g. `variable@pre` en *iContract* versus `old expression` en Eiffel)
+- El sistema de **runtime** y las **bibliotecas** no están diseñadas para dar soporte a contratos, así que estos **no se chequean**. Y es precisamente en la frontera entre el cliente y la biblioteca donde hay más problemas.
 
 ### Redefinición de contratos
 
@@ -2984,7 +2987,7 @@ catch (Exception e) {
 
 Ventaja: las nuevas excepciones son derivadas de una clase base `Exception`, lo que facilita la definición de nuevos motivos de error.
 
-¿Dónde se produce el error?
+<span style="color:red;">¿Dónde se produce el error?</span>
 
 #### Separar la función y el tratamiento de errores
 
@@ -3035,9 +3038,9 @@ Elevar una excepción `e` implica:
         or a sub-class of IOException occurs */
   }
   catch (Exception e) {
-      // Treats any others exception
+      // Treats any other exceptions
   }
-  finally{
+  finally {
       // in all cases execute this
   }
 ```
@@ -3098,7 +3101,7 @@ Criticar la siguiente implementación:
   }
 ```
 
-Excesiva duplicación de código: llamada a `reportError()`
+Excesiva duplicación de código: llamada a `reportPortError()`
 
 Excepción encapsulada:
 
@@ -3107,7 +3110,7 @@ Excepción encapsulada:
     try {
       port.open();
     } catch (PortDeviceFailure e) {
-      reportError(e);
+      reportPortError(e);
       logger.log(e.getMessage(), e);
     } finally {
       ...
@@ -3140,7 +3143,7 @@ Excepción encapsulada:
 
 __Recomendación de uso__: Usar excepciones para problemas excepcionales (eventos inesperados)
 
-__Ejemplo__: ¿Usar excepciones cuando se intenta abrir un fichero para leer y el fichero no existe?
+__Ejemplo__: <span style="color:red;">¿Usar excepciones cuando se intenta abrir un fichero para leer y el fichero no existe?</span>
 
 Depende de si el fichero debe estar ahí
 
@@ -3233,7 +3236,7 @@ public class MetricsCalculator
 }
 ```
 
-¿Qué sucede si llamamos a `xProjection()` así...?
+<span style="color:red;">¿Qué sucede si llamamos a `xProjection()` así...?</span>
 
 ```java
   calculator.xProjection(null, new Point(12, 13))
@@ -3241,7 +3244,7 @@ public class MetricsCalculator
 
 Devolver null es malo, pero ¡pasar un valor null es peor!
 
-¿Es mejor así...?
+<span style="color:red;">¿Es mejor así...?</span>
 
 ```java
 public class MetricsCalculator
@@ -3439,18 +3442,18 @@ Uso de métodos de `Optional` en el programa de prueba:
 ```java
 public class MobileTesterWithOptional {
   public static void main(String[] args) {
-  ScreenResolution resolution = new ScreenResolution(750,1334);
-  DisplayFeatures dfeatures = new DisplayFeatures("4.7", Optional.of(resolution));
-  Mobile mobile = new Mobile(2015001, "Apple", "iPhone 6s", Optional.of(dfeatures));
+    ScreenResolution resolution = new ScreenResolution(750,1334);
+    DisplayFeatures dfeatures = new DisplayFeatures("4.7", Optional.of(resolution));
+    Mobile mobile = new Mobile(2015001, "Apple", "iPhone 6s", Optional.of(dfeatures));
 
-  MobileService mService = new MobileService();
+    MobileService mService = new MobileService();
 
-  int width = mService.getMobileScreenWidth(Optional.of(mobile));
-  System.out.println("Apple iPhone 6s Screen Width = " + width);
+    int width = mService.getMobileScreenWidth(Optional.of(mobile));
+    System.out.println("Apple iPhone 6s Screen Width = " + width);
 
-  Mobile mobile2 = new Mobile(2015001, "Apple", "iPhone 6s", Optional.empty());
-  int width2 = mService.getMobileScreenWidth(Optional.of(mobile2));
-  System.out.println("Apple iPhone 16s Screen Width = " + width2);
+    Mobile mobile2 = new Mobile(2015001, "Apple", "iPhone 6s", Optional.empty());
+    int width2 = mService.getMobileScreenWidth(Optional.of(mobile2));
+    System.out.println("Apple iPhone 16s Screen Width = " + width2);
   }
 }
 ```
@@ -3460,10 +3463,10 @@ Menos código _boilerplate_ en la clase principal:
 ```java
 public class MobileService {
   public Integer getMobileScreenWidth(Optional<Mobile> mobile){
-  return mobile.flatMap(Mobile::getDisplayFeatures)
-     .flatMap(DisplayFeatures::getResolution)
-     .map(ScreenResolution::getWidth)
-     .orElse(0);
+    return mobile.flatMap(Mobile::getDisplayFeatures)
+      .flatMap(DisplayFeatures::getResolution)
+      .map(ScreenResolution::getWidth)
+      .orElse(0);
   }
 }
 ```
