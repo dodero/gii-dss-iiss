@@ -29,7 +29,7 @@
   - [Aserciones](#assert)
   - [Contratos](#contracts)
   - [Errores y excepciones](#errores)
-  - Depuración
+  - [Optionals y uso de null](#null)
 - Mixins
 - Anónimos y cierres
 - Reflexión
@@ -3170,11 +3170,13 @@ Depende de si el fichero debe estar ahí
   }
   ```
 
-## Uso de null
+<a id="null"></a>
+
+### Uso de null
 
 Obtener un _null_ cuando no se espera puede ser un quebradero de cabeza para el tratamiento de errores
 
-### Principio general: no devolver null
+#### Principio general: no devolver null
 
 Este código puede parecer inofensivo, pero es maligno:
 
@@ -3199,7 +3201,7 @@ public void registerItem(Item item) {
 - El problema no es que se haya olvidado uno, sino que hay demasiados
 - En su lugar, elevar una excepción o devolver un objeto *especial*
 
-### No devolver null
+#### No devolver null
 
 Evitar:
 
@@ -3226,7 +3228,7 @@ public List<Employee> getEmployees() {
 }
 ```
 
-### No pasar valores null
+#### No pasar valores null
 
 ```java
 public class MetricsCalculator
@@ -3261,7 +3263,7 @@ public class MetricsCalculator
 
 ¿Qué curso de acción tomar ante un `InvalidArgumentException`? ¿Hay alguno?
 
-#### Alternativa con aserciones
+##### Alternativa con aserciones
 
 (*solo para JDK $\geq$ 5.0*)
 
