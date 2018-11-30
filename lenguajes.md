@@ -1,4 +1,4 @@
-# Lenguajes
+# Elementos básicos de programación funcional
 
 ## Técnicas
 
