@@ -37,7 +37,7 @@
 
 ## Paradigmas
 
-- Objetos
+- **Objetos**
 - Eventos
 - Funcional
 - Aspectos

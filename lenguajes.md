@@ -6,7 +6,7 @@
   - Funciones anónimas
   - Java lambdas
   - Ruby procs y blocks
-- Mixins:
+- [Mixins](#mixins):
   - [Ruby modules](http://ruby-doc.com/docs/ProgrammingRuby/html/tut_modules.html)
   - [Scala traits](https://docs.scala-lang.org/tour/traits.html)
     - Ejemplo: [Traits exercise](https://www.scala-exercises.org/std_lib/traits)
@@ -19,7 +19,7 @@
 
 - Objetos
 - Eventos
-- Funcional
+- **Funcional**
 
 ## Ejercicios
 
@@ -31,9 +31,7 @@
 
 # <span style="color:blue;"><a id="anonimos">Anónimos y cierres</a></span>
 
-## Factorización de funciones
-
-### Ejemplo: Comparación de personas - versión con herencia
+## Ejemplo: Comparación de personas - versión con herencia
 
 Ordenación de una lista de nombres de personas:
 
@@ -101,7 +99,7 @@ Collections.sort(personas);
 
 - Alternativa 2: No usar herencia, sino composición (no delegar hacia las subclases)
 
-### Ejemplo: Comparación de personas - versión con composición
+## Ejemplo: Comparación de personas - versión con composición
 
 Sin usar herencia:
 
@@ -119,11 +117,11 @@ Collections.sort(personas, new OrdenarPersonaPorId());
 - No delegar hacia las subclases
 - Delegar en objeto de otra clase que implemente la interfaz `java.util.Comparator`
 
-#### ¿Ventajas?
+### ¿Ventajas?
 
 - La función factorizada (v.g. la implementación de `Comparator`) es sustituible en tiempo de ejecución mediante inyección de dependencias
 
-### Ejemplo: Comparación de personas - versión con clases anónimas
+## Ejemplo: Comparación de personas - versión con clases anónimas
 
 ```java
 Collections.sort(
@@ -135,7 +133,7 @@ Collections.sort(
 );
 ```
 
-### Clases locales
+## Clases locales
 
 - Clases **locales**: declaradas dentro de métodos
 - Las clases locales pueden hacer referencia a identificadores declarados en la clase y a variables de solo lectura (`final`) del método en que se declaran
@@ -169,12 +167,12 @@ public class EnclosingClass {
 }
 ```
 
-### Predicados en Java 8 y en la biblioteca _guava_
+## Predicados en Java 8 y en la biblioteca _guava_
 
 En la biblioteca Guava, los [`Iterators`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/collect/Iterators.html) tienen un método [`filter`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/collect/Iterators.html#filter) que recibe un objeto de tipo [`Predicate`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/base/Predicate.html).
 Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html).
 
-#### Ejemplo: partidos de una competición
+### Ejemplo: partidos de una competición
 
 - Con clases anónimas:
   ```java
@@ -190,6 +188,7 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   ```
 
 - Sin clases anónimas:
+
   ```java
   class FilterByTeam implements Predicate<Match> {
     Team localTeam, visitingTeam;
@@ -204,7 +203,9 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
     }
   }
   ```
+
   Comprobar que, en un cierto grupo de la competición, un mismo partido no está repetido ni se enfrenta un equipo contra sí mismo:
+
   ```java
   private void checkMatchesInGroup(List<Match> matchesInGroup) {
     for (Match match: matchesInGroup) {
@@ -223,11 +224,12 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   }
   ```
 
-### Clases anónimas interiores (_inner_)
+## Clases anónimas interiores (_inner_)
 
 - Son clases locales declaradas sin nombre; sirven para clases que solo aparecen una vez en la aplicación
 
 - Usando Java 7:
+  
   ```java
   class CalculationWindow extends JFrame {
     private volatile int result;
@@ -243,7 +245,9 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
     }
   }
   ```
+
 - Usando Java 8:
+  
   ```java
   class CalculationWindow extends JFrame {
     private volatile int result;
@@ -257,11 +261,11 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   }
   ```
 
-### Retrollamadas (_callbacks_)
+## Retrollamadas (_callbacks_)
 
 _callback_ = Fragmento de código ejecutable que se pasa como argumento
 
-#### Implementaciones en C/C++
+### Implementaciones en C/C++
 
 - Puntero a función:
     ```c
@@ -275,7 +279,7 @@ _callback_ = Fragmento de código ejecutable que se pasa como argumento
   - clase que define `operator()`
   - es una clase y por tanto pueden contener un estado
 
-##### Ejemplo de puntero a función
+#### Ejemplo de puntero a función
 
 ```c
 /* The calling function takes a single callback as a parameter. */
@@ -300,7 +304,7 @@ int main(void) {
 }
 ```
 
-##### Ejemplo de puntero a datos
+#### Ejemplo de puntero a datos
 
 ```c
 /* Type of function used for the callback */
@@ -329,7 +333,7 @@ struct event_cb *callback;
 callback->cb(event, callback->data);
 ```
 
-##### Ejemplo de functor
+#### Ejemplo de functor
 
 ```cpp
 // this is a functor
@@ -353,7 +357,7 @@ std::transform(in.begin(), in.end(), out.begin(), add_x(1));
 assert(out[i] == in[i] + 1); // for all i
 ```
 
-##### Functor vs function pointer
+#### Functor vs function pointer
 
 ```cpp
 //Functor
@@ -379,16 +383,16 @@ std::transform(vec.begin(),vec.end(),f);        // pass function pointer
 std::transform(vec.begin(),vec.end(),add_x(1)); // pass functor
 ```
 
-### Funciones anónimas (lambdas)
+## Funciones anónimas (lambdas)
 
-#### Función anónima
+### Función anónima
 
 - Función o subrutina definida y (posiblemente) llamada sin necesidad de asociarla a un identificador o nombre
 - Se suelen pasar como argumento a funciones de orden superior
 - Son funciones anidadas que permiten acceder a variables definidas en el ámbito de la contenedora (variables no locales)
 - Muchos lenguajes las introducen a través de la palabra reservada `lambda`
 
-#### Mecanismos de los lenguajes
+### Mecanismos de los lenguajes
 
 - En C++: funciones anónimas, objetos función (_functors_) o [funciones lambda](http://en.cppreference.com/w/cpp/language/lambda) (desde C++11)
 - En Java 8: [expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html)
@@ -396,15 +400,15 @@ std::transform(vec.begin(),vec.end(),add_x(1)); // pass functor
 - En C\#: [delegates](https://msdn.microsoft.com/en-us/library/ms173171.aspx) (métodos anónimos y expresiones lambda)
 - En Python: [generators, comprehensions, lambda expressions](https://docs.python.org/2/howto/functional.html)
 
+### Cierre de funciones (_closures_)
 
-#### Cierre de funciones (_closures_)
 - __Cierre__: Función o referencia a función junto con un _entorno de referencia_
 - __Entorno de referencia__: tabla que guarda una referencia a cada una de las variables no locales (_libres_) de la función
   - __Variable libre__ (_free_): notación lógica matemática que especifica los lugares de una expresión donde tiene lugar una sustitución
   - __Variable asignada__ (_bound_): variable que era libre previamente pero a la que le ha sido asignado un valor o conjunto de valores
 - Un cierre permite acceder a las variables libres incluso cuando se invoca desde fuera de su ámbito léxico
 
-#### Funciones anónimas en C++
+### Funciones anónimas en C++
 
 ```cpp
 std::vector<int> some_list; // assume that contains something
@@ -421,9 +425,10 @@ std::for_each(
    its value. */
 ```
 
-#### Funciones anónimas en Java
+### Funciones anónimas en Java
 
 - Con clases anónimas (Java 7):
+
   ```java
   public class ComparatorTest { 
     public static void main(String[] args) {
@@ -444,7 +449,9 @@ std::for_each(
     }
   }
   ```
+
 - Con lambdas (Java 8)
+
   ```java
   public class ComparatorTest { 
     public static void main(String[] args) {
@@ -473,33 +480,34 @@ std::for_each(
   }
   ```
 
-##### Ejercicio: [Mejorando código con expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html\#section3)
+#### Ejercicio: [Mejorando código con expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html\#section3)
 
-#### Funciones anónimas en Ruby
+### Funciones anónimas en Ruby
 
-##### Bloques (_blocks_)
+#### Bloques (_blocks_)
 
-Sintaxis `do` ... `end`
+- Sintaxis `do` ... `end`
 
-```ruby
-some_list = [ 10, 20, 30 ]
-some_list.map do |i|
-    i += 1
-end
-```
+  ```ruby
+  some_list = [ 10, 20, 30 ]
+  some_list.map do |i|
+      i += 1
+  end
+  ```
 
-Sintaxis `{` ... `}`
+- Sintaxis `{` ... `}`
 
-```ruby
-some_list = [ 10, 20, 30 ]
-some_list.map { |i| i += 1 }
-```
+  ```ruby
+  some_list = [ 10, 20, 30 ]
+  some_list.map { |i| i += 1 }
+  ```
 
 El método `map` itera y aplica un bloque repetitivamente a cada elemento de una colección (representado por el parámetro `i`)
 
-Ejemplo: búsqueda en una lista
+##### Ejemplo: búsqueda en una lista
 
 - Sin bloques:
+
   ```ruby
   class SongList
     def with_title(title)
@@ -510,7 +518,9 @@ Ejemplo: búsqueda en una lista
     end
   end
   ```
+
 - Con bloques (sintaxis `do` ... `end`):
+
   ```ruby
   class SongList
     def with_title(title)
@@ -520,7 +530,9 @@ Ejemplo: búsqueda en una lista
     end
   end
   ```
+
 - Con bloques (sintaxis `{` ... `}`):
+
   ```ruby
   class SongList
     def with_title(title)
@@ -539,7 +551,7 @@ El método `find` itera y aplica el test del bloque a cada elemento `song` de la
 - El control vuelve al método después del `yield`
 - Al bloque se le pueden pasar parámetros
 
-Ejemplo: fibonacci
+###### Ejemplo: fibonacci
 
 ```ruby
 def fib_up_to(max)
@@ -554,7 +566,7 @@ fib_up_to(1000) {|f| print f, " " }
 #Salida => 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
 ```
 
-Ejemplo de `yield`:
+###### Ejemplo de `yield`:
 
 ```ruby
 def three_times
@@ -565,7 +577,7 @@ end
 three_times { puts "Hello" }
 ```
 
-Ejemplo: implementación de `Array.find`
+###### Ejemplo: implementación de `Array.find`
 
 ```ruby
 class Array
@@ -579,7 +591,7 @@ class Array
 end
 ```
 
-Ejemplos: iterar con bloques
+###### Ejemplos: iterar con bloques
 
 - Iterar sobre un array con `each`
 
@@ -595,6 +607,7 @@ Ejemplos: iterar con bloques
   a
   #Devuelve => [1, 2, 3, 4]
   ```
+
 - Iterar sobre un fichero con `each`
 
   `File#each`: recibe el contenido de un fichero de texto y aplica el bloque a cada línea.
@@ -627,10 +640,11 @@ Ejemplos: iterar con bloques
   #Devuelve => [1, 2, 3, 4]
   ```
 
-##### Procs y lambdas
+#### Procs y lambdas
 
 - En Ruby, una función anónima o _lambda_ es simplemente un tipo especial de objeto `Proc`
 - Definición de procs/lambdas:
+
   ```ruby
   # sin argumentos:
   say_something = -> { puts "This is a lambda" }
@@ -639,7 +653,9 @@ Ejemplos: iterar con bloques
   # con argumentos:
   times_two = ->(x) { x * 2 }
   ```
+
 - Varias formas de llamar a la lambda (es preferible `call`)
+
   ```ruby
   say_something = -> { puts "This is a lambda" }
   say_something.call
@@ -652,7 +668,9 @@ Ejemplos: iterar con bloques
   times_two = ->(x) { x * 2 }
   times_two.call(10)
   ```
+
 - Los `proc` no se preocupan de los argumentos:
+
   ```ruby
   t = Proc.new { |x,y| puts "I don't care about args!" }
   t.call #Salida: I don't care about args!
@@ -665,7 +683,9 @@ Ejemplos: iterar con bloques
   s.call(10) # ArgumentError: wrong number of arguments (given 1, expected 2)
   s.call(10,10) # Salida: I care about args
   ```
+
 - Los `proc` retornan del método actual; los lambda retornan de la función anónima:
+
   ```ruby
   # funciona:
   my_lambda = -> { return 1 }
@@ -675,7 +695,9 @@ Ejemplos: iterar con bloques
   my_proc = Proc.new { return 1 }
   puts "Proc result: #{my_proc.call}"
   ```
+
 - Si el `proc` está dentro de un método, la llamada a `return` es equivalente a retornar de ese método:
+
   ```ruby
   def call_proc
     puts "Before proc"
@@ -698,7 +720,7 @@ Ejemplos: iterar con bloques
   # Prints "Before lambda" and "After lambda"
   ```
 
-__Diferencias__ entre `Proc` y `lambda`:
+##### Diferencias entre `Proc` y `lambda`:
 
 - Las lambdas se definen con `-> {}` y los procs con `Proc.new {}`
 - Los `Proc` retornan del método actual, las lambdas retornan de la propia función lambda
@@ -710,33 +732,30 @@ __Diferencias__ entre `Proc` y `lambda`:
 - ¿Dónde se llama al bloque? Donde el método indique con `yield`
 - El bloque (realmente un objeto `Proc`) se pasa como una especie de parámetro no declarado
 
-Ejemplos:
+##### Ejemplos de paso de bloques:
 
 - Llamada a un bloque sin parámetros
 
-    ```ruby
-    def run_it
-      puts("Before the yield")
-      yield
-      puts("After the yield")
-    end
-    ```
+  ```ruby
+  def run_it
+    puts("Before the yield")
+    yield
+    puts("After the yield")
+  end
+  ```
 
-    ```ruby
-    run_it do
-      puts('Hello')
-      puts('Coming to you from inside the block')
-    end
-    ```
+  ```ruby
+  run_it do
+    puts('Hello')
+    puts('Coming to you from inside the block')
+  end
 
-  Salida:
-
-    ```text
-    Before the yield
-    Hello
-    Coming to you from inside the block
-    After the yield
-    ```
+  # Salida =>
+  #  Before the yield
+  #  Hello
+  #  Coming to you from inside the block
+  #  After the yield
+  ```
 
 - Cualquier método puede recibir un bloque como parámetro implícito, pero no lo ejecuta si no hace `yield`:
 
@@ -761,12 +780,8 @@ Ejemplos:
   run_it do
     puts('Hello')
   end
-  ```
-
-  Salida:
-
-  ```text
-    Hello
+  # Salida =>
+  #   Hello
   ```
 
 - Llamada a un bloque con parámetros:
@@ -782,16 +797,13 @@ Ejemplos:
     puts('Hello from inside the proc')
     puts("The value of x is #{x}")
   end
+
+  # Salida =>
+  #  Before the yield
+  #  Hello from inside the proc
+  #  The value of x is 24
+  #  After the yield
   ```
-
-  Salida:
-
-    ```text
-    Before the yield
-    Hello from inside the proc
-    The value of x is 24
-    After the yield
-    ```
 
 - Hacer explícito el bloque pasado como parámetro usando _ampersand_: explicitamos que se espera que el método reciba un parámetro de tipo bloque
 
@@ -810,24 +822,21 @@ Ejemplos:
   run_it_with_parameter(&my_proc)
   my_lambda = lambda {|x| puts("The value of x is #{x}")}
   run_it_with_parameter(&my_lambda)
+
+  # Salida (en ambos casos) =>
+  #  Before the call
+  #  The value of x is 24
+  #  After the call
   ```
-  Salida (en ambos casos):
 
-    ```text
-    Before the call
-    The value of x is 24
-    After the call
-    ```
-
-
-### Lecturas recomendadas
+## Lecturas recomendadas
 
 - M. Williams: [Java SE 8: Lambda Quick Start](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html), Oracle Learning Library, 2013.
 - D. Thomas & A. Hunt: [Programming Ruby. The Pragmatic Programmer's Guide](http://www.ruby-doc.org/docs/ProgrammingRuby/), Addison-Wesley, 2005.
 
-# <a id="informes">Ejercicio 1 - Interfaces funcionales</a>
+# Conexión con Diseño Software
 
-## Formateo de informes
+## <a id="informes">Formateo de informes</a>
 
 ### Versión en ruby
 
@@ -866,8 +875,6 @@ class PlainTextFormatter
     context.text.each do |line|
 ```
 
-
-
 ### Versión con interfaces funcionales (Ruby procs + blocks)
 
 ```ruby
@@ -887,7 +894,7 @@ class Report
 end
 ```
 
-Formateo HTML:
+#### Formateo HTML
 
 ```ruby
 HTML_FORMATTER = lambda do |context|
@@ -906,7 +913,7 @@ report = Report.new &HTML_FORMATTER
 report.output_report
 ```
 
-Formateo de texto:
+#### Formateo de texto
 
 ```ruby
 report = Report.new do |context|
@@ -917,9 +924,7 @@ report = Report.new do |context|
 end
 ```
 
-# <a id="adaptadores"> Ejercicio 2 - Cambio de interfaz </a>
-
-## Adaptadores
+## <a id="adaptadores">Adaptadores para cambio de interfaz </a>
 
 ### Tipos de adaptador
 
