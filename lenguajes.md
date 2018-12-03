@@ -3,15 +3,12 @@
 ## Técnicas
 
 - [Anónimos y cierres](#anonimos):
-  - Funciones anónimas
-  - Java lambdas
-  - Ruby procs y blocks
+  - Funciones anónimas y [Lambdas](#lambdas)
+  - [Retrollamadas](#callbacks)
+  - [Ruby procs](#proc) y [blocks](#blocks)
 - [Mixins](#mixins):
-  - [Ruby modules](http://ruby-doc.com/docs/ProgrammingRuby/html/tut_modules.html)
-  - [Scala traits](https://docs.scala-lang.org/tour/traits.html)
-    - Ejemplo: [Traits exercise](https://www.scala-exercises.org/std_lib/traits)
-    - Ejemplo: [Stackable Traits pattern](http://www.artima.com/scalazine/articles/stackable_trait_pattern.html)
-    - Lectura: [Herencia vs. composición con Scala mixins](http://baddotrobot.com/blog/2014/09/22/scala-mixins/)
+  - [Ruby modules](#modules)
+  - [Scala traits](#traits)
 - Reflexión
 - Metaprogramación
 
@@ -21,13 +18,16 @@
 - Eventos
 - **Funcional**
 
-## Ejercicios
+## [Ejemplos de conexión con Diseño Software](#dss)
 
 1. Interfaces funcionales - [Formateo de informes](#informes)
 2. Cambio de interfaz - [Adaptadores](#adaptadores)
-3. [Ruby from other languages](https://www.ruby-lang.org/en/documentation/ruby-from-other-languages/)
-4. [Scala tour](http://docs.scala-lang.org/tutorials/tour/tour-of-scala)
-5. [Scala exercises](https://www.scala-exercises.org/std_lib/)
+
+## Ejercicios
+
+1. [Ruby from other languages](https://www.ruby-lang.org/en/documentation/ruby-from-other-languages/)
+2. [Scala tour](http://docs.scala-lang.org/tutorials/tour/tour-of-scala)
+3. [Scala exercises](https://www.scala-exercises.org/std_lib/)
 
 # <span style="color:blue;"><a id="anonimos">Anónimos y cierres</a></span>
 
@@ -175,6 +175,7 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
 ### Ejemplo: partidos de una competición
 
 - Con clases anónimas:
+
   ```java
   final Predicate<Match> condition = new Predicate<Match>() {
     final Team team1 = new Team("Cadiz CF");
@@ -229,7 +230,7 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
 - Son clases locales declaradas sin nombre; sirven para clases que solo aparecen una vez en la aplicación
 
 - Usando Java 7:
-  
+
   ```java
   class CalculationWindow extends JFrame {
     private volatile int result;
@@ -247,7 +248,7 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   ```
 
 - Usando Java 8:
-  
+
   ```java
   class CalculationWindow extends JFrame {
     private volatile int result;
@@ -261,7 +262,7 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   }
   ```
 
-## Retrollamadas (_callbacks_)
+## <a id="callback">Retrollamadas (_callbacks_)</a>
 
 _callback_ = Fragmento de código ejecutable que se pasa como argumento
 
@@ -383,7 +384,7 @@ std::transform(vec.begin(),vec.end(),f);        // pass function pointer
 std::transform(vec.begin(),vec.end(),add_x(1)); // pass functor
 ```
 
-## Funciones anónimas (lambdas)
+## <a id="lambda">Funciones anónimas (lambdas)</a>
 
 ### Función anónima
 
@@ -484,7 +485,7 @@ std::for_each(
 
 ### Funciones anónimas en Ruby
 
-#### Bloques (_blocks_)
+#### <a id="blocks">Bloques (_blocks_)</a>
 
 - Sintaxis `do` ... `end`
 
@@ -640,7 +641,7 @@ end
   #Devuelve => [1, 2, 3, 4]
   ```
 
-#### Procs y lambdas
+#### <a id="proc">Procs y lambdas</a>
 
 - En Ruby, una función anónima o _lambda_ es simplemente un tipo especial de objeto `Proc`
 - Definición de procs/lambdas:
@@ -834,9 +835,9 @@ end
 - M. Williams: [Java SE 8: Lambda Quick Start](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html), Oracle Learning Library, 2013.
 - D. Thomas & A. Hunt: [Programming Ruby. The Pragmatic Programmer's Guide](http://www.ruby-doc.org/docs/ProgrammingRuby/), Addison-Wesley, 2005.
 
-# Conexión con Diseño Software
+# <span style="color:blue;"><a id="dss">Ejemplos de Conexión con Diseño Software</a></span>
 
-## <a id="informes">Formateo de informes</a>
+## Interfaces funcionales - <a id="informes">Formateo de informes</a>
 
 ### Versión en ruby
 
@@ -924,7 +925,7 @@ report = Report.new do |context|
 end
 ```
 
-## <a id="adaptadores">Adaptadores para cambio de interfaz </a>
+## Cambio de interfaz - <a id="adaptadores">Adaptadores</a>
 
 ### Tipos de adaptador
 
@@ -945,8 +946,6 @@ end
 
 # <span style="color:blue;"><a id="mixins">Mixins</a></span>
 
-## Mixins
-
 En POO, un __mixin__ es una clase con métodos disponibles para otras clases sin tener que ser madre de estas otras (es decir, sin usar la herencia)
 
 - Es una alternativa a la herencia múltiple
@@ -954,14 +953,14 @@ En POO, un __mixin__ es una clase con métodos disponibles para otras clases sin
 - No se _heredan_ sino que se __incluyen__
 - Es una forma de implementar el principio de inversión de dependencias (DIP)
 
-### Mixins en ruby: módulos
+## <a id="modules">Ruby modules</a>
 
 En Ruby los mixins se implementan mediante módulos (`module`).
 
 - Un módulo no puede tener instancias (porque no es una clase)
 - Un módulo puede incluirse (`include`) dentro de la definición de una clase
 
-#### Ejemplo: herencia vs mixins
+### Ejemplo: herencia vs mixins
 
 ```ruby
 module Debug
@@ -989,7 +988,7 @@ ph.whoAmI?  # => "Phonograph (#70315984363660): West End Blues"
 et.whoAmI?  # => "EightTrack (#70315996611260): Surrealistic Pillow"
 ```
 
-#### Ejemplo: Comparable en ruby
+### Ejemplo: Comparable en ruby
 
 Una manera de implementar un `Comparable` en ruby mediante el módulo [Comparable](https://ruby-doc.org/core-2.2.3/Comparable.html):
 
@@ -1150,7 +1149,7 @@ end
 - Ruby llama a esto _singleton methods_ y _singleton class_ (no es exactamente lo mismo que el patrón singleton del GoF)
 - Ruby primero busca los métodos definidos en una clase singleton y luego en la clase regular que ha sido redefinida
 
-## Scala Traits
+## <a id="traits">Scala Traits</a>
 
 Los `trait`de Scala son similares a las interfaces de Java.
 
@@ -1291,7 +1290,7 @@ object IntIteratorTest {
 - [Scala traits vs abstract classes](http://stackoverflow.com/questions/1991042/what-is-the-advantage-of-using-abstract-classes-instead-of-traits)
 - Los constructores de un `trait` no pueden tener parámetros (de momento)
 
-#### Reglas:
+#### Reglas
 
 [To trait or not to trait](http://www.artima.com/pins1ed/traits.html#12.7)
 
@@ -1301,3 +1300,11 @@ object IntIteratorTest {
 - Si se va a distribuir compilado y se va a heredar => clase abstracta
 - Si importa mucho la eficiencia => clase (los traits se compilan a interfaces y son algo más lentas de llamar)
 - Si no se sabe => empezar por un trait y cambiarlo cuando se sepa
+
+#### Ejercicios y lecturas recomendadas
+
+- Tutorial: [Ruby modules](http://ruby-doc.com/docs/ProgrammingRuby/html/tut_modules.html)
+- [Scala traits](https://docs.scala-lang.org/tour/traits.html)
+  - Ejemplo: [Traits exercise](https://www.scala-exercises.org/std_lib/traits)
+  - Ejemplo: [Stackable Traits pattern](http://www.artima.com/scalazine/articles/stackable_trait_pattern.html)
+- Lectura: [Herencia vs. composición con Scala mixins](http://baddotrobot.com/blog/2014/09/22/scala-mixins/)
