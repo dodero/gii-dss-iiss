@@ -451,7 +451,7 @@ El uso de callbacks hace el código complejo, repetitivo y difícil de entender,
 Modelo de [futuros y promesas](https://en.wikipedia.org/wiki/Futures_and_promises)
 
 - **Futuro**: marcador de posición (_placeholder_), de solo lectura, para una variable que representa el resultado de un cómputo asíncrono
-- **Promesa**: contenedor escribible (solo para inicialización), que fija el valor de un _futuro_.
+- **Promesa**: contenedor de una asignación escribible (solo para inicialización), que fija el valor de un _futuro_.
 
 En programación funcional, los futuros y promesas sirven para desacoplar un valor (el futuro) de cómo éste se calculó (la promesa), permitiendo así la paralelización de los cálculos.
 
@@ -653,7 +653,8 @@ En Java hay definida una interfaz explícita para los futuros:
 ##### Ejemplo: `Future` en Java
 
 ```java
-// Callable<V> = Interfaz funcional que representa a una operación sin args y que devuelve un resultado de tipo V (permite checked exceptions)
+// Callable<V> = Interfaz funcional que representa a una operación sin args
+// y que devuelve un resultado de tipo V (permite checked exceptions)
 public static class MyCallable implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
@@ -673,7 +674,8 @@ public static void main(String[] args) throws Exception{
 ##### Ejemplo: `CompletableFuture` en Java
 
 ```java
-// Supplier<T> = Interfaz funcional que representa a una operación sin args y que devuelve un resultado de tipo T (no permite checked exceptions)
+// Supplier<T> = Interfaz funcional que representa a una operación sin args
+// y que devuelve un resultado de tipo T (no permite checked exceptions)
 public static class MySupplier implements Supplier<Integer> {
     @Override
     public Integer get() {

@@ -8,7 +8,7 @@
 - La _clase_ es de un grano demasiado fino como unidad de organización
 
 - En UML, Java y otros lenguajes se da el concepto de __paquete__ (*package*)
-- En general puede hablarse de "agrupaciones lógiclas de declaraciones que pueden importarse en otros programas" (__componentes__)
+- En general puede hablarse de "agrupaciones lógicas de declaraciones que pueden importarse en otros programas" (__componentes__)
 
 ### Preguntas
 
