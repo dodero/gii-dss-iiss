@@ -25,3 +25,7 @@ Robert C. Martin. <a id="cleanarch">Clean Architecture: A Craftsman's Guide to S
 Nathan Rozentals. <a id="typescript">Mastering TypeScript</a>, Packt Publishing, 2nd edition, 2017
 
 Steve McConnel. <a id="codecomplete">Code Complete: A practical handbook of software construction</a>, 2nd edition, 2004.
+
+F. Buschmann, R. Meunier, H. Rohnert, P. Sommerlad, M. Stal. <a id="posa">Pattern-Oriented Software Architecture Volume 1: A System of Patterns</a>, Wiley, 1996.
+
+R. Taylor, N. Medvidovic, E. M. Dashofy: <a id="taylor">Software Architecture. Foundations, Theory and Practice</a>, Wiley, 2010.
