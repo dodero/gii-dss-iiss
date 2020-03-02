@@ -387,8 +387,7 @@ El polimorfismo se basa en:
 
 - **Moldes (_casting_)**
   - *Upcasting*: Interpretar un objeto de una clase derivada como del mismo tipo que la clase base
-  - *Downcasting*: Interpretar un objeto de una clase base como del
-        mismo tipo que una clase derivada suya
+  - *Downcasting*: Interpretar un objeto de una clase base como del mismo tipo que una clase derivada suya
 
 # Caso 2 - Delegación
 
@@ -841,6 +840,8 @@ Esta implementación sí que podemos adaptarla más fácilmente para cambiar el 
 
 Los `new` de `PruebaOrquesta` siguen introduciendo dependencias de `PruebaOrquesta` con respecto a los tipos concretos de `Instrumento`.
 
+<span style="color:red;">Ver antes el apartado [inyección de dependencias](#inyeccion)</span>
+
 #### Construcción con spring
 
 A través de un fichero de configuración `orquesta.xml` le indicamos los valores inyectables:
@@ -1067,6 +1068,8 @@ Una alternativa (no excluyente) a implementar `Comparable` es pasar un `Comparat
 
 <span style="color:red;">¿Qué ventajas tiene la opción que usa __Composición__ frente a la que usa __Herencia (estática)__?</span>
 
+<a id="inyeccion"></a>
+
 # Caso 3 - Inyección de dependencias
 
 ## Caballeros de la mesa redonda
@@ -1243,6 +1246,62 @@ public class MyClass {
 
 Un _contenedor de dependencias_ en el framework debe responsabilizarse de crear las instancias de `Logger` e inyectarlas en su sitio (normalmente vía _reflexión_ o _introspección_)
 
+### Implementación final de la Orquesta v0.8
+
+Los `new` de `PruebaOrquesta` de la versión v0.7 siguen introduciendo dependencias de `PruebaOrquesta` con respecto a los tipos concretos de `Instrumento`.
+
+A través de un fichero de configuración `orquesta.xml` de Spring le indicamos los valores inyectables:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+  "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <bean id="trompeta"
+    class="Viento"/>
+  <bean id="violin"
+    class="Cuerda"/>
+  <bean id="tambor"
+    class="Percusion"/>
+  <bean id="viola"
+    class="Cuerda"/>
+
+  <bean id="cuarteto"
+    class="Orquesta">
+    <property name="instrumento1">
+      <ref bean="trompeta"/>
+    </property>
+    <property name="instrumento2">
+      <ref bean="violin"/>
+    </property>
+    <property name="instrumento3">
+      <ref bean="viola"/>
+    </property>
+    <property name="instrumento4">
+      <ref bean="tambor"/>
+    </property>    
+  </bean>
+</beans>
+```
+
+La inyección de la dependencia concreta la hace el contenedor (_spring_ en este ejemplo):
+
+```java
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+public class PruebaOrquesta {
+  public static void main(String[] args) throws Exception {
+    BeanFactory factory =
+      new XmlBeanFactory(new FileInputStream("orquesta.xml"));
+    Orquesta orquesta =
+      (Orquesta) factory.getBean("cuarteto");
+    for (Instrumento i: orquesta)
+           orquesta.afinar(i);
+    orquesta.tocar();
+  }
+}
+```
+
 ### Dependencias en Java
 
 Estándar de Java (JSR 330) para describir las dependencias de una clase con anotaciones
@@ -1269,7 +1328,7 @@ Esta clase sigue usando `new` para ciertos elementos de la interfaz. Esto signif
 
 Supongamos que queremos obtener un listado ordenado por fecha de creación de las cuentas bancarias.
 
-<span style="color:red;">¿Cómo afecta este cambio a al versión de `BankAccount` ya implementada con JDK 1.5? Resolver mediante inyección de dependencias</span>
+<span style="color:red;">¿Cómo afecta este cambio a la versión de `BankAccount` ya implementada con JDK 1.5? Resolver mediante inyección de dependencias</span>
 
 `BankAcccount.java`:
 
