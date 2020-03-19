@@ -1,23 +1,5 @@
 # FUNCIONAL
 
-## Técnicas
-
-- [Anónimos y cierres](#anonimos):
-  - Funciones anónimas y [Lambdas](#lambdas)
-  - [Retrollamadas](#callbacks)
-  - [Ruby procs](#proc) y [blocks](#blocks)
-- [Mixins](#mixins):
-  - [Ruby modules](#modules)
-  - [Scala traits](#traits)
-- Reflexión
-- Metaprogramación
-
-## Paradigmas
-
-- Objetos
-- Eventos
-- **Funcional**
-
 ## [Ejemplos de conexión con Diseño Software](#dss)
 
 1. Interfaces funcionales - [Formateo de informes](#informes)
@@ -29,7 +11,7 @@
 2. [Scala tour](http://docs.scala-lang.org/tutorials/tour/tour-of-scala)
 3. [Scala exercises](https://www.scala-exercises.org/std_lib/)
 
-# <span style="color:blue;"><a id="anonimos">Anónimos y cierres</a></span>
+# <span style="color:blue;"><a id="anonimas">Funciones Anónimas</a></span>
 
 ## Ejemplo: Comparación de personas - versión con herencia
 
@@ -262,7 +244,7 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   }
   ```
 
-## <a id="callback">Retrollamadas (_callbacks_)</a>
+## <a id="callbacks">Retrollamadas (_callbacks_)</a>
 
 _callback_ = Fragmento de código ejecutable que se pasa como argumento
 

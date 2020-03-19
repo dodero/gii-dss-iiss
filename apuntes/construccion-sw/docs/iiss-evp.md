@@ -1,4 +1,4 @@
-# Programación asíncrona y de eventos
+# EVENTOS ASÍNCRONOS
 
 - [Programación asíncrona](#programaci%C3%B3n-as%C3%ADncrona)
     - [<a id="listeners">Ejercicio introductorio - Listeners</a>](#a-idlistenersejercicio-introductorio---listenersa)

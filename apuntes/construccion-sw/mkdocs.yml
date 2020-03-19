@@ -1,17 +1,22 @@
 site_name: Implementación e Implantación de Sistemas Software
+site_description: Apuntes de Implementación e Implantación de Sistemas Software – Grado en Ingeniería Informática
+site_author: Juan Manuel Dodero
+site_dir: 
 nav:
-    - Home: index.md
-    - Bibliografía: bibliografia.md
-    - About: about.md
-    - Apuntes:
-        - Objetos: iiss-oop.md
-        - Aspectos: iiss-aop.md
-        - Contratos: iiss-dbc.md
-        - Funciones: iiss-fp.md
-        - Eventos: iiss-evp.md
+    - Inicio: index.md
+    - Asignatura:
+        - Presentación: iiss-pres.md
+        - Bibliografía: bibliografia.md
+        - About: about.md
+    - I. Objetos: iiss-oop.md
+    - II. Aspectos: iiss-aop.md
+    - III. Contratos: iiss-dbc.md
+    - IV. Funciones: iiss-fp.md
+    - V. Eventos: iiss-evp.md
 theme:
     name: 'material'
-    logo: 'figuras/uca.svg'    
+    logo:
+        icon: "\uE80C"
 markdown_extensions:
     - pymdownx.arithmatex
     - pymdownx.betterem:
@@ -34,15 +39,14 @@ markdown_extensions:
     - codehilite:
         guess_lang: false
     - toc:
-        permalink: false
+        permalink: true
         baselevel: 1
 extra_javascript:
     - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'    
 extra:
     search:
         language: 'en, es'
-repo_name: 'dodero/gii-dss-iiss/apuntes/construccion-sw'
-repo_url: 'https://github.com/dodero/gii-dss-iiss/apuntes/construccion-sw'
+repo_url: 'https://github.com/dodero/gii-dss-iiss/'
 extra:
     social:
       - type: 'github'

@@ -8,7 +8,7 @@
 
 ### Versión inicial: Lista v0.1
 
-__Abstracción__: La clase abstracta `List<T>`diferencia entre el *qué* y el *cómo*: Qué hace la lista vs. cómo se almacenan los elementos
+__Abstracción__: La clase abstracta `List<T>` diferencia entre el *qué* y el *cómo*: Qué hace la lista vs. cómo se almacenan los elementos
 
 Criticar la implementación siguiente:
 
@@ -168,9 +168,9 @@ Hay diversas técnicas para ocultar la implementación...
 - __Polimorfismo__: ocultar la implementación de un método, manteniendo la misma interfaz de la clase base
 - __Interfaces__: usar interfaces bien documentadas
 
-## <span style="color:blue">Herencia: generalización y especialización</span>
-
 <a id="herencia"></a>
+
+## <span style="color:blue">Herencia: generalización y especialización</span>
 
 - **Reutilizar la interfaz**
     - Clase base y derivada son del mismo tipo
@@ -1646,7 +1646,7 @@ Hacer _refactoring_ es hacer pequeñas transformaciones en el código que mantie
 
 > Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior
 >
-> — <cite>[M. Fowler](www.refactoring.com), www.refactoring.com</cite>
+> — <cite>[M. Fowler](http://www.refactoring.com/), www.refactoring.com</cite>
 >
 > A change made to the internal structure of the software to make it easier to understand and cheaper to modify without changing its observable behavior
 >
@@ -1837,9 +1837,9 @@ public class Line {
 - No resoluble a nivel de técnicas de construcción
 - Hace falta metodología, gestión de equipos + herramientas de comunicación
 
-## <span style="color:blue;">Ortogonalidad</span>
-
 <a id="ortogonalidad"></a>
+
+## <span style="color:blue;">Ortogonalidad</span>
 
 Dos componentes A y B son ortogonales ($A \perp B$) si los cambios en uno no afectan al otro. Suponen más independencia y menos acoplamiento. Por ejemplo:
 
