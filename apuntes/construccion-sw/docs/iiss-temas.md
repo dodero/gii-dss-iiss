@@ -1,7 +1,5 @@
 ## Temario
 
-### Bloque I. Objetos
-
 1. __[Principios](iiss-oop-1.md)__
     - [Caso 1 - Recorrido de listas](iiss-oop-1.md#caso1)
     - [Cohesión](iiss-oop-1.md#cohesion)
@@ -20,22 +18,16 @@
     - [Refactoring](iiss-oop-4.md#refactoring)
     - [Código duplicado](iiss-oop-4.md#codigo-duplicado)
     - [Ortogonalidad](iiss-oop-4.md#ortogonalidad)
-5. __[Calidad](iiss-err.md)__
-    - [Tratamiento de errores](iiss-err.md#)
-    - [Excepciones](iiss-err.md#excepciones)
-    - [Uso de null](iiss-err.md#uso-de-null)
-    - [Fronteras](iiss-err.md#fronteras)
-
-### Bloque II. Aspectos
-
-6. __[Aspectos](iiss-aop.md)__
+5. __[Aspectos](iiss-aop.md)__
     - [Caso 5 - Editor de figuras](iiss-aop.md#caso5)
     - [Ortogonalidad con aspectos](iiss-aop.md#ortogonalidad-con-aspectos)
     - [Programación orientada a aspectos](iiss-aop.md#programacion-orientada-a-aspectos)
     - [Ejercicios](iiss-aop.md#ejercicios)
-
-### Bloque III. Contratos
-
-### Bloque IV. Funciones
-
-### Bloque V. Eventos
+6. __[Calidad](iiss-err.md)__
+    - [Tratamiento de errores](iiss-err.md#)
+    - [Excepciones](iiss-err.md#excepciones)
+    - [Uso de null](iiss-err.md#uso-de-null)
+    - [Fronteras](iiss-err.md#fronteras)
+7. __[Contratos](iiss-dbc.md)__
+8. __[Funcional](iiss-.md)__
+9. __[Eventos](iiss-.md)__
