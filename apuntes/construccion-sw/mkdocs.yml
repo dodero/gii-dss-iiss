@@ -8,7 +8,13 @@ nav:
         - Presentación: iiss-pres.md
         - Bibliografía: bibliografia.md
         - About: about.md
-    - I. Objetos: iiss-oop.md
+    - Temario: iiss-temas.md
+    - I. Objetos:
+        - Principios: iiss-oop-1.md
+        - Delegación: iiss-oop-2.md
+        - Inyección: iiss-oop-3.md
+        - Duplicación: iiss-oop-4.md
+        - Calidad: iiss-err.md
     - II. Aspectos: iiss-aop.md
     - III. Contratos: iiss-dbc.md
     - IV. Funciones: iiss-fp.md
@@ -40,7 +46,8 @@ markdown_extensions:
         guess_lang: false
     - toc:
         permalink: true
-        baselevel: 1
+        baselevel: 0
+    - sane_lists
 extra_javascript:
     - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'    
 extra:

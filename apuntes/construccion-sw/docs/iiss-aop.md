@@ -2,11 +2,13 @@
 
 # ASPECTOS
 
-# Caso 5 - Ortogonalidad con aspectos
+<a id="caso5"></a>
 
-## Editor de figuras
+## Caso 5 - Editor de figuras
 
-### Ejemplo: editor de figuras
+### Ortogonalidad con aspectos
+
+#### Ejemplo: editor de figuras
 
 ```java
 class Line implements FigureElement{
@@ -71,9 +73,9 @@ Implementamos `MoveTracking`.  ¿Qué dependencias aparecen?
 - `Line` $\dashrightarrow$ `MoveTracking`
 - `Point` $\dashrightarrow$ `MoveTracking`
 
-### Implementación sin aspectos
+#### Implementación sin aspectos
 
-#### Versión 1 sin aspectos
+##### Versión 1 sin aspectos
 
 Solo detecta el cambio de los extremos de una línea.
 
@@ -125,7 +127,7 @@ class MoveTracking {
 }
 ```
 
-#### Versión 2 sin aspectos
+##### Versión 2 sin aspectos
 
 También detecta el cambio de coordenadas de un punto.
 
@@ -180,7 +182,7 @@ class MoveTracking {
 }
 ```
 
-#### Versión 3 sin aspectos
+##### Versión 3 sin aspectos
 
 Las colecciones de figuras son complejas. Las estructuras de objetos son jerárquicas y se producen eventos asíncronos:
 
@@ -257,7 +259,7 @@ La __programación orientada a aspectos__ (_AOP_) es un paradigma de programaci�
   - Tipos de _advice_: _after_, _before_, _around_, etc. 
 - __pointcut__ = predicado que define cuándo se aplica un _advice_ de un aspecto en un _jointpoint_ determinado. Se asocia un _advice_ con la expresión de un _pointcut_ y se ejecuta el _advice_ en todos los _joinpoint_ que cumplan la expresión del _pointcut_.
 
-### Implementación con aspectos
+#### Implementación con aspectos
 
 En el ejemplo anterior, las clases `Line` y `Point` no se ven afectadas:
 
@@ -291,7 +293,7 @@ class Point {
 }
 ```
 
-#### Versión 1 con aspectos
+##### Versión 1 con aspectos
 
 `Line` $\not\dashrightarrow$ `MoveTracking`
 
@@ -314,7 +316,7 @@ aspect MoveTracking {
 }
 ```
 
-#### Versión 2 con aspectos
+##### Versión 2 con aspectos
 
 - `Line` $\not\dashrightarrow$ `MoveTracking`
 - `Point` $\not\dashrightarrow$ `MoveTracking`
@@ -348,13 +350,8 @@ call(void Figure.set*(..))
 call(public * Figure.* (..))
 ```
 
-#### Lecturas recomendadas de AspectJ:
-- [Lenguaje de AspectJ](https://www.eclipse.org/aspectj/doc/next/progguide/printable.html#language)
-- [Introducción a AspectJ](https://www.eclipse.org/aspectj/doc/next/progguide/printable.html#starting-aspectj)
 
-
-
-#### Versión 3 con aspectos
+##### Versión 3 con aspectos
 
 - `Line` $\perp$ `MoveTracking`
 - `Point` $\perp$ `MoveTracking`
@@ -382,6 +379,11 @@ aspect MoveTracking {
   }
 }
 ```
+
+### Lecturas recomendadas de AspectJ
+
+- [Lenguaje de AspectJ](https://www.eclipse.org/aspectj/doc/next/progguide/printable.html#language)
+- [Introducción a AspectJ](https://www.eclipse.org/aspectj/doc/next/progguide/printable.html#starting-aspectj)
 
 ### Ejercicios: AspectJ y Spring AOP
 

@@ -1,18 +1,4 @@
 # EVENTOS ASÍNCRONOS
-
-- [Programación asíncrona](#programaci%C3%B3n-as%C3%ADncrona)
-    - [<a id="listeners">Ejercicio introductorio - Listeners</a>](#a-idlistenersejercicio-introductorio---listenersa)
-        - [Implementando listeners en Java](#implementando-listeners-en-java)
-        - [Ejemplo de listener con y sin lambdas](#ejemplo-de-listener-con-y-sin-lambdas)
-        - [Ejercicio](#ejercicio)
-    - [Modelos de programación asíncrona](#modelos-de-programaci%C3%B3n-as%C3%ADncrona)
-    - [Modelo de paso de continuaciones](#modelo-de-paso-de-continuaciones)
-        - [Callbacks](#callbacks)
-        - [Thunks](#thunks)
-        - [Promesas](#promesas)
-    - [Modelos basados en eventos](#modelos-basados-en-eventos)
-        - [Eventos](#eventos)
-        - [Streams](#streams)
         
 ## <a id="listeners">Ejercicio introductorio - Listeners</a>
 

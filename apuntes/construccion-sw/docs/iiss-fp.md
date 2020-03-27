@@ -1,19 +1,8 @@
-# FUNCIONAL
+## FUNCIONAL
 
-## [Ejemplos de conexión con Diseño Software](#dss)
+### <span style="color:blue;"><a id="anonimas">Funciones Anónimas</a></span>
 
-1. Interfaces funcionales - [Formateo de informes](#informes)
-2. Cambio de interfaz - [Adaptadores](#adaptadores)
-
-## Ejercicios
-
-1. [Ruby from other languages](https://www.ruby-lang.org/en/documentation/ruby-from-other-languages/)
-2. [Scala tour](http://docs.scala-lang.org/tutorials/tour/tour-of-scala)
-3. [Scala exercises](https://www.scala-exercises.org/std_lib/)
-
-# <span style="color:blue;"><a id="anonimas">Funciones Anónimas</a></span>
-
-## Ejemplo: Comparación de personas - versión con herencia
+### Ejemplo: Comparación de personas - versión con herencia
 
 Ordenación de una lista de nombres de personas:
 
@@ -81,7 +70,7 @@ Collections.sort(personas);
 
 - Alternativa 2: No usar herencia, sino composición (no delegar hacia las subclases)
 
-## Ejemplo: Comparación de personas - versión con composición
+### Ejemplo: Comparación de personas - versión con composición
 
 Sin usar herencia:
 
@@ -99,11 +88,11 @@ Collections.sort(personas, new OrdenarPersonaPorId());
 - No delegar hacia las subclases
 - Delegar en objeto de otra clase que implemente la interfaz `java.util.Comparator`
 
-### ¿Ventajas?
+#### ¿Ventajas?
 
 - La función factorizada (v.g. la implementación de `Comparator`) es sustituible en tiempo de ejecución mediante inyección de dependencias
 
-## Ejemplo: Comparación de personas - versión con clases anónimas
+### Ejemplo: Comparación de personas - versión con clases anónimas
 
 ```java
 Collections.sort(
@@ -115,7 +104,7 @@ Collections.sort(
 );
 ```
 
-## Clases locales
+### Clases locales
 
 - Clases **locales**: declaradas dentro de métodos
 - Las clases locales pueden hacer referencia a identificadores declarados en la clase y a variables de solo lectura (`final`) del método en que se declaran
@@ -149,12 +138,12 @@ public class EnclosingClass {
 }
 ```
 
-## Predicados en Java 8 y en la biblioteca _guava_
+### Predicados en Java 8 y en la biblioteca _guava_
 
 En la biblioteca Guava, los [`Iterators`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/collect/Iterators.html) tienen un método [`filter`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/collect/Iterators.html#filter) que recibe un objeto de tipo [`Predicate`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/base/Predicate.html).
 Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html).
 
-### Ejemplo: partidos de una competición
+#### Ejemplo: partidos de una competición
 
 - Con clases anónimas:
 
@@ -207,7 +196,7 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   }
   ```
 
-## Clases anónimas interiores (_inner_)
+### Clases anónimas interiores (_inner_)
 
 - Son clases locales declaradas sin nombre; sirven para clases que solo aparecen una vez en la aplicación
 
@@ -244,11 +233,11 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   }
   ```
 
-## <a id="callbacks">Retrollamadas (_callbacks_)</a>
+### <a id="callbacks">Retrollamadas (_callbacks_)</a>
 
 _callback_ = Fragmento de código ejecutable que se pasa como argumento
 
-### Implementaciones en C/C++
+#### Implementaciones en C/C++
 
 - Puntero a función:
     ```c
@@ -262,7 +251,7 @@ _callback_ = Fragmento de código ejecutable que se pasa como argumento
   - clase que define `operator()`
   - es una clase y por tanto pueden contener un estado
 
-#### Ejemplo de puntero a función
+##### Ejemplo de puntero a función
 
 ```c
 /* The calling function takes a single callback as a parameter. */
@@ -287,7 +276,7 @@ int main(void) {
 }
 ```
 
-#### Ejemplo de puntero a datos
+##### Ejemplo de puntero a datos
 
 ```c
 /* Type of function used for the callback */
@@ -316,7 +305,7 @@ struct event_cb *callback;
 callback->cb(event, callback->data);
 ```
 
-#### Ejemplo de functor
+##### Ejemplo de functor
 
 ```cpp
 // this is a functor
@@ -340,7 +329,7 @@ std::transform(in.begin(), in.end(), out.begin(), add_x(1));
 assert(out[i] == in[i] + 1); // for all i
 ```
 
-#### Functor vs function pointer
+##### Functor vs function pointer
 
 ```cpp
 //Functor
@@ -366,16 +355,16 @@ std::transform(vec.begin(),vec.end(),f);        // pass function pointer
 std::transform(vec.begin(),vec.end(),add_x(1)); // pass functor
 ```
 
-## <a id="lambda">Funciones anónimas (lambdas)</a>
+### <a id="lambda">Funciones anónimas (lambdas)</a>
 
-### Función anónima
+#### Función anónima
 
 - Función o subrutina definida y (posiblemente) llamada sin necesidad de asociarla a un identificador o nombre
 - Se suelen pasar como argumento a funciones de orden superior
 - Son funciones anidadas que permiten acceder a variables definidas en el ámbito de la contenedora (variables no locales)
 - Muchos lenguajes las introducen a través de la palabra reservada `lambda`
 
-### Mecanismos de los lenguajes
+#### Mecanismos de los lenguajes
 
 - En C++: funciones anónimas, objetos función (_functors_) o [funciones lambda](http://en.cppreference.com/w/cpp/language/lambda) (desde C++11)
 - En Java 8: [expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html)
@@ -383,7 +372,7 @@ std::transform(vec.begin(),vec.end(),add_x(1)); // pass functor
 - En C\#: [delegates](https://msdn.microsoft.com/en-us/library/ms173171.aspx) (métodos anónimos y expresiones lambda)
 - En Python: [generators, comprehensions, lambda expressions](https://docs.python.org/2/howto/functional.html)
 
-### Cierre de funciones (_closures_)
+#### Cierre de funciones (_closures_)
 
 - __Cierre__: Función o referencia a función junto con un _entorno de referencia_
 - __Entorno de referencia__: tabla que guarda una referencia a cada una de las variables no locales (_libres_) de la función
@@ -391,7 +380,7 @@ std::transform(vec.begin(),vec.end(),add_x(1)); // pass functor
   - __Variable asignada__ (_bound_): variable que era libre previamente pero a la que le ha sido asignado un valor o conjunto de valores
 - Un cierre permite acceder a las variables libres incluso cuando se invoca desde fuera de su ámbito léxico
 
-### Funciones anónimas en C++
+#### Funciones anónimas en C++
 
 ```cpp
 std::vector<int> some_list; // assume that contains something
@@ -408,7 +397,7 @@ std::for_each(
    its value. */
 ```
 
-### Funciones anónimas en Java
+#### Funciones anónimas en Java
 
 - Con clases anónimas (Java 7):
 
@@ -463,11 +452,11 @@ std::for_each(
   }
   ```
 
-#### Ejercicio: [Mejorando código con expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html\#section3)
+##### Ejercicio: [Mejorando código con expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html\#section3)
 
-### Funciones anónimas en Ruby
+#### Funciones anónimas en Ruby
 
-#### <a id="blocks">Bloques (_blocks_)</a>
+##### <a id="blocks">Bloques (_blocks_)</a>
 
 - Sintaxis `do` ... `end`
 
@@ -487,7 +476,7 @@ std::for_each(
 
 El método `map` itera y aplica un bloque repetitivamente a cada elemento de una colección (representado por el parámetro `i`)
 
-##### Ejemplo: búsqueda en una lista
+###### Ejemplo: búsqueda en una lista
 
 - Sin bloques:
 
@@ -526,7 +515,7 @@ El método `map` itera y aplica un bloque repetitivamente a cada elemento de una
 
 El método `find` itera y aplica el test del bloque a cada elemento `song` de la colección.
 
-##### Ejecución de bloques
+###### Ejecución de bloques
 
 - El bloque debe aparecer al lado de una llamada a método
 - No se ejecuta el bloque, sino que se recuerda el contexto (variables locales, objeto actual, etc.) en que aparece
@@ -534,7 +523,7 @@ El método `find` itera y aplica el test del bloque a cada elemento `song` de la
 - El control vuelve al método después del `yield`
 - Al bloque se le pueden pasar parámetros
 
-###### Ejemplo: fibonacci
+**Ejemplo: fibonacci**
 
 ```ruby
 def fib_up_to(max)
@@ -549,7 +538,7 @@ fib_up_to(1000) {|f| print f, " " }
 #Salida => 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
 ```
 
-###### Ejemplo de `yield`:
+**Ejemplo de `yield`:**
 
 ```ruby
 def three_times
@@ -560,7 +549,7 @@ end
 three_times { puts "Hello" }
 ```
 
-###### Ejemplo: implementación de `Array.find`
+**Ejemplo: implementación de `Array.find`**
 
 ```ruby
 class Array
@@ -574,7 +563,7 @@ class Array
 end
 ```
 
-###### Ejemplos: iterar con bloques
+**Ejemplos: iterar con bloques**
 
 - Iterar sobre un array con `each`
 
@@ -623,7 +612,7 @@ end
   #Devuelve => [1, 2, 3, 4]
   ```
 
-#### <a id="proc">Procs y lambdas</a>
+##### <a id="proc">Procs y lambdas</a>
 
 - En Ruby, una función anónima o _lambda_ es simplemente un tipo especial de objeto `Proc`
 - Definición de procs/lambdas:
@@ -703,19 +692,19 @@ end
   # Prints "Before lambda" and "After lambda"
   ```
 
-##### Diferencias entre `Proc` y `lambda`:
+###### Diferencias entre `Proc` y `lambda`:
 
 - Las lambdas se definen con `-> {}` y los procs con `Proc.new {}`
 - Los `Proc` retornan del método actual, las lambdas retornan de la propia función lambda
 - Los `Proc` no se preocupan del número correcto de argumentos, las lambdas elevan una excepción
 
-#### Paso de bloques como parámetros
+##### Paso de bloques como parámetros
 
 - Simplemente, se añade al final de la llamada a un método 
 - ¿Dónde se llama al bloque? Donde el método indique con `yield`
 - El bloque (realmente un objeto `Proc`) se pasa como una especie de parámetro no declarado
 
-##### Ejemplos de paso de bloques:
+###### Ejemplos de paso de bloques:
 
 - Llamada a un bloque sin parámetros
 
@@ -812,16 +801,16 @@ end
   #  After the call
   ```
 
-## Lecturas recomendadas
+### Lecturas recomendadas
 
 - M. Williams: [Java SE 8: Lambda Quick Start](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html), Oracle Learning Library, 2013.
 - D. Thomas & A. Hunt: [Programming Ruby. The Pragmatic Programmer's Guide](http://www.ruby-doc.org/docs/ProgrammingRuby/), Addison-Wesley, 2005.
 
-# <span style="color:blue;"><a id="dss">Ejemplos de Conexión con Diseño Software</a></span>
+## <span style="color:blue;"><a id="dss">Ejemplos de diseño e implementación</a></span>
 
-## Interfaces funcionales - <a id="informes">Formateo de informes</a>
+### Interfaces funcionales - <a id="informes">Ejemplo: Formateo de informes</a>
 
-### Versión en ruby
+#### Versión en ruby
 
 ```ruby
 class Report
@@ -858,7 +847,7 @@ class PlainTextFormatter
     context.text.each do |line|
 ```
 
-### Versión con interfaces funcionales (Ruby procs + blocks)
+#### Versión con interfaces funcionales (Ruby procs + blocks)
 
 ```ruby
 class Report
@@ -877,7 +866,7 @@ class Report
 end
 ```
 
-#### Formateo HTML
+##### Formateo HTML
 
 ```ruby
 HTML_FORMATTER = lambda do |context|
@@ -896,7 +885,7 @@ report = Report.new &HTML_FORMATTER
 report.output_report
 ```
 
-#### Formateo de texto
+##### Formateo de texto
 
 ```ruby
 report = Report.new do |context|
@@ -907,26 +896,26 @@ report = Report.new do |context|
 end
 ```
 
-## Cambio de interfaz - <a id="adaptadores">Adaptadores</a>
+### Cambio de interfaz - <a id="adaptadores">Adaptadores</a>
 
-### Tipos de adaptador
+#### Tipos de adaptador
 
-#### Adaptadores de clase
+##### Adaptadores de clase
 
   ![Adaptador de clases](./figuras/classAdapter.png)
 
-#### Adaptadores de objeto
+##### Adaptadores de objeto
 
   ![Adaptador de objetos](./figuras/objectAdapter.png)
 
-### Implementaciones
+#### Implementaciones
 
 - Herencia
 - Composición
 - Herencia múltiple
 - Mixins
 
-# <span style="color:blue;"><a id="mixins">Mixins</a></span>
+## <span style="color:blue;"><a id="mixins">Mixins</a></span>
 
 En POO, un __mixin__ es una clase con métodos disponibles para otras clases sin tener que ser madre de estas otras (es decir, sin usar la herencia)
 
@@ -935,14 +924,14 @@ En POO, un __mixin__ es una clase con métodos disponibles para otras clases sin
 - No se _heredan_ sino que se __incluyen__
 - Es una forma de implementar el principio de inversión de dependencias (DIP)
 
-## <a id="modules">Ruby modules</a>
+### <a id="modules">Ruby modules</a>
 
 En Ruby los mixins se implementan mediante módulos (`module`).
 
 - Un módulo no puede tener instancias (porque no es una clase)
 - Un módulo puede incluirse (`include`) dentro de la definición de una clase
 
-### Ejemplo: herencia vs mixins
+#### Ejemplo: herencia vs mixins
 
 ```ruby
 module Debug
@@ -970,7 +959,7 @@ ph.whoAmI?  # => "Phonograph (#70315984363660): West End Blues"
 et.whoAmI?  # => "EightTrack (#70315996611260): Surrealistic Pillow"
 ```
 
-### Ejemplo: Comparable en ruby
+#### Ejemplo: Comparable en ruby
 
 Una manera de implementar un `Comparable` en ruby mediante el módulo [Comparable](https://ruby-doc.org/core-2.2.3/Comparable.html):
 
@@ -1008,9 +997,9 @@ s3.between?(s1,s2) #true
   - el atributo-criterio de comparación
   - En `x <=> y`, `x` es el receptor del mensaje/método e `y` es el argumento
 
-### Ejemplo: Adaptador de interfaz en Ruby
+#### Ejemplo: Adaptador de interfaz en Ruby
 
-#### Interfaz americana
+##### Interfaz americana
 
 ```ruby
 class Renderer
@@ -1036,10 +1025,10 @@ class TextObject
 end
 ```
 
-#### Interfaz británica
+##### Interfaz británica
 
 ```ruby
-# british_text_object.rb
+## british_text_object.rb
 class BritishTextObject
   attr_reader :string, :size_mm, :colour
 
@@ -1047,7 +1036,7 @@ class BritishTextObject
 end
 ```
 
-#### Adaptador de interfaz: versión clásica
+##### Adaptador de interfaz: versión clásica
 
 ```ruby
 class BritishTextObjectAdapter < TextObject
@@ -1069,13 +1058,13 @@ class BritishTextObjectAdapter < TextObject
 end
 ```
 
-### Adaptador de interfaz: versión con módulos
+#### Adaptador de interfaz: versión con módulos
 
 ```ruby
-# Make sure the original class is loaded
+## Make sure the original class is loaded
 require 'british_text_object'
 
-# Now add some methods to the original class
+## Now add some methods to the original class
 class BritishTextObject
   def color
     return colour
@@ -1095,7 +1084,7 @@ end
 - la reescritura de métodos modifica la clase, no la declara de nuevo
 - se puede hacer incluso con las clases built-in de la biblioteca de Ruby
 
-### Adaptador de interfaz: instancia única
+#### Adaptador de interfaz: instancia única
 
 ```ruby
 bto = BritishTextObject.new('hello', 50.8, :blue)
@@ -1124,21 +1113,21 @@ end
 def bto.text
   string
 end
-# ...
+## ...
 ```
 
 - Modifica el comportamiento solo de 1 instancia
 - Ruby llama a esto _singleton methods_ y _singleton class_ (no es exactamente lo mismo que el patrón singleton del GoF)
 - Ruby primero busca los métodos definidos en una clase singleton y luego en la clase regular que ha sido redefinida
 
-## <a id="traits">Scala Traits</a>
+### <a id="traits">Scala Traits</a>
 
 Los `trait`de Scala son similares a las interfaces de Java.
 
 - Las clases y los objetos pueden extender un `trait`
 - Los `trait` no pueden instanciarse
 
-### Ejemplo: Iterador como un `trait`
+#### Ejemplo: Iterador como un `trait`
 
 ```scala
 trait Iterator[A] {
@@ -1163,7 +1152,7 @@ println(iterator.next())  // prints 0
 println(iterator.next())  // prints 1
 ```
 
-### Ejemplo: Subtipos
+#### Ejemplo: Subtipos
 
 Implementación del _polimorfismo de inclusión_ o herencia simple con traits:
 
@@ -1186,7 +1175,7 @@ animals.append(cat)
 animals.foreach(pet => println(pet.name))  // Prints Harry Sally
 ```
 
-### Ejemplo: Similarity
+#### Ejemplo: Similarity
 
 ```scala
 trait Similarity {
@@ -1222,7 +1211,7 @@ object TraitsTest extends App {
 - Para ser un mixin genuino, debería mezclar comportamiento y no interfaces heredadas
 - Leer [Scala Mixins: The right way](http://baddotrobot.com/blog/2014/09/22/scala-mixins/)
 
-### Ejemplo: Iterator
+#### Ejemplo: Iterator
 
 Cómo reutilizar comportamiento de varios tipos de iteradores a través de un mixin:
 
@@ -1267,12 +1256,12 @@ object IntIteratorTest {
 - [Unit](http://www.scala-lang.org/api/current/scala/Unit.html) en scala: subtipo de `AnyVal`; solo hay un valor `()` que es de tipo `Unit`.
 - Un método que devuelve `Unit` es análogo a un método Java que devuelve `void`
 
-### Diferencia con clase abstracta
+#### Diferencia con clase abstracta
 
 - [Scala traits vs abstract classes](http://stackoverflow.com/questions/1991042/what-is-the-advantage-of-using-abstract-classes-instead-of-traits)
 - Los constructores de un `trait` no pueden tener parámetros (de momento)
 
-#### Reglas
+##### Reglas
 
 [To trait or not to trait](http://www.artima.com/pins1ed/traits.html#12.7)
 
@@ -1283,10 +1272,16 @@ object IntIteratorTest {
 - Si importa mucho la eficiencia => clase (los traits se compilan a interfaces y son algo más lentas de llamar)
 - Si no se sabe => empezar por un trait y cambiarlo cuando se sepa
 
-#### Ejercicios y lecturas recomendadas
+##### Ejercicios y lecturas recomendadas
 
 - Tutorial: [Ruby modules](http://ruby-doc.com/docs/ProgrammingRuby/html/tut_modules.html)
 - [Scala traits](https://docs.scala-lang.org/tour/traits.html)
   - Ejemplo: [Traits exercise](https://www.scala-exercises.org/std_lib/traits)
   - Ejemplo: [Stackable Traits pattern](http://www.artima.com/scalazine/articles/stackable_trait_pattern.html)
 - Lectura: [Herencia vs. composición con Scala mixins](http://baddotrobot.com/blog/2014/09/22/scala-mixins/)
+
+## Ejercicios
+
+1. [Ruby from other languages](https://www.ruby-lang.org/en/documentation/ruby-from-other-languages/)
+2. [Scala tour](http://docs.scala-lang.org/tutorials/tour/tour-of-scala)
+3. [Scala exercises](https://www.scala-exercises.org/std_lib/)

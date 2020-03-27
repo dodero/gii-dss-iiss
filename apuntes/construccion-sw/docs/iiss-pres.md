@@ -26,21 +26,21 @@
 ## Técnicas
 
 - Orientación a objetos
-    - [Herencia](iiss-oop.md#herencia)
-    - [Polimorfismo](iiss-oop.md#polimorfismo)
-    - [Composición](iiss-oop.md#composicion)
-    - [Inyección de dependencias](iiss-oop.md#inyeccion)
+    - [Herencia](iiss-oop-1.md#herencia)
+    - [Polimorfismo](iiss-oop-1.md#polimorfismo)
+    - [Composición](iiss-oop-2.md#composicion)
+    - [Inyección de dependencias](iiss-oop-3.md#inyeccion)
 
-- [Refactoring](iiss-oop.md#refactoring)
-    - [Código duplicado](iiss-oop.md#duplcode)
-    - [Ortogonalidad y dependencias](iiss-oop.md#ortogonalidad)
+- [Refactoring](iiss-oop-4.md#refactoring)
+    - [Código duplicado](iiss-oop-4.md#duplcode)
+    - [Ortogonalidad y dependencias](iiss-oop-4.md#ortogonalidad)
     - [Aspectos](iiss-aop.md#aspectos)
   
 - Calidad y Robustez
     - [Aserciones](iiss-dbc.md#assert)
     - [Contratos](iiss-dbc.md#contracts)
-    - [Errores y excepciones](iiss-oop.md#errores)
-    - [Optionals y uso de null](iiss-oop.md#null)
+    - [Errores y excepciones](iiss-err.md#errores)
+    - [Optionals y uso de null](iiss-err.md#null)
 
 - Programación Funcional
     - Funciones [Anónimas](iiss-fp.md#anonimas)
@@ -57,7 +57,7 @@
 
 ## Paradigmas
 
-1. [Objetos](iiss-oop.md)
+1. [Objetos](iiss-oop-1.md)
 2. [Aspectos](iiss-aop.md)
 3. [Contratos](iiss-dbc.md)
 4. [Funciones](iiss-fp.md)
@@ -67,8 +67,8 @@
 
 ## Casos prácticos
 
-1. Ocultación de la implementación - [Recorrido de una lista](iiss-oop.md#recorridolista)
-2. Delegación - [Implementación de una orquesta](iiss-oop.md#orquesta)
-3. Inyección de dependencias - [Caballeros de la mesa redonda](iiss-oop.md#knights)
-4. Código duplicado - [Cálculo de nóminas](iiss-oop.md#nominas)
+1. Ocultación de la implementación - [Recorrido de una lista](iiss-oop-1.md#recorridolista)
+2. Delegación - [Implementación de una orquesta](iiss-oop-2.md#orquesta)
+3. Inyección de dependencias - [Caballeros de la mesa redonda](iiss-oop-3.md#knights)
+4. Código duplicado - [Cálculo de nóminas](iiss-oop-4.md#nominas)
 5. Ortogonalidad con aspectos - [Editor de figuras](iiss-aop.md#aspectos)

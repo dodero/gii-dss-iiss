@@ -2038,14 +2038,14 @@ class Demeter {
 - Costes de espacio y ejecución de métodos *wrapper* que reenvían la petición al objeto delegado: violar la ley de Demeter para mejorar el __rendimiento__
 - Otros ejemplos de mejora del rendimiento: desnormalización de BBDD
 
-# Caso 5 - Ortogonalidad con aspectos
-
-<a id="aspectos"></a>
-
 ## Toolkits y bibliotecas
 
 - Usar metadatos (@tag) para propósitos específicos – v.g. persistencia de objetos, transacciones, etc.
 - Aspect-Oriented Programming (AOP)
+
+<a id="aspectos"></a>
+
+# Caso 5 - Ortogonalidad con aspectos
 
 ## Editor de figuras
 
@@ -2965,7 +2965,10 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
 
 ### Actividad: ¿Hay contratos en C++?
 
-Ver el video de J. D. García sobre [Contracts programming after C++17](https://www.youtube.com/watch?v=IBas3S2HtdU): Desde el minuto 4'10''
+Aún no hay contratos en C++20
+- Ver el video de J. D. García sobre [Contracts programming after C++17](https://www.youtube.com/watch?v=IBas3S2HtdU): Desde el minuto 4'10''
+
+
 
 ### Aserciones versus contratos
 
