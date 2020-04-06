@@ -29,5 +29,5 @@
     - [Uso de null](iiss-err.md#uso-de-null)
     - [Fronteras](iiss-err.md#fronteras)
 7. __[Contratos](iiss-dbc.md)__
-8. __[Funcional](iiss-.md)__
-9. __[Eventos](iiss-.md)__
+8. __[Funcional](iiss-fp.md)__
+9. __[Eventos](iiss-evp.md)__

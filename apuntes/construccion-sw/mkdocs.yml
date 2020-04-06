@@ -17,7 +17,10 @@ nav:
         - Calidad: iiss-err.md
     - II. Aspectos: iiss-aop.md
     - III. Contratos: iiss-dbc.md
-    - IV. Funciones: iiss-fp.md
+    - IV. Funciones:
+        - Interfaces: iiss-fp-1.md
+        - Lambdas: iiss-fp-2.md
+        - Mixins: iiss-fp-3.md
     - V. Eventos: iiss-evp.md
 theme:
     name: 'material'
@@ -48,6 +51,7 @@ markdown_extensions:
         permalink: true
         baselevel: 0
     - sane_lists
+    - def_list
 extra_javascript:
     - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'    
 extra:

@@ -1,8 +1,10 @@
-## FUNCIONAL
+# FUNCIONES
 
-### <span style="color:blue;"><a id="anonimas">Funciones Anónimas</a></span>
+## Programación funcional
 
-### Ejemplo: Comparación de personas - versión con herencia
+### <span style="color:blue;"><a id="functional">Interfaces funcionales</a></span>
+
+#### Ejemplo: Comparación de personas - versión con herencia
 
 Ordenación de una lista de nombres de personas:
 
@@ -70,7 +72,7 @@ Collections.sort(personas);
 
 - Alternativa 2: No usar herencia, sino composición (no delegar hacia las subclases)
 
-### Ejemplo: Comparación de personas - versión con composición
+#### Ejemplo: Comparación de personas - versión con composición
 
 Sin usar herencia:
 
@@ -88,11 +90,10 @@ Collections.sort(personas, new OrdenarPersonaPorId());
 - No delegar hacia las subclases
 - Delegar en objeto de otra clase que implemente la interfaz `java.util.Comparator`
 
-#### ¿Ventajas?
+!!! question "¿Ventajas?"
+    La función factorizada (por ejemplo, la implementación de `Comparator`) es sustituible en tiempo de ejecución mediante inyección de dependencias
 
-- La función factorizada (v.g. la implementación de `Comparator`) es sustituible en tiempo de ejecución mediante inyección de dependencias
-
-### Ejemplo: Comparación de personas - versión con clases anónimas
+#### Ejemplo: Comparación de personas - versión con clases anónimas
 
 ```java
 Collections.sort(
@@ -104,9 +105,9 @@ Collections.sort(
 );
 ```
 
-### Clases locales
+### Clases locales o internas
 
-- Clases **locales**: declaradas dentro de métodos
+- Clases **locales** (_inner classes_): declaradas dentro de métodos
 - Las clases locales pueden hacer referencia a identificadores declarados en la clase y a variables de solo lectura (`final`) del método en que se declaran
 
 ```java
@@ -138,7 +139,9 @@ public class EnclosingClass {
 }
 ```
 
-### Predicados en Java 8 y en la biblioteca _guava_
+### Predicados
+
+En Java 8, inspirado por la biblioteca _guava_, se incluyen predicados como una forma de interfaz funcional.
 
 En la biblioteca Guava, los [`Iterators`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/collect/Iterators.html) tienen un método [`filter`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/collect/Iterators.html#filter) que recibe un objeto de tipo [`Predicate`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/base/Predicate.html).
 Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html).
@@ -196,9 +199,9 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   }
   ```
 
-### Clases anónimas interiores (_inner_)
+### Clases anónimas interiores
 
-- Son clases locales declaradas sin nombre; sirven para clases que solo aparecen una vez en la aplicación
+- Son clases locales (_inner classes_) declaradas sin nombre; sirven para clases que solo aparecen una vez en la aplicación
 
 - Usando Java 7:
 
@@ -357,7 +360,7 @@ std::transform(vec.begin(),vec.end(),add_x(1)); // pass functor
 
 ### <a id="lambda">Funciones anónimas (lambdas)</a>
 
-#### Función anónima
+#### <a id="anonimas">Función anónima</a>
 
 - Función o subrutina definida y (posiblemente) llamada sin necesidad de asociarla a un identificador o nombre
 - Se suelen pasar como argumento a funciones de orden superior
@@ -806,9 +809,9 @@ end
 - M. Williams: [Java SE 8: Lambda Quick Start](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html), Oracle Learning Library, 2013.
 - D. Thomas & A. Hunt: [Programming Ruby. The Pragmatic Programmer's Guide](http://www.ruby-doc.org/docs/ProgrammingRuby/), Addison-Wesley, 2005.
 
-## <span style="color:blue;"><a id="dss">Ejemplos de diseño e implementación</a></span>
+<a id="informes"></a>
 
-### Interfaces funcionales - <a id="informes">Ejemplo: Formateo de informes</a>
+### Ejemplos de interfaces funcionales: Formateo de informes
 
 #### Versión en ruby
 
@@ -896,26 +899,7 @@ report = Report.new do |context|
 end
 ```
 
-### Cambio de interfaz - <a id="adaptadores">Adaptadores</a>
-
-#### Tipos de adaptador
-
-##### Adaptadores de clase
-
-  ![Adaptador de clases](./figuras/classAdapter.png)
-
-##### Adaptadores de objeto
-
-  ![Adaptador de objetos](./figuras/objectAdapter.png)
-
-#### Implementaciones
-
-- Herencia
-- Composición
-- Herencia múltiple
-- Mixins
-
-## <span style="color:blue;"><a id="mixins">Mixins</a></span>
+### <span style="color:blue;"><a id="mixins">Mixins</a></span>
 
 En POO, un __mixin__ es una clase con métodos disponibles para otras clases sin tener que ser madre de estas otras (es decir, sin usar la herencia)
 
@@ -924,14 +908,14 @@ En POO, un __mixin__ es una clase con métodos disponibles para otras clases sin
 - No se _heredan_ sino que se __incluyen__
 - Es una forma de implementar el principio de inversión de dependencias (DIP)
 
-### <a id="modules">Ruby modules</a>
+#### <a id="modules">Ruby modules</a>
 
 En Ruby los mixins se implementan mediante módulos (`module`).
 
 - Un módulo no puede tener instancias (porque no es una clase)
 - Un módulo puede incluirse (`include`) dentro de la definición de una clase
 
-#### Ejemplo: herencia vs mixins
+##### Ejemplo: herencia vs mixins
 
 ```ruby
 module Debug
@@ -959,7 +943,7 @@ ph.whoAmI?  # => "Phonograph (#70315984363660): West End Blues"
 et.whoAmI?  # => "EightTrack (#70315996611260): Surrealistic Pillow"
 ```
 
-#### Ejemplo: Comparable en ruby
+##### Ejemplo: Comparable en ruby
 
 Una manera de implementar un `Comparable` en ruby mediante el módulo [Comparable](https://ruby-doc.org/core-2.2.3/Comparable.html):
 
@@ -997,9 +981,9 @@ s3.between?(s1,s2) #true
   - el atributo-criterio de comparación
   - En `x <=> y`, `x` es el receptor del mensaje/método e `y` es el argumento
 
-#### Ejemplo: Adaptador de interfaz en Ruby
+##### Ejemplo: Adaptador de interfaz en Ruby
 
-##### Interfaz americana
+###### Interfaz americana
 
 ```ruby
 class Renderer
@@ -1025,7 +1009,7 @@ class TextObject
 end
 ```
 
-##### Interfaz británica
+###### Interfaz británica
 
 ```ruby
 ## british_text_object.rb
@@ -1036,7 +1020,7 @@ class BritishTextObject
 end
 ```
 
-##### Adaptador de interfaz: versión clásica
+###### Adaptador de interfaz: versión clásica
 
 ```ruby
 class BritishTextObjectAdapter < TextObject
@@ -1058,7 +1042,7 @@ class BritishTextObjectAdapter < TextObject
 end
 ```
 
-#### Adaptador de interfaz: versión con módulos
+##### Adaptador de interfaz: versión con módulos
 
 ```ruby
 ## Make sure the original class is loaded
@@ -1084,7 +1068,7 @@ end
 - la reescritura de métodos modifica la clase, no la declara de nuevo
 - se puede hacer incluso con las clases built-in de la biblioteca de Ruby
 
-#### Adaptador de interfaz: instancia única
+##### Adaptador de interfaz: instancia única
 
 ```ruby
 bto = BritishTextObject.new('hello', 50.8, :blue)
@@ -1103,6 +1087,7 @@ class << bto
   end
 end
 ```
+
 o bien:
 
 ```ruby

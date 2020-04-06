@@ -8,7 +8,7 @@
 
 #### Códigos de error
 
-Un ejemplo habitual de tratamiento de errores con __códigos de error__:
+Un ejemplo habitual de tratamiento de errores con __códigos de error__ en un lenguaje como C:
 
 ```java
 if (deletePage(page) == E_OK) {
@@ -40,13 +40,14 @@ public enum Error {
 }
 ```
 
-Los programadores intentan evitar añadir nuevos motivos de error, porque eso significa tener que volver a compilar y desplegar todo el código.
+!!! failure Mala práctica
+    Los programadores intentan evitar añadir nuevos motivos de error, porque eso significa tener que volver a compilar y desplegar todo el código.
 
 ### Excepciones
 
-Usar __excepciones__ en lugar de códigos de error:
+Muchos lenguajes usan __excepciones__ en lugar de códigos de error:
 
-```java
+```java hl_lines="2 3 4"
 try {
   deletePage(page);
   registry.deleteReference(page.name);
@@ -59,11 +60,13 @@ catch (Exception e) {
 
 ¿No queda más claro?
 
-Ventaja: las nuevas excepciones son derivadas de una clase base `Exception`, lo que facilita la definición de nuevos motivos de error.
+!!! success "Ventaja"
+    Las nuevas excepciones son derivadas de una clase base `Exception`, lo que facilita la definición de nuevos motivos de error.
 
-<span style="color:red;">¿Dónde se produce el error?</span>
+!!! question "<span style="color:red;">¿Dónde se produce el error?</span>"
+    Si se eleva una excepción en el ejemplo anterior, ¿en cuál de las instrucciones del bloque `try` se ha producido?
 
-##### Separar la función y el tratamiento de errores
+#### Separar la función y el tratamiento de errores
 
 ```java
 public void delete(Page page) {
@@ -90,17 +93,20 @@ private void logError(Exception e) {
 
 #### Excepciones en Java
 
-- **Checked**: instancias de clases derivadas de `java.lang.Throwable` (menos `RuntimeException`). Deben declararse en el método mediante `throws` y obligan al llamador a tratar la excepción.
+##### Tipos de excepciones en Java 
 
-- **Unchecked**: instancias de clases derivadas de `java.lang.RuntimeException`. No se declaran en el método y no obligan al llamador a tratar la excepción.
+**Checked**
+: Instancias de clases derivadas de `java.lang.Throwable` (menos `RuntimeException`). Deben declararse en el método mediante `throws` y obligan al llamador a tratar la excepción.
 
-Elevar una excepción `e` implica:
+**Unchecked**
+: Instancias de clases derivadas de `java.lang.RuntimeException`. No se declaran en el método y no obligan al llamador a tratar la excepción.
 
-- Deshacer (_roll back_) la llamada a un método
-- hasta que se encuentre un bloque catch para el tipo de `e`
-- y, si no se encuentra, la excepción es capturada por la JVM, que detiene el programa
+!!! note "¿Qué implica elevar una excepción `e` en Java?"
+    1. Deshacer (_roll back_) la llamada a un método...
+    2. ...hasta que se encuentre un bloque catch para el tipo de `e` y...
+    3. si no se encuentra, la excepción es capturada por la JVM, que detiene el programa
 
-#### Tratamiento de excepciones en Java
+##### Tratamiento de excepciones en Java
 
 ```java
   try {
@@ -131,11 +137,11 @@ Usar solamente excepciones __unchecked__
 
 - C\#, C++, Python o Ruby no ofrecen excepciones _checked_.
 - Los beneficios de las checked en Java son mínimos
-- Se paga el precio de violar el principio OCP (Open-Closed Principle): si lanzamos una excepción _checked_ desde un método y el `catch` está tres niveles por encima, hay que declarar la excepción en la signatura de todos los métodos que van entre medias. Esto significa que un cambio en un nivel bajo del software puede forzar cambios en niveles altos
+- Se paga el precio de violar el principio OCP (_Open-Closed Principle_): si lanzamos una excepción _checked_ desde un método y el `catch` está tres niveles por encima, hay que declarar la excepción en la signatura de todos los métodos que van entre medias. Esto significa que un cambio en un nivel bajo del software puede forzar cambios en niveles altos
 
 #### Transformación de excepciones
 
-##### Checked vs unchecked
+##### Transformar en unchecked
 
 Muchas APIs de Java lanzan excepciones checked cuando deberían ser unchecked
 
@@ -175,11 +181,15 @@ Criticar la siguiente implementación:
   }
 ```
 
-Excesiva duplicación de código: llamada a `reportPortError()`
 
-Excepción encapsulada:
 
-```java
+!!! question "Excesiva duplicación de código"
+    La llamada a `reportPortError()` se repite mucho.
+    <span style="color:red;">¿Cómo evitar la excesiva duplicación?</span>
+
+
+??? success "Solución: Excepción encapsulada"
+    ```java
     LocalPort port = new LocalPort(12);
     try {
       port.open();
@@ -208,20 +218,21 @@ Excepción encapsulada:
       }
       ...
     }
-```
+    ```
 
-- La encapsulación de excepciones es recomendable cuando se usa un API de terceros, para minimizar las dependencias con respecto al API elegido. 
+- La encapsulación de excepciones es recomendable cuando se usa un API de terceros, para minimizar las dependencias con respecto al API elegido.
 - También facilitan la implementación de _mocks_ del componente que proporciona el API para construir pruebas.
 
 #### Las excepciones son excepcionales
 
 __Recomendación de uso__: Usar excepciones para problemas excepcionales (eventos inesperados)
 
-__Ejemplo__: <span style="color:red;">¿Usar excepciones cuando se intenta abrir un fichero para leer y el fichero no existe?</span>
+!!! example "Excepciones tras la apertura de ficheros"
+    <span style="color:red;">¿Usar excepciones cuando se intenta abrir un fichero para leer y el fichero no existe?</span>
 
 Depende de si el fichero debe estar ahí
 
-- Usando excepciones:
+- Caso en que se debe lanzar una excepción:
 
   ```java
   public void open_passwd() throws FileNotFoundException {
@@ -231,7 +242,7 @@ Depende de si el fichero debe estar ahí
   }
   ```
 
-- Sin usar excepciones:
+- Caso en que no se debe lanzar una excepción:
 
   ```java
   public boolean open_user_file(String name)
@@ -337,9 +348,9 @@ public class MetricsCalculator
 
 ¿Qué curso de acción tomar ante un `InvalidArgumentException`? ¿Hay alguno?
 
-#####  Alternativa con aserciones
+##### Alternativa con aserciones
 
-(*solo para JDK $\geq$ 5.0*)
+!!! tip "Solo para JDK $\geq$ 5.0"
 
 ```java
 public class MetricsCalculator
@@ -352,23 +363,26 @@ public class MetricsCalculator
 }
 ```
 
-Es una buena forma de documentar, pero no resuelve el problema
+El uso de `assert` es una buena forma de documentar, pero no resuelve el problema.
 
 #### Optionals
 
 - En la mayoría de lenguajes no hay forma satisfactoria de tratar con _nulls_ pasados como argumento accidentalmente.
-- Para eso están los _options_ u _optionals_, disponibles actualmente en muchos languajes:
+- Para eso están los _options_ u _optionals_, disponibles actualmente en muchos lenguajes como:
     - [Scala `Option`](https://www.tutorialspoint.com/scala/scala_options.htm)
-    - [Java 8](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) `java.util.Optional`
-    - C++17 `std::optional`
+    - [Java 8](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) `#!java java.util.Optional`
+    - C++17 `#!cpp std::optional`
 - [TypeScript recomienda usar `undefined`](https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines#null-and-undefined) (algo que no se ha inicializado) en lugar de `null` (algo que no está disponible)
 
-##### [Scala Options](https://www.tutorialspoint.com/scala/scala_options.htm)
+!!! note "Lecturas recomendadas"
+    Leer [Tutorial de `#!scala Option`](https://www.tutorialspoint.com/scala/scala_options.htm) en Scala
 
-En Scala, `Option[T]` es un contenedor de un valor opcional de tipo T.
+##### Scala `Option`
 
-- Si el valor de tipo T está presente, `Option[T]` es una intancia de `Some[T]` que contiene el valor presente de tipo T.
-- Si el valor está ausente, `Option[T]` es el objeto `None`.
+En Scala, `#!scala Option[T]` es un contenedor de un valor opcional de tipo T.
+
+- Si el valor de tipo T está presente, `#!scala Option[T]` es una intancia de `#!scala Some[T]` que contiene el valor presente de tipo T.
+- Si el valor está ausente, `#!scala Option[T]` es el objeto `#!scala None`.
 
 ```scala
 object Demo {
@@ -398,9 +412,10 @@ object Demo {
 }
 ```
 
-##### Java 8 Optionals
+##### Java 8 `Optional`
 
-From [Java 8 Optional in Depth](https://www.mkyong.com/java8/java-8-optional-in-depth/)
+!!! note "Lectura recomendada"
+    Leer [Java 8 Optional in Depth](https://www.mkyong.com/java8/java-8-optional-in-depth/).
 
 __Ejemplo sin `Optional`__
 

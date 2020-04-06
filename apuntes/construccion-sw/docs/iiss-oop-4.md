@@ -358,7 +358,7 @@ Dos componentes A y B son ortogonales ($A \perp B$) si los cambios en uno no afe
 - La base de datos debe ser ortogonal a la interfaz de usuario
 - En un helicóptero, los mandos de control no suelen ser ortogonales
 
-??? quote "A Nonorthogonal System ([Hunt, 2019](bibliografia.md#pragmatic2))"
+!!! quote "A Nonorthogonal System ([Hunt, 2019](bibliografia.md#pragmatic2))"
     Helicopters have four basic controls. The cyclic is the stick you hold in your right hand. Move it, and the helicopter moves in the corresponding direction. Your left hand holds the collective pitch lever. Pull up on this and you increase the pitch on all the blades, generating lift. At the end of the pitch lever is the throttle. Finally you have two foot pedals, which vary the amount of tail rotor thrust and so help turn the helicopter.
 
     “Easy!,” you think. “Gently lower the collective pitch lever and you’ll descend gracefully to the ground, a hero.” However, when you try it, you discover that life isn’t that simple. The helicopter’s nose drops, and you start to spiral down to the left. Suddenly you discover that you’re flying a system where every control input has secondary effects. Lower the left-hand lever and you need to add compensating backward movement to the right-hand stick and push the right pedal. But then each of these changes affects all of the other controls again. Suddenly you’re juggling an unbelievably complex system, where every change impacts all the other inputs. Your workload is phenomenal: your hands and feet are constantly moving, trying to balance all the interacting forces.
@@ -490,6 +490,8 @@ class Demeter {
 }
 ```
 
+##### Interfaces _fluent_
+
 !!! warning "Excepción a la ley de Demeter"
     Hay una excepción notable a la prohibición de encadenar llamadas a funciones de la ley de Demeter. Esta regla no aplica si es muy poco probable que haya cambios en las cosas que se encadenan. En la práctica, cualquier parte de tu aplicación debe considerarse como algo que es probable que cambie; cualquier elemento de una biblioteca de un tercero debe considerarse volátil, en particular si quienes mantienen dicha biblioteca suelen cambiar su API de una versión a otra.
 
@@ -507,7 +509,7 @@ myList
     .forEach(System.out::println);
 ```
 
-Los métodos `stream`, `filter`, `map`, `sorted` y `forEach` son parte de la nueva interfaz funcional y los _streams_ incorporados a las colecciones como `List` incorporadas al lenguaje desde Java 8.
+Los métodos `stream`, `filter`, `map`, `sorted` y `forEach` son parte de las nuevas _interfaces funcionales_ para manejar _streams_, incorporadas a las colecciones (v.g. `List`) del lenguaje desde la versión Java 8. Este tipo de interfaces como la del API de streams de Java se conoce como [_fluent interfaces_](https://en.wikipedia.org/wiki/Fluent_interface).
 
 !!! warning "La programación con streams se tratará en el capítulo sobre [Programación basada en Eventos](iiss-evp.md)"
 
@@ -518,7 +520,7 @@ Los métodos `stream`, `filter`, `map`, `sorted` y `forEach` son parte de la nue
 
  La ley de Demeter, ¿realmente ayuda a crear código más mantenible?
 
-######  Ejemplo: pintar gráficos de grabadoras
+###### Ejemplo: pintar gráficos de grabadoras
 
 - Pintar un gráfico con los datos registrados por una serie de grabadoras (`Recorder`) dispersas por el mundo.
 - Cada grabadora está en una ubicación (`Location`), que tiene una zona horaria (`TimeZone`).
@@ -530,7 +532,7 @@ Los métodos `stream`, `filter`, `map`, `sorted` y `forEach` son parte de la nue
   }
   ```
 
-######  Críticas
+###### Críticas
 
 - Multiplicidad de dependencias: `plotDate` $\dashrightarrow$ `Selection`, `Recorder`, `Location`, `TimeZone`.
 - Si cambia la implementación de `Location` de forma que ya no incluye directamente una `TimeZone`, hay que cambiar `plotDate`
@@ -542,7 +544,9 @@ Los métodos `stream`, `filter`, `map`, `sorted` y `forEach` son parte de la nue
   }
   plotDate(someDate, someSelection.getTimeZone());
   ```
+
   Ahora `plotDate` $\dashrightarrow$ `Selection`, `TimeZone`, pero se han eliminado las restantes dependencias.
+
 - Costes de espacio y ejecución de métodos *wrapper* que reenvían la petición al objeto delegado: violar la ley de Demeter para mejorar el __rendimiento__
 - Otros ejemplos de mejora del rendimiento: desnormalización de BBDD
 
@@ -556,5 +560,5 @@ Otro método para implementar la ortogonalidad es usar [Aspectos](iiss-aop.md) y
 
 !!! warning "Estudiar ahora el capítulo [Aspectos](iiss-aop.md)"
 
-!!! warning "Estudiar luego el capítulo [Contratos](iiss-dbc.md)"
+!!! warning "Estudiar luego el capítulo [Calidad](iiss-err.md)"
 
