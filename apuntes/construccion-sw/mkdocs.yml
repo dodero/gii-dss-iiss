@@ -21,7 +21,9 @@ nav:
         - Interfaces: iiss-fp-1.md
         - Lambdas: iiss-fp-2.md
         - Mixins: iiss-fp-3.md
-    - V. Eventos: iiss-evp.md
+    - V. Eventos:
+        - Listeners: iiss-evp-1.md
+        - Asíncronas: iiss-evp-2.md
 theme:
     name: 'material'
     logo:

@@ -29,5 +29,10 @@
     - [Uso de null](iiss-err.md#uso-de-null)
     - [Fronteras](iiss-err.md#fronteras)
 7. __[Contratos](iiss-dbc.md)__
-8. __[Funcional](iiss-fp.md)__
-9. __[Eventos](iiss-evp.md)__
+8. __[Funcional](iiss-fp-1.md)__
+    - [Interfaces funcionales](iiss-fp-1.md#)
+    - [Lambdas](iiss-fp-2.md#)
+    - [Mixins](iiss-fp-3.md#)
+9. __[Eventos](iiss-evp-1.md)__
+    - [Listeners](iiss-evp-1.md#)
+    - [Asíncronas](iiss-evp-2.md#)

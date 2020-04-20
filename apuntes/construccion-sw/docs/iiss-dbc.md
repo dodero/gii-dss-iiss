@@ -452,10 +452,10 @@ Si el método puede cambiar el valor del parámetro pasado (parámetro mutable),
 
 #### _Dead programs tell no lies_
 
-El diseño y la programación basada en contratos son una forma de gestionar los errores mediante
+El diseño y la programación basada en contratos son una forma de incrementar la calidad del código mediante
 _early crash_.
 
-Hay diversas técnicas de gestión de errores (que veremos más adelante), pero en general el principio básico es: cuando el código descubre que sucede algo que supuestamente es imposible o "no debería suceder", el programa ya no es viable: eutanasia.
+Hay otras técnicas (que veremos más adelante), pero en general el principio básico es: cuando el código descubre que sucede algo que supuestamente es imposible o "no debería suceder", el programa ya no es viable: eutanasia.
 
 - En Java se lanza una `RuntimeException` cuando sucede algo extraño en tiempo de ejecución.
 - Se puede/debe hacer lo mismo con cualquier lenguaje
@@ -552,8 +552,7 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
     - [ ] Ver el video de J. D. García sobre [Contracts programming after C++17](https://www.youtube.com/watch?v=IBas3S2HtdU): Desde el minuto 4'10''
 
 
-
-#### Aserciones versus contratos
+#### Aserciones versus contratos en Java
 
 - No hay soporte para __propagar__ aserciones por una jerarquía de herencia: si se redefine un método con contrato, las aserciones que implementan el contrato no serán llamadas correctamente (excepto si se duplican en el código)
 - No hay soporte para valores **antiguos**: si se implementara un contrato mediante aserciones, habría que añadir código a la precondición para guardar la información que quiera usarse en la postcondición. (v.g. `variable@pre` en *iContract* versus `old expression` en Eiffel)
