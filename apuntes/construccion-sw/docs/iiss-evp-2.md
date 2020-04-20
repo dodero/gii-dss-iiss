@@ -4,9 +4,9 @@
 
 La programación asíncrona promueve la definición de operaciones **no bloqueantes**.
 
->![modelos de ejecución](./figuras/modelos-ejecucion.png)
->
-<small>por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
+![modelos de ejecución](./figuras/modelos-ejecucion.png)
+
+<small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
 
 Las funciones no bloqueantes afectan a:
 
@@ -16,6 +16,8 @@ Las funciones no bloqueantes afectan a:
  programación secuencial   |  programación asíncrona
 :-------------------------:|:-------------------------:
 ![Modelo de programación secuencial](./figuras/prog-secuencial.png) | ![Modelo de programación asíncrona](./figuras/prog-asincrona.png)
+<small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
+
 
 ### Modelos de paso de continuaciones
 
@@ -26,6 +28,8 @@ Aumentar la aridad de la función no bloqueante en 1 argumento adicional, donde 
 La lógica de continuación se indica mediante una función de **retrollamada** o _callback_.
 
 ![Paso de callback](./figuras/cont-callback.png)
+<small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
+
 
 Ejemplos: implementaciones de _listener_ del [ejercicio introductorio](#a-idlistenersejercicio-introductorio---listenersa)
 
@@ -83,6 +87,8 @@ El uso de callbacks hace el código complejo, repetitivo y difícil de entender,
 
 ![Paso de thunk](./figuras/cont-thunk.png)
 
+<small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
+
 ##### Lenguajes: Ruby
 
 - Cualquier función en Ruby puede recibir un **bloque** `do`... `end` como argumento adicional (no explícito) a la llamada
@@ -98,6 +104,9 @@ Modelo de [futuros y promesas](https://en.wikipedia.org/wiki/Futures_and_promise
 En programación funcional, los futuros y promesas sirven para desacoplar un valor (el futuro) de cómo éste se calculó (la promesa), permitiendo así la paralelización de los cálculos.
 
 ![Promesas](./figuras/promesas.png)
+
+<small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
+
 
 El cliente recibe como respuesta inmediata una abstracción de datos (la promesa) que representa un compromiso de valor futuro, con inyectores (then, catch) para incluir la lógica de continuación.
 
@@ -358,11 +367,15 @@ Las operaciones disparan eventos de diferentes tipos, que son escuchados por los
 
 ![Eventos](./figuras/eventos.png)
 
+<small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
+
 #### Streams
 
 Los datos fluyen por pipelines y se consumen siguiendo modelos _push_ o _pull_
 
 ![Streams](./figuras/streams.png)
+
+<small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
 
 #### Observables
 
