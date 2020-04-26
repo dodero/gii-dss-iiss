@@ -144,11 +144,12 @@ public class EnclosingClass {
 En Java 8, inspirado por la biblioteca _guava_, se incluyen predicados como una forma de interfaz funcional.
 
 En la biblioteca Guava, los [`Iterators`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/collect/Iterators.html) tienen un método [`filter`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/collect/Iterators.html#filter) que recibe un objeto de tipo [`Predicate`](https://google.github.io/guava/releases/15.0/api/docs/com/google/common/base/Predicate.html).
+
 Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html).
 
 #### Ejemplo: partidos de una competición
 
-- Con clases anónimas:
+=== "Con clases anónimas:"
 
   ```java
   final Predicate<Match> condition = new Predicate<Match>() {
@@ -162,7 +163,7 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   for (matches: matchesByTeam) { ... };
   ```
 
-- Sin clases anónimas:
+=== "Sin clases anónimas:"
 
   ```java
   class FilterByTeam implements Predicate<Match> {
@@ -201,44 +202,40 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
 
 ### Clases anónimas interiores
 
-- Son clases locales (_inner classes_) declaradas sin nombre; sirven para clases que solo aparecen una vez en la aplicación
+Son clases locales (_inner classes_) declaradas sin nombre; sirven para clases que solo aparecen una vez en la aplicación
 
-- Usando Java 7:
-
-  ```java
-  class CalculationWindow extends JFrame {
-    private volatile int result;
-    public void calculateInSeparateThread(final URI uri) {
-      new Thread(
-        new Runnable() {
-          void run() {
-            calculate(uri);
-            result = result + 10;
-          }
+```java tab="Java 7"
+class CalculationWindow extends JFrame {
+  private volatile int result;
+  public void calculateInSeparateThread(final URI uri) {
+    new Thread(
+      new Runnable() {
+        void run() {
+          calculate(uri);
+          result = result + 10;
         }
-      ).start();
-    }
+      }
+    ).start();
   }
-  ```
+}
+```
 
-- Usando Java 8:
-
-  ```java
-  class CalculationWindow extends JFrame {
-    private volatile int result;
-    public void calculateInSeparateThread(final URI uri) {
-      // code () -> { /* code */ } is a closure
-      new Thread(() -> {
-        calculate(uri);
-        result = result + 10;
-      }).start();
-    }
+```java tab="Java 8"
+class CalculationWindow extends JFrame {
+  private volatile int result;
+  public void calculateInSeparateThread(final URI uri) {
+    // code () -> { /* code */ } is a closure
+    new Thread(() -> {
+      calculate(uri);
+      result = result + 10;
+    }).start();
   }
-  ```
+}
+```
 
 ### <a id="callbacks">Retrollamadas (_callbacks_)</a>
 
-_callback_ = Fragmento de código ejecutable que se pasa como argumento
+Un _callback_ o retrollamada es un fragmento de código ejecutable que se pasa como argumento.
 
 #### Implementaciones en C/C++
 
@@ -251,8 +248,8 @@ _callback_ = Fragmento de código ejecutable que se pasa como argumento
       void (*f)(void *data)
     ```
 - _functor_ en C++
-  - clase que define `operator()`
-  - es una clase y por tanto pueden contener un estado
+    - clase que define `operator()`
+    - es una clase y por tanto pueden contener un estado
 
 ##### Ejemplo de puntero a función
 

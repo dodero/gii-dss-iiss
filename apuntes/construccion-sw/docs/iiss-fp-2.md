@@ -2,22 +2,59 @@
 
 ## Programación funcional
 
-### <a id="lambda">Funciones anónimas (lambdas)</a>
+### <a id="lambda">Funciones anónimas o *lambdas*</a>
 
 #### <a id="anonimas">Función anónima</a>
 
 - Función o subrutina definida y (posiblemente) llamada sin necesidad de asociarla a un identificador o nombre
 - Se suelen pasar como argumento a funciones de orden superior
-- Son funciones anidadas que permiten acceder a variables definidas en el ámbito de la contenedora (variables no locales)
+- Son funciones anidadas que permiten acceder a variables definidas en el ámbito de la contenedora (variables no locales a la función anónima)
 - Muchos lenguajes las introducen a través de la palabra reservada `lambda`
 
-#### Mecanismos de los lenguajes
+!!! note "Expresión lambda"
+    Una expresión *lambda* es una función anónima (con o sin parámetros) que es llamada sin necesidad de asociarle un nombre explícito. Sirven para pasarlas como argumento a funciones de orden superior, momento en el cual los parámetros de la función anónima toman un valor en el contexto de ejecución de la función contenedora que la recibe y ejecuta. Por tanto, las funciones anónimas permiten acceder a variables (no locales) definidas en el ámbito de la contenedora.
+
+#### Lambdas en los lenguajes
+
+Meanismos de los lenguajes para implementar funciones anónimas:
 
 - En C++: funciones anónimas, objetos función (_functors_) o [funciones lambda](http://en.cppreference.com/w/cpp/language/lambda) (desde C++11)
 - En Java 8: [expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html)
 - En Ruby: [blocks, procs y lambdas](https://www.blackbytes.info/2016/02/ruby-procs-and-lambdas/)
 - En C\#: [delegates](https://msdn.microsoft.com/en-us/library/ms173171.aspx) (métodos anónimos y expresiones lambda)
 - En Python: [generators, comprehensions, lambda expressions](https://docs.python.org/2/howto/functional.html)
+
+=== "Java"
+
+```java tab="Sintaxis"
+  ( argumentos ) -> expresión
+```
+
+```java tab="Ejemplos"
+  (int x, int y) -> x + y
+  () -> 42
+  (String s) -> { System.out.println(s); }
+```
+
+===! "Ruby"
+
+```ruby tab="Blocks"
+  { | argumentos | expresión }
+```
+
+```ruby tab="Lambdas"
+  ->(argumentos) { expresión }
+```
+
+```ruby tab="Ejemplos"
+  [1, 2, 3].each { |num| puts num * 2 }
+  # 2 4 6
+
+  times_two = ->(x) { x * 2 }
+  times_two.call(10)
+  # 20
+```
+  
 
 #### Cierre de funciones (_closures_)
 
@@ -46,60 +83,69 @@ std::for_each(
 
 #### Funciones anónimas en Java
 
-- Con clases anónimas (Java 7):
+```java tab="Clases anónimas (Java 7)" hl_lines="8 19"
+public class ComparatorTest { 
+  public static void main(String[] args) {
 
-  ```java
-  public class ComparatorTest { 
-    public static void main(String[] args) {
+    List<Person> personList = Person.createShortList();
 
-      List<Person> personList = Person.createShortList();
-
-      Collections.sort(personList, new Comparator<Person>(){
-        public int compare(Person p1, Person p2){
-          return p1.getLastname().compareTo(p2.getLastname());
-        }
-      });
-
-      System.out.println("=== Sorted Asc Lastname ===");
-      for(Person p:personList){
-        p.printName();
+    Collections.sort(personList, new Comparator<Person>(){
+      public int compare(Person p1, Person p2){
+        return p1.getLastname().compareTo(p2.getLastname());
       }
+    });
 
+    System.out.println("=== Sorted Asc Lastname ===");
+    for(Person p:personList){
+      p.printName();
     }
-  }
-  ```
 
-- Con lambdas (Java 8)
-
-  ```java
-  public class ComparatorTest { 
-    public static void main(String[] args) {
-
-      List<Person> personList = Person.createShortList();
-
-      // Print Asc
-      System.out.println("=== Sorted Asc Lastname ===");
-      Collections.sort(personList, (Person p1, Person p2) ->
-        p1.getLastname().compareTo(p2.getLastname()));
-
-      for(Person p:personList){
-        p.printName();
+    Collections.sort(personList, new Comparator<Person>(){
+      public int compare(Person p1, Person p2){
+        return p2.getLastname().compareTo(p1.getLastname());
       }
+    });
 
-      // Print Desc
-      System.out.println("=== Sorted Desc Lastname ===");
-      Collections.sort(personList, (p1,  p2) ->
-        p2.getLastname().compareTo(p1.getLastname()));
-
-      for(Person p:personList){
-        p.printName();
-      }
-
+    System.out.println("=== Sorted Desc Lastname ===");
+    for(Person p:personList){
+      p.printName();
     }
-  }
-  ```
 
-##### Ejercicio: [Mejorando código con expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html\#section3)
+
+  }
+}
+```
+
+```java tab="Lambdas (Java 8)"
+public class ComparatorTest { 
+  public static void main(String[] args) {
+
+    List<Person> personList = Person.createShortList();
+
+    // Print Asc
+    System.out.println("=== Sorted Asc Lastname ===");
+    Collections.sort(personList, (Person p1, Person p2) ->
+      p1.getLastname().compareTo(p2.getLastname()));
+
+    for(Person p:personList){
+      p.printName();
+    }
+
+    // Print Desc
+    System.out.println("=== Sorted Desc Lastname ===");
+    Collections.sort(personList, (p1,  p2) ->
+      p2.getLastname().compareTo(p1.getLastname()));
+
+    for(Person p:personList){
+      p.printName();
+    }
+
+  }
+}
+```
+
+!!! note "Ejercicio"
+    [Mejorando código con expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html\#section3)
 
 #### Funciones anónimas en Ruby
 
@@ -339,7 +385,7 @@ end
   # Prints "Before lambda" and "After lambda"
   ```
 
-###### Diferencias entre `Proc` y `lambda`:
+**Diferencias entre `Proc` y `lambda`:**
 
 - Las lambdas se definen con `-> {}` y los procs con `Proc.new {}`
 - Los `Proc` retornan del método actual, las lambdas retornan de la propia función lambda
@@ -351,7 +397,7 @@ end
 - ¿Dónde se llama al bloque? Donde el método indique con `yield`
 - El bloque (realmente un objeto `Proc`) se pasa como una especie de parámetro no declarado
 
-###### Ejemplos de paso de bloques:
+**Ejemplos de paso de bloques:**
 
 - Llamada a un bloque sin parámetros
 
@@ -448,16 +494,15 @@ end
   #  After the call
   ```
 
-### Lecturas recomendadas
-
-- M. Williams: [Java SE 8: Lambda Quick Start](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html), Oracle Learning Library, 2013.
-- D. Thomas & A. Hunt: [Programming Ruby. The Pragmatic Programmer's Guide](http://www.ruby-doc.org/docs/ProgrammingRuby/), Addison-Wesley, 2005.
+!!! note "Lecturas recomendadas"
+    - M. Williams: [Java SE 8: Lambda Quick Start](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html), Oracle Learning Library, 2013.
+    - D. Thomas & A. Hunt: [Programming Ruby. The Pragmatic Programmer's Guide](http://www.ruby-doc.org/docs/ProgrammingRuby/), Addison-Wesley, 2005.
 
 <a id="informes"></a>
 
-### Ejemplos de interfaces funcionales: Formateo de informes
+#### Ejemplo de interfaces funcionales: Formateo de informes
 
-#### Versión en ruby
+**Versión en ruby**
 
 ```ruby
 class Report
@@ -494,7 +539,7 @@ class PlainTextFormatter
     context.text.each do |line|
 ```
 
-#### Versión con interfaces funcionales (Ruby procs + blocks)
+**Versión con interfaces funcionales (Ruby procs + blocks)**
 
 ```ruby
 class Report
@@ -513,7 +558,7 @@ class Report
 end
 ```
 
-##### Formateo HTML
+**Formateo HTML**
 
 ```ruby
 HTML_FORMATTER = lambda do |context|
@@ -532,7 +577,7 @@ report = Report.new &HTML_FORMATTER
 report.output_report
 ```
 
-##### Formateo de texto
+**Formateo de texto**
 
 ```ruby
 report = Report.new do |context|

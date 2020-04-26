@@ -181,12 +181,9 @@ Criticar la siguiente implementación:
   }
 ```
 
-
-
 !!! question "Excesiva duplicación de código"
     La llamada a `reportPortError()` se repite mucho.
     <span style="color:red;">¿Cómo evitar la excesiva duplicación?</span>
-
 
 ??? success "Solución: Excepción encapsulada"
     ```java

@@ -42,10 +42,12 @@ markdown_extensions:
     - pymdownx.magiclink
     - pymdownx.mark
     - pymdownx.smartsymbols
-    - pymdownx.superfences
+    - pymdownx.superfences:
+        legacy_tab_classes: true
     - pymdownx.tasklist:
         custom_checkbox: true
-    - pymdownx.tilde    
+    - pymdownx.tabbed
+    - pymdownx.tilde
     - admonition
     - codehilite:
         guess_lang: false
