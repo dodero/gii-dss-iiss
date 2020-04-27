@@ -180,7 +180,12 @@ Desde Java 8 existe una clase similar [`Predicate`](https://docs.oracle.com/java
   }
   ```
 
-  Comprobar que, en un cierto grupo de la competición, un mismo partido no está repetido ni se enfrenta un equipo contra sí mismo:
+Comprobar que, en un cierto grupo de la competición, un mismo partido no está repetido ni se enfrenta un equipo contra sí mismo:
+
+!!! question "Guava y Java 8"
+    Guava emplea `FluentIterable` para poder encadenar varios `Iterable` sin que haya problemas con el retorno de null en la programación _fluent_. La biblioteca estándar de Java 8 sustituye la solución del `FluentIterable` por los `Predicate` o por el uso de `StreamSupport` para resolver dicho problema.
+    
+    Lectura recomendada: [From Guava's FluentIterable via StreamSupport to Java 8 Streams](https://verhoevenv.github.io/2015/08/18/fluentiterable-streamsupport-java8.html)
 
   ```java
   private void checkMatchesInGroup(List<Match> matchesInGroup) {
