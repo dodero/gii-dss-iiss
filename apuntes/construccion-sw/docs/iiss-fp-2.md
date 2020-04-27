@@ -147,6 +147,52 @@ public class ComparatorTest {
 !!! note "Ejercicio"
     [Mejorando código con expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html\#section3)
 
+##### Lambdas y clases anónimas internas
+
+En Java, una expresión lambda y una clase anónima interna (_inner class_) tienen un propósito similar, pero son diferentes en un aspecto: el __ámbito__ (scope) de la definición de las variables locales.
+
+Cuando se usa una inner class, se crea un nuevo ámbito para dicha clase. Se pueden ocultar las variables locales para el ámbito contenedor instanciando nuevas variables con el mismo nombre. También se pued usar la palabra reservada `this` dentro de una clase anónima para hacer referencia a su instancia.
+
+Sin embargo, las expresiones lambda trabajan con el ámbito contenedor. No se pueden ocultar las variables del ámbito contenedor dentro del cuerpo de la expresión lambda. En tal caso, la palabra reservada `this` hace referencia a una instancia de la clase contenedora.
+
+En el ejemplo siguiente, ¿qué valor se obtiene en la salida?:
+
+```java
+private String valor = "Valor de la contenedora";
+
+//...
+
+public String scopeExperiment() {
+    MiClase unaInnerClass = new MiClase() {
+        String valor = "Valor de la inner class";
+
+        @Override
+        public String method(String string) {
+            return this.valor;
+        }
+    };
+    String resultadoInnerClass = unaInnerClass.method("");
+
+    MiClase unaLambda = parametro -> {
+        String valor= "Valor de la lambda";
+        return this.valor;
+    };
+    String resultadoLambda = unaLambda.method("");
+
+    return "resultadoInnerClass = " + resultadoInnerClass +
+      ",\nresultadoLambda = " + resultadoLambda;
+}
+```
+
+La salida será:
+(No se accede al `valor` de la variable definida en el cuerpo de la expresión lambda)
+
+```text
+resultadoInnerClass  = Valor de la inner class,
+resultadoLambda = Valor de la contenedora
+```
+
+
 #### Funciones anónimas en Ruby
 
 ##### <a id="blocks">Bloques (_blocks_)</a>
