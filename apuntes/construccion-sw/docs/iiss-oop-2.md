@@ -593,12 +593,13 @@ public interface Comparable<T> {
 
 ######  Identificador de BankAccount: Implementación en Java 1.5
 
-- Utilizando _templates_
+- Utilizando _templates_ (**polimorfismo paramétrico**)
 - Delegar en `compareTo` y `equals` del tipo de id _envuelto_ (e.g. `String`)
 
 ######  Identificador de BankAccount: Implementación en Java 1.4
 
-- No hay plantillas. La genericidad se consigue con `Object`. Hay que hacer casting.
+- No hay plantillas (polimorfismo paramétrico).
+- La genericidad se consigue con `Object`. Hay que hacer casting.
 - Cuidado con `Boolean` que no implementa `Comparable` en JDK 1.4
 
 ```java tab="Java ≥ 1.5"

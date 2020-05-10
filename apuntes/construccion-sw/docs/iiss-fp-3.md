@@ -86,7 +86,7 @@ s3.between?(s1,s2) #true
 
 ##### Ejemplo: Adaptador de interfaz en Ruby
 
-###### Interfaz americana
+**Interfaz americana**
 
 ```ruby
 class Renderer
@@ -112,7 +112,7 @@ class TextObject
 end
 ```
 
-###### Interfaz británica
+**Interfaz británica**
 
 ```ruby
 ## british_text_object.rb
@@ -123,7 +123,7 @@ class BritishTextObject
 end
 ```
 
-###### Adaptador de interfaz: versión clásica
+**Adaptador de interfaz: versión clásica**
 
 ```ruby
 class BritishTextObjectAdapter < TextObject
@@ -208,14 +208,18 @@ end
 - Ruby llama a esto _singleton methods_ y _singleton class_ (no es exactamente lo mismo que el patrón singleton del GoF)
 - Ruby primero busca los métodos definidos en una clase singleton y luego en la clase regular que ha sido redefinida
 
+!!! note "Tutoriales y ejercicios recomendados: Ruby"
+    - [Ruby from other languages](https://www.ruby-lang.org/en/documentation/ruby-from-other-languages/)
+    - Tutorial: [Ruby modules](http://ruby-doc.com/docs/ProgrammingRuby/html/tut_modules.html)
+
 ### <a id="traits">Scala Traits</a>
 
-Los `trait`de Scala son similares a las interfaces de Java.
+Los `#!scala trait`de Scala son similares a las interfaces de Java.
 
-- Las clases y los objetos pueden extender un `trait`
-- Los `trait` no pueden instanciarse
+- Las clases y los objetos pueden extender un `#!scala trait`
+- Los `#!scala trait` no pueden instanciarse
 
-#### Ejemplo: Iterador como un `trait`
+#### Ejemplo: Iterador como un `#!scala trait`
 
 ```scala
 trait Iterator[A] {
@@ -297,7 +301,9 @@ object TraitsTest extends App {
 
 - Odersky llama _mixin traits_ a los traits con comportamiento
 - Para ser un mixin genuino, debería mezclar comportamiento y no interfaces heredadas
-- Leer [Scala Mixins: The right way](http://baddotrobot.com/blog/2014/09/22/scala-mixins/)
+
+!!! note "Lectura recomendada: Scala mixins"
+    Leer [Scala Mixins: The right way](http://baddotrobot.com/blog/2014/09/22/scala-mixins/)
 
 #### Ejemplo: Iterator
 
@@ -341,35 +347,30 @@ object IntIteratorTest {
 }
 ```
 
-- [Unit](http://www.scala-lang.org/api/current/scala/Unit.html) en scala: subtipo de `AnyVal`; solo hay un valor `()` que es de tipo `Unit`.
-- Un método que devuelve `Unit` es análogo a un método Java que devuelve `void`
+- La implementación anterior usa polimorfismo paramétrico (`#!scala type T`).
+- [Unit](http://www.scala-lang.org/api/current/scala/Unit.html) en scala: subtipo de `#!scala AnyVal`; solo hay un valor `()` que es de tipo `#!scala Unit`.
+- Un método que devuelve `#!scala Unit` es análogo a un método Java que devuelve `#!java void`
 
 #### Diferencia con clase abstracta
 
 - [Scala traits vs abstract classes](http://stackoverflow.com/questions/1991042/what-is-the-advantage-of-using-abstract-classes-instead-of-traits)
-- Los constructores de un `trait` no pueden tener parámetros (de momento)
+- Los constructores de un `#!scala trait` no pueden tener parámetros (de momento)
 
 ##### Reglas
 
 [To trait or not to trait](http://www.artima.com/pins1ed/traits.html#12.7)
 
-- Si no se va a reutilizar el comportamiento => clase concreta
-- Si se va a reutilizar en varias clases no relacionadas entre sí => trait (mixin)
-- Si hace falta heredarlo en código Java => clase abstracta
-- Si se va a distribuir compilado y se va a heredar => clase abstracta
-- Si importa mucho la eficiencia => clase (los traits se compilan a interfaces y son algo más lentas de llamar)
-- Si no se sabe => empezar por un trait y cambiarlo cuando se sepa
+- Si no se va a reutilizar el comportamiento --> clase concreta
+- Si se va a reutilizar en varias clases no relacionadas entre sí --> trait (mixin)
+- Si hace falta heredarlo en código Java --> clase abstracta
+- Si se va a distribuir compilado y se va a heredar --> clase abstracta
+- Si importa mucho la eficiencia --> clase (los traits se compilan a interfaces y son algo más lentas de llamar)
+- Si no se sabe --> empezar por un trait y cambiarlo cuando se sepa
 
-##### Ejercicios y lecturas recomendadas
-
-- Tutorial: [Ruby modules](http://ruby-doc.com/docs/ProgrammingRuby/html/tut_modules.html)
-- [Scala traits](https://docs.scala-lang.org/tour/traits.html)
-  - Ejemplo: [Traits exercise](https://www.scala-exercises.org/std_lib/traits)
-  - Ejemplo: [Stackable Traits pattern](http://www.artima.com/scalazine/articles/stackable_trait_pattern.html)
-- Lectura: [Herencia vs. composición con Scala mixins](http://baddotrobot.com/blog/2014/09/22/scala-mixins/)
-
-## Ejercicios
-
-1. [Ruby from other languages](https://www.ruby-lang.org/en/documentation/ruby-from-other-languages/)
-2. [Scala tour](http://docs.scala-lang.org/tutorials/tour/tour-of-scala)
-3. [Scala exercises](https://www.scala-exercises.org/std_lib/)
+!!! note "Tutoriales y ejercicios recomendados: Scala"
+    - [Scala traits](https://docs.scala-lang.org/tour/traits.html)
+        - Ejemplo: [Traits exercise](https://www.scala-exercises.org/std_lib/traits)
+        - Ejemplo: [Stackable Traits pattern](http://www.artima.com/scalazine/articles/stackable_trait_pattern.html)
+    - [Herencia vs. composición con Scala mixins](http://baddotrobot.com/blog/2014/09/22/scala-mixins/)
+    - [Scala tour](http://docs.scala-lang.org/tutorials/tour/tour-of-scala)
+    - [Scala exercises](https://www.scala-exercises.org/std_lib/)
