@@ -453,7 +453,7 @@ Esta implementación sí que podemos adaptarla más fácilmente para cambiar el 
 
 Los `new` de `PruebaOrquesta` siguen introduciendo dependencias de `PruebaOrquesta` con respecto a los tipos concretos de `Instrumento`.
 
-!!! warning "Ver antes el apartado [inyección de dependencias](#inyeccion)"
+!!! warning "Ver antes el apartado [inyección de dependencias](../iiss-oop-3/#inyeccion)"
 
 ##### Construcción con spring
 

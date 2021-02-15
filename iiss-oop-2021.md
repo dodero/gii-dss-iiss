@@ -1,16 +1,47 @@
+---
+marp: false
+---
+
+<!-- size: 16:9 -->
+<!-- theme: default -->
+
+<style>
+h1 {
+  text-align: center;
+}
+h2 {
+  color: darkblue;
+  text-align: center;
+}
+</style>
+
+# IMPLEMENTACIÓN E IMPLANTACIÓN DE SISTEMAS SOFTWARE
+
+<style scoped>
+h2 {
+  text-align: left;
+}
+</style>
+
+1. Objetos
+2. Aspectos
+3. Contratos
+4. Funciones
+5. Eventos
+
+---
+
 # OBJETOS - Principios
 
-<a id="caso1"></a>
-
 ## Caso 1 - Recorrido de listas
-
-<a id="recorridolista"></a>
 
 ### Ocultación de la implementación
 
 #### Versión inicial: Lista v0.1
 
 __Abstracción__: La clase abstracta `List<T>` diferencia entre el *qué* y el *cómo*: Qué hace la lista vs. cómo se almacenan los elementos
+
+---
 
 Criticar la implementación siguiente:
 
@@ -31,7 +62,9 @@ Criticar la implementación siguiente:
   }
 ```
 
-##### <span style="color:blue">Cohesión</span>
+---
+
+##### Cohesión
 
 > Cohesion refers to the degree to which the elements inside a module belong together
 > 
@@ -46,6 +79,8 @@ Criticar la implementación siguiente:
 
 - Baja __cohesión__
 - Alta __variabilidad__ no bien tratada --> poca __flexibilidad__
+
+---
 
 #### Implementación alternativa: Lista v0.2
 
@@ -64,6 +99,8 @@ Criticar la implementación:
   }
 ```
 
+---
+
 ##### Críticas a Lista v0.2
 
 - ¿Qué operación hace `traverse()` con cada elemento individual (imprimir, sumar, etc.)? ¿Hay que especializar de nuevo para cada tipo de operación? 
@@ -73,6 +110,8 @@ Criticar la implementación:
 
 - Elevada __complejidad__
 - Alta __variabilidad__ no bien tratada --> poca __flexibilidad__, mala __reutilización__
+
+---
 
 #### Implementación alternativa: Lista v0.3
 
@@ -97,6 +136,7 @@ Ampliamos la interfaz...
     // etc...
   }
 ```
+---
 
 ##### Críticas a Lista v0.3
 
@@ -107,6 +147,8 @@ Ampliamos la interfaz...
 
 - Muchas __dependencias__ --> __acoplamiento__
 - Poca __flexibilidad__
+
+---
 
 #### Implementación alternativa: Lista v0.4
 
@@ -133,15 +175,14 @@ __Delegar__ hacia otra clase
     void remove();
   }
 ```
+---
 
 ##### Ventajas
 
 - Mayor __cohesión__: Las responsabilidades están ahora separadas: `List` almacena, `Iterator` recorre. `List` está más cohesionada
 - Uso de __delegación__: la responsabilidad de recorrer se ha delegado hacia otro sitio
 
-### <span style="color:blue">Ocultar la implementación</span>
-
-<a id="ocultacion"></a>
+### Ocultar la implementación
 
 - __Cohesión__: módulos auto-contenidos, independientes y con un
     único propósito
@@ -149,15 +190,21 @@ __Delegar__ hacia otra clase
 - __Abstracción__: diferenciar el *qué* y el *cómo*
 - __Modularidad__: clases, interfaces y componentes/módulos
 
+---
+
 #### Alta cohesión, bajo acoplamiento
 
 > Cuando los componentes están aislados, puedes cambiar uno sin preocuparte por el resto. Mientras no cambies las interfaces externas, no habrá problemas en el resto del sistema
 >
 > -- <cite>[Eric Yourdon](bibliografia.md#yourdon)</cite>
 
+---
+
 #### Modularidad
 
 Reducir el acoplamiento usando módulos o componentes con distintas responsabilidades, agrupados en bibliotecas
+
+---
 
 #### Técnicas de ocultación
 
@@ -170,9 +217,9 @@ Hay diversas técnicas para ocultar la implementación...
 - __Polimorfismo__: ocultar la implementación de un método, manteniendo la misma interfaz de la clase base
 - __Interfaces__: usar interfaces bien documentadas
 
-<a id="herencia"></a>
+---
 
-### <span style="color:blue">Herencia: generalización y especialización</span>
+### Herencia: generalización y especialización
 
 - **Reutilizar la interfaz**
     - Clase base y derivada son del mismo tipo
@@ -186,9 +233,13 @@ Hay diversas técnicas para ocultar la implementación...
     - Herencia pura: mantiene la interfaz tal cual (relación *es-un*)
     - Extensión: amplía la interfaz con nuevas funcionalidades(relación *es-como-un*). Puede causar problemas de _casting_.
 
+---
+
 > When you inherit, you take an existing class and make a special version of it. In general, this means that you’re taking a general-purpose class and specializing it for a particular need. [...] it would make no sense to compose a car using a vehicle object —a car doesn’t contain a vehicle, it is a vehicle. The _is-a_ relationship is expressed with inheritance, and the _has-a_ relationship is expressed with composition.
 >
 > -- <cite>[Bruce Eckel](bibliografia.md#eckel)</cite>
+
+---
 
 #### Ejemplo: Aventura v0.1
 
@@ -232,10 +283,14 @@ Hay diversas técnicas para ocultar la implementación...
    }
 ```
 
+---
+
 ##### Críticas a Aventura v0.1
 
 - ¿De qué tipos van a ser los personales de acción? --> problema de _downcasting_
 - Hay que rediseñar la solución por ser insegura
+
+---
 
 ```java
    interface SabeLuchar {
@@ -279,6 +334,8 @@ Hay diversas técnicas para ocultar la implementación...
    }
 ```
 
+---
+
 #### Uso correcto de la herencia
 
 Hay dos formas de contemplar la herencia:
@@ -290,6 +347,8 @@ Hay dos formas de contemplar la herencia:
 - Como **estructura**:
     - La herencia se usa como una forma cualquiera de estructurar programas
     - Esta visión es **errónea**, pues provoca que no se satisfaga la propiedad LSP
+
+---
 
 ##### Ejemplo: herencia como estructura
 
@@ -312,6 +371,7 @@ class AccountWithFee extends VerboseAccount {
   void transferIn (float amount) { super.verboseTransferIn(amount-fee); }
 }
 ```
+---
 
 - Todos los objetos $a$ de la clase `Account` deben cumplir que si $b=a.getBalance()$ antes de ejecutar $a.transferIn(s)$ y  $b´=a.getBalance()$ después de ejecutar $a.transferIn(s)$, entonces $b+s=b´$.
 - Sin embargo, con la estructura `AccountWithFee` < `VerboseAccount` < `Account`, un objeto de tipo `AccountWithFee` no funciona bien cuando se contempla como un objeto `Account`. Considérese la siguiente secuencia:
@@ -327,9 +387,9 @@ void f(Account a) {
 }
 ```
 
-### <span style="color:blue">Polimorfismo</span>
+---
 
-<a id="polimorfismo"></a>
+### Polimorfismo
 
 Fenómeno por el que, cuando se llama a una operación de un objeto del que no se sabe su tipo específico, se ejecuta el método adecuado de acuerdo con su tipo.
 

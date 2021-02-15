@@ -81,6 +81,9 @@ std::for_each(
    its value. */
 ```
 
+- La historia de lambdas en C++: [Parte 1](https://www.bfilipek.com/2019/02/lambdas-story-part1.html)
+- La historia de lambdas en C++: [Parte 2](https://www.bfilipek.com/2019/03/lambdas-story-part2.html)
+
 #### Funciones anónimas en Java
 
 ```java tab="Clases anónimas (Java 7)" hl_lines="8 19"

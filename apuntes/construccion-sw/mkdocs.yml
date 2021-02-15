@@ -26,8 +26,11 @@ nav:
         - Asíncronas: iiss-evp-2.md
 theme:
     name: 'material'
-    logo:
-        icon: "\uE80C"
+#    logo:
+#        icon: "\uE80C"
+    features:
+        - navigation.sections
+
 markdown_extensions:
     - pymdownx.arithmatex
     - pymdownx.betterem:
@@ -43,7 +46,7 @@ markdown_extensions:
     - pymdownx.mark
     - pymdownx.smartsymbols
     - pymdownx.superfences:
-        legacy_tab_classes: true
+#        legacy_tab_classes: true
     - pymdownx.tasklist:
         custom_checkbox: true
     - pymdownx.tabbed
@@ -62,9 +65,12 @@ extra:
     search:
         language: 'en, es'
 repo_url: 'https://github.com/dodero/gii-dss-iiss/'
+edit_uri: 'edit/master/apuntes/construccion-sw/docs'
 extra:
     social:
-      - type: 'github'
+      - icon: fontawesome/brands/github-alt
         link: 'https://github.com/dodero'
-      - type: 'twitter'
-        link: 'https://twitter.com/jmdodero'
+#      - type: 'github'
+#        link: 'https://github.com/dodero'
+#      - type: 'twitter'
+#        link: 'https://twitter.com/jmdodero'
