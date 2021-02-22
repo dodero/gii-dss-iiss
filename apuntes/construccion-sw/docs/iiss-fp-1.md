@@ -187,29 +187,31 @@ Comprobar que, en un cierto grupo de la competición, un mismo partido no está 
     
     Lectura recomendada: [From Guava's FluentIterable via StreamSupport to Java 8 Streams](https://verhoevenv.github.io/2015/08/18/fluentiterable-streamsupport-java8.html)
 
-  ```java
-  private void checkMatchesInGroup(List<Match> matchesInGroup) {
-    for (Match match: matchesInGroup) {
-        Team t1 = match.getLocalTeam();
-        Team t2 = match.getVisitingTeam();
-        assertNotSame(t1, t2);
-        List<Match> firstLeg = FluentIterable.from(matchesInGroup)
-                                             .filter(new FilterByTeam(t1, t2))
-                                             .toImmutableList();
-        assertTrue(firstLeg.size()==1);
-        List<Match> secondLeg = FluentIterable.from(matchesInGroup)
-                                              .filter(new FilterByTeam(t2, t1))
-                                              .toImmutableList();
-        assertTrue(secondLeg.size()==0);
-    }
+```java
+private void checkMatchesInGroup(List<Match> matchesInGroup) {
+  for (Match match: matchesInGroup) {
+      Team t1 = match.getLocalTeam();
+      Team t2 = match.getVisitingTeam();
+      assertNotSame(t1, t2);
+      List<Match> firstLeg = FluentIterable.from(matchesInGroup)
+                                            .filter(new FilterByTeam(t1, t2))
+                                            .toImmutableList();
+      assertTrue(firstLeg.size()==1);
+      List<Match> secondLeg = FluentIterable.from(matchesInGroup)
+                                            .filter(new FilterByTeam(t2, t1))
+                                            .toImmutableList();
+      assertTrue(secondLeg.size()==0);
   }
-  ```
+}
+```
 
 ### Clases anónimas interiores
 
 Son clases locales (_inner classes_) declaradas sin nombre; sirven para clases que solo aparecen una vez en la aplicación
 
-```java tab="Java 7"
+=== "Java 7"
+
+```java
 class CalculationWindow extends JFrame {
   private volatile int result;
   public void calculateInSeparateThread(final URI uri) {
@@ -225,7 +227,9 @@ class CalculationWindow extends JFrame {
 }
 ```
 
-```java tab="Java 8"
+=== "Java 8"
+
+```java
 class CalculationWindow extends JFrame {
   private volatile int result;
   public void calculateInSeparateThread(final URI uri) {

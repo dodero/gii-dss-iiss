@@ -74,3 +74,12 @@ extra:
 #        link: 'https://github.com/dodero'
 #      - type: 'twitter'
 #        link: 'https://twitter.com/jmdodero'
+# plugins:
+#     - with-pdf:
+#         cover_subtitle: Apuntes de la asignatura
+#         copyright: Curso 2020-21
+#         toc_title: Contenidos
+#         exclude_pages:
+#             - 'index/'
+#             - 'iiss-pres/'
+#             - 'about/'

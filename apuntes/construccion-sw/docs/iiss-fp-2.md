@@ -24,29 +24,39 @@ Meanismos de los lenguajes para implementar funciones anónimas:
 - En C\#: [delegates](https://msdn.microsoft.com/en-us/library/ms173171.aspx) (métodos anónimos y expresiones lambda)
 - En Python: [generators, comprehensions, lambda expressions](https://docs.python.org/2/howto/functional.html)
 
-=== "Java"
+**Java**:
 
-```java tab="Sintaxis"
+=== "Sintaxis"
+
+```java
   ( argumentos ) -> expresión
 ```
 
-```java tab="Ejemplos"
+=== "Ejemplos"
+
+```java
   (int x, int y) -> x + y
   () -> 42
   (String s) -> { System.out.println(s); }
 ```
 
-===! "Ruby"
+**Ruby**
 
-```ruby tab="Blocks"
+=== "Blocks"
+
+```ruby 
   { | argumentos | expresión }
 ```
 
-```ruby tab="Lambdas"
+=== "Lambdas"
+
+```ruby
   ->(argumentos) { expresión }
 ```
 
-```ruby tab="Ejemplos"
+=== "Ejemplos"
+
+```ruby
   [1, 2, 3].each { |num| puts num * 2 }
   # 2 4 6
 
@@ -54,7 +64,26 @@ Meanismos de los lenguajes para implementar funciones anónimas:
   times_two.call(10)
   # 20
 ```
-  
+
+**C++**
+
+=== "Sintaxis"
+
+```c++
+[capture](parameters) -> return_type { function_body }`
+```
+
+=== "Entorno de referencia"
+
+| Capture |  Descripción |
+| --- | --- |
+| `[]`      | Sin variables externas definidas. Intentar utilizar cualquier variable externa es un error |
+| `[x, &y]` | `x` se captura por valor, `y` por referencia |
+| `[&]`     | Todas las variables externas que sean utilizadas son capturadas implícitamente por referencia |
+| `[=]`     | Todas las variable externas que sean utilizadas son capturadas implícitamente por valor |
+| `[&, x]`  | `x` se captura explícitamente por valor; el resto, por referencia |
+| `[=, &z]` | `z` se captura explícitamente por referencia; el resto, por valor |
+
 
 #### Cierre de funciones (_closures_)
 
@@ -81,12 +110,24 @@ std::for_each(
    its value. */
 ```
 
-- La historia de lambdas en C++: [Parte 1](https://www.bfilipek.com/2019/02/lambdas-story-part1.html)
-- La historia de lambdas en C++: [Parte 2](https://www.bfilipek.com/2019/03/lambdas-story-part2.html)
+- Un _cierre_ en C++ se expresa mediante la parte [_capture_]
+- El _entorno de referencia_ se expresa por el conjunto de variables externas indicadas dentro del cierre
+- Las variables del entorno de referencia en C++ pueden ser capturadas por valor (`[=]`) o por referencia (`[&]`)
+- Las variables externas capturadas con inmutables por defecto; si no, usar `mutable` después de los (_parameters_)
+
+
+!!! note "Lectura: Lambdas en C++"
+    Lecturas recomendadas 
+
+    - [ ] [Lambda Functions in C++11 - the Definitive Guide](https://www.cprogramming.com/c++11/c++11-lambda-closures.html)
+    - [ ] La historia de las lambdas en C++: [Parte 1](https://www.bfilipek.com/2019/02/lambdas-story-part1.html) y [Parte 2](https://www.bfilipek.com/2019/03/lambdas-story-part2.html)
+
 
 #### Funciones anónimas en Java
 
-```java tab="Clases anónimas (Java 7)" hl_lines="8 19"
+=== "Clases anónimas (Java 7)"
+
+```java hl_lines="8 19"
 public class ComparatorTest { 
   public static void main(String[] args) {
 
@@ -119,7 +160,9 @@ public class ComparatorTest {
 }
 ```
 
-```java tab="Lambdas (Java 8)"
+=== "Lambdas (Java 8)"
+
+```java 
 public class ComparatorTest { 
   public static void main(String[] args) {
 
@@ -152,9 +195,9 @@ public class ComparatorTest {
 
 ##### Lambdas y clases anónimas internas
 
-En Java, una expresión lambda y una clase anónima interna (_inner class_) tienen un propósito similar, pero son diferentes en un aspecto: el __ámbito__ (scope) de la definición de las variables locales.
+En Java, una expresión lambda y una clase anónima interna (_inner class_) tienen un propósito similar, pero son diferentes en un aspecto: el **ámbito** (_scope_) de la definición de las variables locales.
 
-Cuando se usa una inner class, se crea un nuevo ámbito para dicha clase. Se pueden ocultar las variables locales para el ámbito contenedor instanciando nuevas variables con el mismo nombre. También se pued usar la palabra reservada `this` dentro de una clase anónima para hacer referencia a su instancia.
+Cuando se usa una inner class, se crea un nuevo ámbito para dicha clase. Se pueden ocultar las variables locales para el ámbito contenedor instanciando nuevas variables con el mismo nombre. También se puede usar la palabra reservada `this` dentro de una clase anónima para hacer referencia a su instancia.
 
 Sin embargo, las expresiones lambda trabajan con el ámbito contenedor. No se pueden ocultar las variables del ámbito contenedor dentro del cuerpo de la expresión lambda. En tal caso, la palabra reservada `this` hace referencia a una instancia de la clase contenedora.
 
@@ -200,7 +243,7 @@ resultadoLambda = Valor de la contenedora
 
 ##### <a id="blocks">Bloques (_blocks_)</a>
 
-- Sintaxis `do` ... `end`
+=== "Sintaxis `do` ... `end`"
 
   ```ruby
   some_list = [ 10, 20, 30 ]
@@ -209,7 +252,7 @@ resultadoLambda = Valor de la contenedora
   end
   ```
 
-- Sintaxis `{` ... `}`
+=== "Sintaxis `{` ... `}`"
 
   ```ruby
   some_list = [ 10, 20, 30 ]
@@ -220,7 +263,8 @@ El método `map` itera y aplica un bloque repetitivamente a cada elemento de una
 
 ###### Ejemplo: búsqueda en una lista
 
-- Sin bloques:
+=== "Sin bloques:"
+
 
   ```ruby
   class SongList
@@ -233,7 +277,7 @@ El método `map` itera y aplica un bloque repetitivamente a cada elemento de una
   end
   ```
 
-- Con bloques (sintaxis `do` ... `end`):
+=== "Con bloques (sintaxis `do` ... `end`):"
 
   ```ruby
   class SongList
@@ -245,7 +289,7 @@ El método `map` itera y aplica un bloque repetitivamente a cada elemento de una
   end
   ```
 
-- Con bloques (sintaxis `{` ... `}`):
+=== "Con bloques (sintaxis `{` ... `}`):"
 
   ```ruby
   class SongList
