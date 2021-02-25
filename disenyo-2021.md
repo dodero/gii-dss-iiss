@@ -84,7 +84,7 @@ h4 {
 #### Preguntas
 
 _¿De qué fecha data cada paradigma?_ 
-_¿Cuál diríais que es el más antiguo?_
+_¿Cuál es el más antiguo?_
 
 ---
 
