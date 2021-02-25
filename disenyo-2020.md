@@ -189,7 +189,7 @@ h2, h3 {
     Empleado (String nif) {
       this.nif = nif
     }
-    String getNif() { return id; }
+    String getNif() { return nif; }
     public String toString() { return nif; }
     public int compareTo(Empleado otro) {
        return nif.compareTo(otro.getNif());

@@ -1,5 +1,5 @@
 ---
-marp: true
+marp: false
 ---
 
 <!-- size: 16:9 -->
@@ -204,7 +204,7 @@ h2, h3 {
     Empleado (String nif) {
       this.nif = nif
     }
-    String getNif() { return id; }
+    String getNif() { return nif; }
     public String toString() { return nif; }
     public int compareTo(Empleado otro) {
        return nif.compareTo(otro.getNif());
@@ -267,9 +267,9 @@ h2, h3 {
 
 ---
 
-### El patrón en el lenguaje
+### El patrón en los lenguajes
 
-#### Identificadores en Java con `java.lang.Comparable`
+#### Java: Identificadores con `java.lang.Comparable`
 
 `Comparable` es una interfaz implementada por `String`, `File`, `Date`, etc. y todas las llamadas _clases de envoltura_ del JDK (i.e. `Integer`, `Long`, etc.)
 
@@ -292,6 +292,21 @@ __Invariantes:__
 __Consistencia con `equals`__:
 
 `(x.compareTo(y)=0)` $\Leftrightarrow$ `(x.equals(y))`
+
+---
+
+#### C++: Comparación de identificadores
+
+Cómo implementar la interfaz de comparación de un Handler en C++
+
+¿Tienen sentido las siguientes implementaciones?
+
+```c++
+   static int compare(const Handler&, const Handler&);
+   int compareTo(const Handler&); // member function
+```
+
+Ver __[stackoverflow](https://stackoverflow.com/questions/20005392/is-there-a-compareto-method-in-c-similar-to-java-where-you-can-use-opera)__
 
 ---
 <style scoped>
