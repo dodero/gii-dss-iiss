@@ -856,6 +856,7 @@ Añadir pruebas unitarias al programa siguiente:
 public class KnightOfTheRoundTable {
   private String name;
   private HolyGrailQuest quest;
+
   public KnightOfTheRoundTable(String name) {
     this.name = name;
     quest = new HolyGrailQuest();
@@ -871,14 +872,14 @@ public class KnightOfTheRoundTable {
 
 ```java
 public class HolyGrailQuest {
-  public HolyGrailQuest() {}
-  public HolyGrail embark()
-          throws GrailNotFoundException {
-  HolyGrail grail = null;
-    // Look for grail
-    ...
+  public HolyGrailQuest() { /*...*/ }
+
+  public HolyGrail embark() throws GrailNotFoundException {
+    HolyGrail grail = null;
+    // Look for grail ...
     return grail;
   }
+
 }
 ```
 
@@ -897,6 +898,7 @@ p {
 
 ```java
 import junit.framework.TestCase;
+
 public class KnightOfTheRoundTableTest extends TestCase {
   public void testEmbarkOnQuest() throws GrailNotFoundException {
     KnightOfTheRoundTable knight =
@@ -930,6 +932,7 @@ public interface Knight {
 public class KnightOfTheRoundTable implements Knight {
   private String name;
   private Quest quest;
+
   public KnightOfTheRoundTable(String name) {
     this.name = name;
     quest = new HolyGrailQuest();
@@ -949,7 +952,7 @@ public interface Quest {
 }
 
 public class HolyGrailQuest implements Quest {
-  public HolyGrailQuest() {}
+  public HolyGrailQuest() { /*...*/ }
   public Object embark() throws QuestFailedException {
     // Do whatever it means to embark on a quest
     return new HolyGrail();
@@ -978,6 +981,7 @@ p {
 public class KnightOfTheRoundTable implements Knight {
   private String name;
   private Quest quest;
+  
   public KnightOfTheRoundTable(String name) {
     this.name = name;
   }
