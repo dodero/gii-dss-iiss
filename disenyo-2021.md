@@ -1520,7 +1520,7 @@ Para que un sistema software sea fácil de cambiar, debe diseñarse para que per
 
 #### Versión imperativa (sin objetos):
 
-```csharp
+```cpp
 enum ShapeType {circle, square};
 struct Shape
 {
@@ -1545,7 +1545,7 @@ struct Square
 
 ---
 
-```csharp
+```cpp
 void DrawSquare(struct Square*);
 
 typedef struct Shape *ShapePointer;
@@ -1620,6 +1620,114 @@ public void DrawAllShapes(IList shapes)
 - Si se aplica bien OCP, los cambios de un cierto tipo obligan a añadir nuevo código, no a modificar el existente
 
 ---
+
+### Ejercicio: Shapes and Circles
+
+Arreglar para que cumpla OCP
+
+```cpp
+enum ShapeType
+{
+  circle,
+  square,
+  rectangle
+};
+
+class Shape
+{
+  public:
+    explicit Shape ( ShapeType t )
+      : type { t }
+    {}
+    virtual ~Shape() = default;
+    ShapeType getType() const noexcept;
+
+  private:
+    ShapeType type;
+};
+```
+---
+```cpp
+class Circle: public Shape
+{
+  public:
+    explicit Circle ( double rad )
+      : Shape{ circle }
+      , radius { rad }
+      , //... remaining data members
+    {}
+
+    virtual ~Circle() = default;
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+  private:
+    double radius;
+    ///... remaining data members 
+};
+
+void translate ( Circle&, Vector3D const& );
+void rotate ( Circle&, Quaternion const& ) ;
+void draw ( Circle const& );
+```
+---
+```cpp
+class Square: public Shape
+{
+  public:
+    explicit Square ( double s )
+      : Shape{ square }
+      , side { s }
+      , // ... remaining data members
+    {}
+
+    virtual ~Square() = default;
+    double getSide() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+  private:
+    double side;
+    // ... remaining data members
+};
+
+void translate ( Square&, Vector3D const& );
+void rotate ( Square&, Quaternion const& ) ;
+void draw ( Square const& );
+```
+---
+```cpp
+void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
+{
+  for ( auto const& s : shapes )
+  {
+    switch ( s-> getType() )
+    {
+      case circle:
+        draw ( *static_cast<Circle const*>( s.get() ) );
+        break;
+      case square:
+        draw ( *static_cast<Square const*>( s.get() ) );
+        break;  
+      case rectangle:
+        draw ( *static_cast<Rectangle const*>( s.get() ) );
+        break;  
+    }
+  }
+}
+
+int main()
+{
+  using Shapes = std::vector<std::unique_ptr<Shape>>;
+  // Creating some shapes
+  Shapes shapes;
+  shapes.push_back (std::make:unique<Circle>( 2.0 ));
+  shapes.push_back (std::make:unique<Square>( 1.5 ));
+  shapes.push_back (std::make:unique<Circle>( 4.2 ));
+  // Drawing all shapes
+  draw ( shapes );
+}
+```
+---
 <style scoped>
 h3 {
   color: blue;
@@ -1638,6 +1746,113 @@ h3 {
 
 OCP es un principio más arquitectónico que de diseño de clases y módulos.
 
+---
+
+### Solución al ejercicio: Shapes and Circles
+
+Versión en C++ que cumple el OCP 
+
+```cpp
+class Shape
+{
+  public:
+    Shape() = default;
+    virtual ~Shape() = default;
+
+    virtual void translate ( Vector3D const& ) = 0;
+    virtual void rotate ( Quaternion const& ) = 0;
+    virtual void draw() const = 0; // check!
+};
+```
+---
+```cpp
+class Circle : public Shape
+{
+  public:
+    explicit Circle (double rad )
+      : radius { rad }
+      , //... remaining data members
+    {}
+
+    virtual ~Circle() = default;
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate ( Vector3D const& ) override;
+    void rotate ( Quaternion const& ) override;
+    void draw () const override;
+
+  private:
+    double radius;
+    ///... remaining data members 
+}
+```
+---
+```cpp
+class Square : public Shape
+{
+  public:
+    explicit Square (double s )
+      : side { s }
+      , //... remaining data members
+    {}
+
+    virtual ~Square() = default;
+
+    double getSide() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate ( Vector3D const& ) override;
+    void rotate ( Quaternion const& ) override;
+    void draw () const override;
+
+  private:
+    double side;
+    ///... remaining data members 
+}
+```
+---
+```cpp
+void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
+{
+  for ( auto const& s : shapes )
+  {
+      s->draw();
+  }
+}
+
+int main()
+{
+  using Shapes = std::vector<std::unique_ptr<Shape>>;
+
+  // Creating some shapes
+  Shapes shapes;
+  shapes.push_back (std::make:unique<Circle>( 2.0 ));
+  shapes.push_back (std::make:unique<Square>( 1.5 ));
+  shapes.push_back (std::make:unique<Circle>( 4.2 ));
+  // Drawing all shapes
+  draw ( shapes );
+}
+```
+---
+
+## OCP versus SRP
+
+Cumple el OCP, pero ¿y el SRP?
+
+```cpp
+class Shape
+{
+  public:
+    Shape() = default;
+    virtual ~Shape() = default;
+
+    virtual void translate ( Vector3D const& ) = 0;
+    virtual void rotate ( Quaternion const& ) = 0;
+    virtual void draw() const = 0; // drawing is again inside the Shapes
+};
+```
 ---
 <style scoped>
 h3 {
@@ -1752,9 +1967,21 @@ __Delegación__ a través del patrón adapter (de objetos o de clases)
 
 ---
 
-### Example: Shapes and Circles
+### Example: Shapes and Circles (1 de 2)
 
 ```cpp
+class Circle;
+class Square;
+
+class DrawStrategy
+{
+  public:
+    virtual ~DrawStrategy() {}
+
+    virtual void draw ( const Circle& circle ) const = 0;
+    virtual void draw ( const Square& square ) const = 0;
+};
+
 class Shape
 {
   public:
@@ -1763,15 +1990,22 @@ class Shape
 
     virtual void translate ( Vector3D const& ) = 0;
     virtual void rotate ( Quaternion const& ) = 0;
-    virtual void draw() const = 0; // check!
+    virtual void draw() const = 0; 
 };
+```
 
+---
+
+### Example: Shapes and Circles (2 de 2)
+
+```cpp
 class Circle : public Shape
 {
   public:
-    explicit Circle (double rad )
+    explicit Circle ( double rad, std::unique_ptr<DrawStrategy> ds )
       : radius { rad }
       , //... remaining data members
+      , drawing { std::move(ds) }
     {}
 
     virtual ~Circle() = default;
@@ -1786,6 +2020,12 @@ class Circle : public Shape
   private:
     double radius;
     ///... remaining data members 
+    std::unique_ptr<DrawStrategy> drawing;
+};
+
+class Square: public Shape
+{
+  //...
 }
 ```
 
@@ -1796,8 +2036,6 @@ class Circle : public Shape
 ### Ejemplo: Shapes versión 1 en Java (misma versión que en SRP)
 
 ```java
-package shapes;
-
 interface Shape {
   double area();
   void draw();
@@ -1825,7 +2063,7 @@ abstract class RectParallelogram extends Polygon {
 
 ---
 
-```csharp
+```java
 class Square extends RectParallelogram {...}
 
 class Rectangle extends RectParallelogram {...}

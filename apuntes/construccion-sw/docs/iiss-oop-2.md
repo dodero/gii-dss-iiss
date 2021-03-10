@@ -412,7 +412,7 @@ Así que proponemos esta implementación de la Orquesta:
        return instrumentos.iterator();
     }
     public void tocar() {
-       for (Instrumento i: this)
+       for (Instrumento i: instrumentos)
           i.tocar();
     }
     public void afinar(Instrumento i) {
@@ -421,10 +421,13 @@ Así que proponemos esta implementación de la Orquesta:
     }
   }
 
-  public class Instrumentos {
+  public class Instrumentos implements Iterable<Instrumento> {
     private List instrumentos;
     public Instrumentos(int numero) {
       instrumentos = new ArrayList<numero>();
+    }
+    public Iterator<Instrumento> iterator() {
+       return instrumentos.iterator();
     }
     public Instrumento addInstrumento(Instrumento i) {
       return instrumentos.add(i);
