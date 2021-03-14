@@ -345,6 +345,10 @@ class BankAccountComparatorByCreationDate implements Comparator<BankAccount> {
 
 Ahora podría definirse una anotación del tipo `@comparator(BankAccountComparatorById.className)` o `@compareById` que inyecte a `BankAccount` una dependencia `BankAccountComparatorById` en `BankAccount.comparator`.
 
+
+!!! info "Creación de anotaciones en Java"
+    - Ejemplo de cómo [crear una anotación a medida en Java](https://www.baeldung.com/java-custom-annotation)
+
 #### Decoradores en TypeScript
 
 - Los decoradores de TypeScript son una forma de modificar programáticamente la definición de una clase.
