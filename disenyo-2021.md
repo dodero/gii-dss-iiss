@@ -1,5 +1,7 @@
 ---
 marp: false
+title: Apuntes DSS 2021
+description: Apuntes de Diseño de Sistemas Software, curso 2020/21
 ---
 
 <!-- size: 16:9 -->
@@ -1463,7 +1465,7 @@ h3 {
 ### Example: Circle class
 
 ```cpp
-class Cicle
+class Circle
 {
   public:
     explicit Circle (double rad )

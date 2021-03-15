@@ -562,7 +562,7 @@ Delegación _en horizontal_ hacia otras clases cuya interfaz es bien conocida
   }
 ```
 
-##### Implementación utilizando `Comparable`
+##### Implementación por herencia
 
 `java.lang.Comparable` es una interfaz implementada por `String`, `File`, `Date`, etc. y todas las llamadas _clases de envoltura_ del JDK (i.e. `Integer`, `Long`, etc.)
 
@@ -594,18 +594,12 @@ public interface Comparable<T> {
 
 - Consistencia con `equals` (no obligatoria): `(x.compareTo(y)=0)` <-- `(x.equals(y))`
 
-######  Identificador de BankAccount: Implementación en Java 1.5
+######  Identificador de BankAccount: Implementación en Java ≥ 1.5
 
 - Utilizando _templates_ (**polimorfismo paramétrico**)
 - Delegar en `compareTo` y `equals` del tipo de id _envuelto_ (e.g. `String`)
 
-######  Identificador de BankAccount: Implementación en Java 1.4
-
-- No hay plantillas (polimorfismo paramétrico).
-- La genericidad se consigue con `Object`. Hay que hacer casting.
-- Cuidado con `Boolean` que no implementa `Comparable` en JDK 1.4
-
-```java tab="Java ≥ 1.5"
+```java 
 import java.util.*;
 import java.io.*;
 
@@ -635,7 +629,14 @@ public final class BankAccount implements Comparable<BankAccount> {
 }
 ```
 
-```java tab="Java ≤ 1.4"
+######  Identificador de BankAccount: Implementación en Java ≤ 1.4
+
+- No hay plantillas (polimorfismo paramétrico).
+- La genericidad se consigue con `Object`. Hay que hacer casting.
+- Cuidado con `Boolean` que no implementa `Comparable` en JDK 1.4
+
+
+```java
 import java.util.*;
 import java.io.*;
 
@@ -663,6 +664,8 @@ public final class BankAccount implements Comparable {
   }
 }
 ```
+
+##### Implementación por composición/delegación
 
 Cuando una clase hereda de una clase concreta que implementa `Comparable` y le añade un campo significativo para la comparación, no se puede construir una implementación correcta de `compareTo`. La única alternativa entonces es la composición en lugar de la herencia.
 

@@ -98,7 +98,7 @@ public class HolyGrailQuest implements Quest {
 
 #### Inyectar dependencias
 
-```java
+```java hl_lines="10 11 12"
 public class KnightOfTheRoundTable implements Knight {
   private String name;
   private Quest quest;
@@ -162,7 +162,7 @@ public class KnightApp {
 
 También se puede inyectar la dependencia en el constructor.
 
-```java
+```java hl_lines="5"
 import java.util.logging.Logger;
 
 public class MyClass {

@@ -3,3 +3,6 @@
 .DS_Store
 .vscode
 apuntes/construccion-sw/site/
+node_modules/
+package.json
+package-lock.json
