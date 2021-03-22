@@ -2174,7 +2174,7 @@ aspect DrawableCircle extends DrawableShape {
   String Circle.makeDetails (String indent){...}
 }
 aspect DrawableEllipse extends DrawableShape {
-  String Ellipse. makeDetails (String indent){...} }
+  String Ellipse.makeDetails (String indent){...} }
 ```
 
 ---
