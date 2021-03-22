@@ -2,7 +2,7 @@
 
 A. Hunt & D. Thomas. <a id="pragmatic">The Pragmatic Programmer.</a> Addison-Wesley, 1999.
 
-A. Hunt & D. Thomas. <a id="pragmatic2">The Pragmatic Programmer: your journey to mastery</a>, 20th Anniversary Edition, 2nd Edition, Addison-Wesley Professional, 2019.
+A. Hunt & D. Thomas. <a id="pragmatic2">The Pragmatic Programmer: your journey to mastery</a>, 20th Anniversary Edition, 2nd Edition, Addison-Wesley Professional, 2020.
 
 M. Fowler. <a id="refactoring">Refactoring. Improving the Design of Existing Code.</a> Addison-Wesley, 2nd Edition, 2008.
 

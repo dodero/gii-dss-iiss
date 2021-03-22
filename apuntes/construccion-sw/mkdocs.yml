@@ -79,6 +79,7 @@ extra:
 #         cover_subtitle: Apuntes de la asignatura
 #         copyright: Curso 2020-21
 #         toc_title: Contenidos
+#         enabled-if-env: ENABLE_PDF_EXPORT
 #         exclude_pages:
 #             - 'index/'
 #             - 'iiss-pres/'

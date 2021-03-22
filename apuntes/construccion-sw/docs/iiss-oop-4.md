@@ -232,6 +232,9 @@ La gestión del proyecto así nos lo exige. Algunos ejemplos:
 !!! note "Cómo evitaba Java la duplicación en sus _containers_"
     Cuando el lenguaje no tenía capacidad de usar tipos genéricos (hasta el JDK 1.4), podría aparecer la necesidad de duplicar código a la hora de implementar un TAD contenedor, pues habría que repetir todo el código de manejo del TAD para cada tipo de elemento contenido. Para evitarlo, Java usó un _workaround_: todas las clases en Java heredan de `Object`. Así una clase que implementara un TAD contenedor de elementos de otra clase, tan solo tenía que declarar los elementos contenidos de tipo `Object`. Más tarde (a partir del JDK 1.5) introdujo los tipos genéricos y ya no era necesario usar dicho _workaround_ basado en `Object` para evitar la duplicación
 
+
+
+
 ##### Técnicas de solución
 
 - __Generadores de código__: para evitar duplicar representaciones múltiples de la información
@@ -241,6 +244,29 @@ La gestión del proyecto así nos lo exige. Algunos ejemplos:
 - Herramientas de __documentación__ (v.g. [asciidoctor](http://asciidoctor.org/): [inclusión de ficheros](http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#include-files) y [formateo de código fuente](http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#source-code)).
 - Herramientas de __[programación literaria](http://www.literateprogramming.com/)__
 - Ayuda del __IDE__
+- Herramientas de *property-based testing*, como [Hypothesis](https://pypi.org/project/hypothesis/) (python), [RapidCheck](https://github.com/emil-e/rapidcheck) (C++), [jqwik](https://jqwik.net/)  (Java) o [QuickCheck](https://en.wikipedia.org/wiki/QuickCheck) (originalmente para Haskell).
+
+!!! note "Property-based testing"
+    - ¿Cómo reducir la duplicación de código al programar pruebas unitarias?
+    - Ejemplo de property-based testing con [Hypothesis](https://pypi.org/project/hypothesis/) en Python:
+    ```python
+    from hypothesis import given
+    import hypothesis.strategies as some
+
+    @given(some.lists(some.integers()))
+    def test_list_size_is_invariant_across_sorting(a_list):
+      original_length = len(a_list)
+      a_list.sort()
+      assert len(a_list) == original_length
+
+    @given(some.lists(some.text()))
+    def test_sorted_result_is_ordered(a_list):
+      a_list.sort()
+      for i in range(len(a_list) - 1):
+        assert a_list[i] <= a_list[i + 1]
+    ```
+    - Leer el Consejo nº 71 del libro de [Hunt & Thomas (2020)](bibliografia.md#pragmatic2).
+
 
 #### Duplicación inadvertida
 
