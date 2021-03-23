@@ -2316,6 +2316,8 @@ public class Square: Rectangle {
 }
 ```
 
+Nota: [Diferencia entre `new` y `override` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords)
+ 
 ---
 
 - El comportamiento de un objeto `Square` no es consistente con el de un objeto `Rectangle`:
@@ -2359,6 +2361,8 @@ public class Rectangle
   }
 }
 ```
+
+Nota: [Métodos redefinibles con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
 
 ---
 
