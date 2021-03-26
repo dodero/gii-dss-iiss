@@ -1,5 +1,7 @@
 ---
 marp: true
+title: Apuntes DSS 2021 - Patrones de Diseño
+description: Apuntes de Diseño de Sistemas Software, curso 2020/21 - Patrones de diseño
 ---
 
 <!-- size: 16:9 -->
@@ -35,13 +37,17 @@ h2 {
 
 # PATRONES DE DISEÑO 
 
+- [Introducción](#introducción)
+- [Patrones del GoF](#patrones-del-gang-of-four)
+- [Patrones específicos](#otros-patrones-específicos)
+
 ---
 
 ## Índice de contenidos
 
 1. Introducción
 2. Patrones del GoF
-3. Patrones específicos
+3. Otros patrones específicos
 
 ---
 ## Introducción
@@ -140,21 +146,560 @@ Pero hay más...
 ---
 ## Factory Method
 
+---
+
+@startuml
+top to bottom direction
+scale 1024 width
+scale 700 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+enum Direccion {
+  NORTE
+  SUR
+  ESTE
+  OESTE
+}
+
+class JuegoLaberinto {
+  {method} main()
+  {method} crearLaberinto()
+}
+
+abstract class Sitio{
+  {method} entrar()
+}
+
+class Sala{
+  {field} numSala
+  {method} getLado(Direccion): Sitio
+  {method} setLado(Direccion, Sitio)
+  {method} entrar()
+}
+
+class Puerta{
+  {field} estaAbierta
+  {method} otroLadoDesde(Sala)
+  {method} entrar()
+}
+
+class Pared{
+  {method} entrar()
+}
+
+class Laberinto{
+  {method} agregarSala(Sala)
+  {method} getSalaNum(int)
+}
+
+JuegoLaberinto .up.> Laberinto
+
+Sala "lados" *-down-> Sitio
+Sitio <|-down- Pared
+Sitio <|-down- Puerta
+Sitio <|-down- Sala
+Laberinto "salas" *-right-> Sala
+
+hide members
+show methods
+show Direccion members
+show Sala members
+show Puerta members
+
+@enduml
+
+---
+
+```java
+public interface Direccion {
+    int NORTE = 0;
+    int ESTE = 1;
+    int SUR = 2;
+    int OESTE = 3;
+}
+
+public class Laberinto {
+    Laberinto() {};
+    void agregarSala(Sala sala) {};
+    Sala getSalaNum(int numSala) { ... };
+}
+```
+---
+
+```java
+public abstract class Sitio {
+    void entrar() {};
+}
+
+public class Sala extends Sitio {
+    private Sitio lados[];
+    int numSala;
+
+    Sala() {};
+    Sala(int numSala) {};
+    Sitio getLado(int dir) { return lados[dir]; };
+    void setLado(int dir, Sitio sitio) {};
+    void entrar() {};
+}
+```
+
+---
+
+```java
+public class Pared extends Sitio {
+    Pared() {};
+    void entrar() {};
+}
+
+public class Puerta extends Sitio {
+    private Sala sala1;
+    private Sala sala2;
+    boolean estaAbierta;
+
+    Puerta(Sala sala1, Sala sala2) { ... };
+    void entrar() {};
+    Sala otroLadoDesde(Sala unaSala) { ... };
+}
+```
+
+---
+
+```java
+Laberinto crearLaberinto () {
+  Laberinto miLab = new Laberinto();
+  Sala hab1 = new Sala(1);
+  Sala hab2 = new Sala(2);
+  Puerta unaPuerta = new Puerta(hab1, hab2);
+  miLab.agregarSala(hab1);
+  miLab.agregarSala(hab2);
+  hab1.setLado(Direccion.NORTE, new Pared());
+  hab1.setLado(Direccion.ESTE, unaPuerta);
+  hab1.setLado(Direccion.SUR, new Pared());
+  hab1.setLado(Direccion.OESTE, new Pared());
+  hab2.setLado(Direccion.NORTE, new Pared());
+  hab2.setLado(Direccion.ESTE, new Pared());
+  hab2.setLado(Direccion.SUR, new Pared());
+  hab2.setLado(Direccion.OESTE, unaPuerta);
+  return miLab;
+}
+```
+
+---
+
+#### Críticas
+
+- Creación poco flexible: instancias concretas cableadas
+- Supongamos $\exists$ SalaHechizada, PuertaHechizada. ¿Cómo cambiamos `crearLaberinto`?
+
+---
+
+#### Método de factoría
+
+- El patrón _factory method_ define una interfaz para la creación de un objeto, pero dejando en manos de las subclases la decisión de qué clase concreta instanciar.
+
+- Permite que una clase delegue en sus subclases las instanciaciones.
+
+---
+
+#### Estructura
+
+@startuml
+top to bottom direction
+scale 700 width
+scale 600 height
+
+class Product
+class Creator
+class ConcreteProduct
+class ConcreteCreator
+
+Creator : factoryMethod()
+Creator : anOperation()
+ConcreteCreator : factoryMethod()
+
+Creator <|–down- ConcreteCreator
+Product <|–down- ConcreteProduct
+ConcreteProduct <- ConcreteCreator
+
+hide members
+show methods
+
+note top of Creator
+The Creator is a class that contains
+the implementation for all of the
+methods to manipulate products,
+except for the factory method.
+end note
+
+note right of Creator
+The abstract factoryMethod()
+is what all Creator subclasses
+must implement.
+end note
+
+note right of ConcreteCreator
+The ConcreteCreator
+implements the
+factoryMethod(), which is
+the method that actually
+produces products.
+end note
+
+note “The ConcreteCreator is responsible for\ncreating one or more concrete products. It\nis the only class that has the knowledge of\nhow to create these products.” as n1
+ConcreteProduct .. n1
+ConcreteCreator .. n1
+
+note “All products must implement\nthe same interface so that the\nclasses which use the products\ncan refer to the interface,\nnot the concrete class.” as n2
+n2 . ConcreteProduct
+n2 . Product
+
+@enduml
+
+---
+
+#### Implementación
+
+```java
+public class JuegoLaberinto {
+  JuegoLaberinto() {};
+  // factory methods:
+  Laberinto makeLaberinto() { return new Laberinto(); }
+  Sala makeSala(int numSala) { return new Sala(numSala); }
+  Pared makePared() { return new Pared(); }
+  Puerta makePuerta(Sala sala1, Sala sala2) {
+    return new Puerta(sala1, sala2);
+  }
+  Laberinto crearLaberinto () { ... }
+}
+```
+
+---
+
+```java
+Laberinto crearLaberinto () {
+  Laberinto miLab = makeLaberinto();
+  Sala hab1 = makeSala(1);
+  Sala hab2 = makeSala(2);
+  Puerta unaPuerta = makePuerta(hab1, hab2);
+  miLab.agregarSala(hab1);
+  miLab.agregarSala(hab2);
+  hab1.setLado(Direccion.NORTE, makePared());
+  hab1.setLado(Direccion.ESTE, unaPuerta);
+  hab1.setLado(Direccion.SUR, makePared());
+  hab1.setLado(Direccion.OESTE, makePared());
+  hab2.setLado(Direccion.NORTE, makePared());
+  hab2.setLado(Direccion.ESTE, makePared());
+  hab2.setLado(Direccion.SUR, makePared());
+  hab2.setLado(Direccion.OESTE, unaPuerta);
+  return miLab;
+}
+```
+
+---
+
+```java
+public class JuegoLaberintoMinado extends JuegoLaberinto {
+  Pared makePared() {
+    return new ParedMinada();
+  }
+  Sala makeSala(int numSala) {
+    return new SalaMinada(numSala);
+  }
+}
+
+public class JuegoLaberintoHechizado extends JuegoLaberinto {
+  Sala makeSala(int numSala) {
+    return new SalaHechizada(numSala, lanzarHechizo());
+  }
+  Puerta makePuerta(Sala sala1, Sala sala2) {
+    return new PuertaHechizada(sala1, sala2);
+  }
+  private Hechizo lanzarHechizo() { ... }
+}
+```
 
 ---
 ## Command
+
+---
+
+@startuml
+class Client
+class Invoker
+class Command <<interface>>
+class Receiver
+class ConcreteCommand
+
+Invoker : setCommand()
+Command : execute()
+Command : undo()
+Receiver : action()
+ConcreteCommand : execute()
+ConcreteCommand : undo()
+
+Client -> Receiver
+Client -> ConcreteCommand
+Receiver <- ConcreteCommand
+Invoker -> Command
+Command <|.. ConcreteCommand
+
+note left of Client
+The Client is responsible for
+creating a ConcreteCommand and
+setting its Receiver.
+end note
+
+note bottom of Receiver
+The Receiver knows how to
+perform the work needed to
+carry out the request. Any class
+can act as a Receiver.
+end note
+
+note bottom of ConcreteCommand
+The ConcreteCommand defines a binding between an action
+and a Receiver. The Invoker makes a request by calling
+execute() and the ConcreteCommand carries it out by
+calling one or more actions on the Receiver.
+end note
+
+note left of Invoker
+The Invoker holds
+a command and at
+some point asks the
+command to carry
+out a request by
+calling its execute()
+method.
+end note
+
+note top of Command
+Command declares an interface for all commands. A
+command is invoked through its execute() method,
+which asks a receiver to perform its action.
+end note
+
+note right of ConcreteCommand::execute()
+The execute method invokes the action(s)
+on the receiver needed to fulfill the
+request;
+
+public void execute() {
+  receiver.action()
+}
+
+end note
+@enduml
 
 
 ---
 ## Composite
 
 
+@startuml
+class Client
+class Component
+class Leaf
+class Composite
+
+Component : operation()
+Component : add(Component)
+Component : remove(Component)
+Component : getChild(int)
+
+Leaf : operation()
+
+Composite : operation()
+Composite : add(Component)
+Composite : remove(Component)
+Composite : getChild(int)
+
+Client -> Component
+Component <|– Leaf
+Component <|– Composite
+Component “0..*” <–o “1” Composite
+
+note top of Client
+The Client uses the
+Component interface to
+manipulate the objects in the
+composition.
+end note
+
+note top of Component
+The Component defines an
+interface for all objects in
+the composition: both the
+composite and the leaf nodes.
+end note
+
+note top of Component
+The Component may implement a
+default behavior for add(), remove(),
+getChild() and its operations.
+end note
+
+note bottom of Leaf
+A Leaf has no
+children.
+end note
+
+note left of Leaf
+Note that the Leaf also
+inherits methods like add(),
+remove() and getChild(), which
+do not necessarily make a lot of
+sense for a leaf node. We are
+going to come back to this issue.
+end note
+
+note bottom of Leaf
+A Leaf defines the behavior for the
+elements in the composition. It does
+this by implementing the operations
+the Composite supports.
+end note
+
+note bottom of Composite
+The Composite’s role is to define
+behavior of the components
+having children and to store child
+components.
+end note
+
+note right of Composite
+The Composite also
+implements the Leaf-
+related operations.
+Note that some of
+these may not make
+sense on a Composite,
+so in that case an
+exception might be
+generated.
+end note
+@enduml
+
 ---
 ## Adapter
+
+@startuml
+class Client
+class Target <<interface>>
+class Adapter
+class Adaptee
+Target : request()
+Adapter : request()
+Adaptee : specificRequest()
+
+Client -> Target
+Target <|.. Adapter
+Adapter -> Adaptee
+note on link
+Adapter is composed
+with the Adapter.
+end note
+
+note bottom of Client
+The client sees only the
+Target interface
+end note
+
+note “The Adapter implements\nthe Target interface.” as n1
+Target .. n1
+n1 .. Adapter
+
+note bottom of Adaptee
+All requests get
+delegated to the
+Adaptee.
+end note
+@enduml
 
 
 ---
 ## Decorator
+
+@startuml
+skinparam componentStyle uml2
+
+class Component
+class ConcreteComponent
+class Decorator
+class ConcreteDecoratorA
+class ConcreteDecoratorB
+
+Component : methodA()
+Component : methodB()
+Component : // otherMethods()
+
+ConcreteComponent : methodA()
+ConcreteComponent : methodB()
+ConcreteComponent : // otherMethods()
+
+Decorator : methodA()
+Decorator : methodB()
+Decorator : // otherMethods()
+
+ConcreteDecoratorA : Component wrappedObject
+ConcreteDecoratorA : methodA()
+ConcreteDecoratorA : methodB()
+ConcreteDecoratorA : newBehavior()
+ConcreteDecoratorA : // otherMethods()
+
+ConcreteDecoratorB : Component wrappedObject
+ConcreteDecoratorB : Object newState
+ConcreteDecoratorB : methodA()
+ConcreteDecoratorB : methodB()
+ConcreteDecoratorB : // otherMethods()
+
+Component <|– ConcreteComponent
+Component <|– Decorator
+Decorator <|– ConcreteDecoratorA
+Decorator <|– ConcreteDecoratorB
+Decorator –> Component : component
+note right on link
+Each component can be used on its
+own, or wrapped by a decorator
+component
+end note
+
+note bottom of ConcreteComponent
+The ConreteComponent
+is the object we are going
+to dynamically add new
+behavior to it. It extends
+Component.
+end note
+
+note bottom of Decorator
+Decorators implement the
+same interface or abstract
+class as the component they
+are going to decorate.
+end note
+
+note bottom of ConcreteDecoratorB
+Decorators can extend the
+state of the component
+end note
+
+note bottom of ConcreteDecoratorB
+Decorators can add new methods;
+however, new behavior is typically
+added by doing computation
+before or after an existing method
+in the component.
+end note
+
+note bottom of ConcreteDecoratorA
+The ConcreteDecorator has an
+instance variable for the thing
+it decorates (the Component the
+Decorator wraps).
+end note
+@enduml
 
 ---
 ## Strategy
@@ -162,12 +707,81 @@ Pero hay más...
 ---
 ## Observer
 
+@startuml
+class Client
+class Invoker
+class Command <<interface>>
+class Receiver
+class ConcreteCommand
+
+Invoker : setCommand()
+Command : execute()
+Command : undo()
+Receiver : action()
+ConcreteCommand : execute()
+ConcreteCommand : undo()
+
+Client -> Receiver
+Client -> ConcreteCommand
+Receiver <- ConcreteCommand
+Invoker -> Command
+Command <|.. ConcreteCommand
+
+note left of Client
+The Client is responsible for
+creating a ConcreteCommand and
+setting its Receiver.
+end note
+
+note bottom of Receiver
+The Receiver knows how to
+perform the work needed to
+carry out the request. Any class
+can act as a Receiver.
+end note
+
+note bottom of ConcreteCommand
+The ConcreteCommand defines a binding between an action
+and a Receiver. The Invoker makes a request by calling
+execute() and the ConcreteCommand carries it out by
+calling one or more actions on the Receiver.
+end note
+
+note left of Invoker
+The Invoker holds
+a command and at
+some point asks the
+command to carry
+out a request by
+calling its execute()
+method.
+end note
+
+note top of Command
+Command declares an interface for all commands. A
+command is invoked through its execute() method,
+which asks a receiver to perform its action.
+end note
+
+note right of ConcreteCommand::execute()
+The execute method invokes the action(s)
+on the receiver needed to fulfill the
+request;
+
+public void execute() {
+ receiver.action()
+}
+
+end note
+@enduml
+
 ---
 ## Visitor
 
 
 ---
-## Otros patrones de interés
+## Otros patrones específicos
+
 ---
 
 ### Data Acess Object (DAO)
