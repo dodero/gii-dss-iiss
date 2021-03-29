@@ -17,6 +17,13 @@ h2 {
 }
 </style>
 
+<style>
+img[alt~="center"] {
+  display: block;
+  margin: 0 auto;
+}
+</style>
+
 # DISEÑO DE SISTEMAS SOFTWARE
 
  
@@ -36,14 +43,6 @@ h2 {
 ---
 
 # PATRONES DE DISEÑO 
-
-- [Introducción](#introducción)
-- [Patrones del GoF](#patrones-del-gang-of-four)
-- [Patrones específicos](#otros-patrones-específicos)
-
----
-
-## Índice de contenidos
 
 1. Introducción
 2. Patrones del GoF
@@ -72,7 +71,7 @@ h2 {
 
 - Un grupo de expertos (_Gang of Four_) se basó en el trabajo de Alexander y lo aplicó al diseño de software, presentando el libro *Design Patterns* con un total de 23 patrones.
 
-![Libro de patrones, width:150px](./figuras/patronesGOF.jpg)
+![w:150 center](./figuras/patronesGOF.jpg)
 
 
 ---
@@ -92,6 +91,8 @@ h2 {
 
 ---
 ## Patrones del Gang of Four
+
+![w:200 center](./figuras/patronesGOF.jpg)
 
 ---
 
@@ -117,41 +118,47 @@ Son los patrones de diseño software que solucionan problemas de composición/ag
 - Decorator
 - Adapter
 
-Pero hay más..
+Pero hay más...
 - *Facade*
 - *Bridge*
 - *Flyweight*
 - *Proxy*
 
 
-
 ---
 ### Patrones de comportamiento
-Son los relativos a la interacción y responsabilidades entre clases y objetos. Veremos:
+Son los relativos a la interacción y responsabilidades entre clases y objetos. Vamos a ver:
 
 - Command
-- Observer 
+- Observer
 - Strategy
 - Visitor
 
 Pero hay más...
-- Template method
-- Chain of Responsibility
-- Interpreter
-- Iterator
-- Mediator
-- Memento
-- State
+- *Template method*, *Chain of Responsibility*, *Interpreter*
+- *Iterator*, *Mediator*, *Memento*, *State*
+
 
 ---
-## Factory Method
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
+
+### [Factory Method](https://refactoring.guru/es/design-patterns/factory-method)
+
+![Factory Method, center](./figuras/guru/factory-method-mini-2x.png)
 
 ---
+
+#### Ejemplo: Juego de laberinto
 
 @startuml
 top to bottom direction
 scale 1024 width
-scale 700 height
+scale 650 height
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
@@ -304,6 +311,22 @@ Laberinto crearLaberinto () {
 
 #### Estructura
 
+![w:850 center](./figuras/guru/factory-method-structure-2x.png)
+
+---
+
+1. El **Producto** declara la interfaz, que es común a todos los objetos que puede producir la clase creadora y sus subclases.
+
+2. Los **Productos Concretos** son distintas implementaciones de la interfaz de producto.
+
+3. La clase **Creadora** declara el método fábrica que devuelve nuevos objetos de producto. Es importante que el tipo de retorno de este método coincida con la interfaz de producto.
+
+4. Los **Creadores Concretos** sobrescriben el Factory Method base, de modo que devuelva un tipo diferente de producto.
+
+---
+
+<!--
+
 @startuml
 top to bottom direction
 scale 700 width
@@ -358,7 +381,17 @@ n2 . Product
 
 ---
 
-#### Implementación
+-->
+
+#### Ventajas
+
+- Se evita un acoplamiento fuerte entre el creador y los productos concretos.
+- SRP: Se puede mover el código de creación de producto a un lugar del programa, haciendo que el código sea más fácil de mantener.
+- OCP: Se pueden incorporar nuevos tipos de productos en el programa sin descomponer el código cliente existente.
+
+---
+
+#### Implementación de `JuegoLaberinto`
 
 ```java
 public class JuegoLaberinto {
@@ -420,9 +453,18 @@ public class JuegoLaberintoHechizado extends JuegoLaberinto {
 ```
 
 ---
-## Command
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
 
----
+### [Command](https://refactoring.guru/es/design-patterns/command)
+
+![Command, center](./figuras/guru/command-mini-2x.png)
+
+<!--
 
 @startuml
 class Client
@@ -491,12 +533,111 @@ public void execute() {
 
 end note
 @enduml
-
+-->
 
 ---
-## Composite
+
+#### Estructura
+
+![w:850 center](./figuras/guru/command-structure-2x.png)
+
+---
+
+#### Comportamiento
+
+@startuml
+scale 700 width
+scale 600 height
+
+participant "editor: Client" as editor
+participant "cmdDraw: DrawCommand" as cmdDraw
+participant "menuItem: Invoker" as menuItem
+participant "image: Receiver" as image
+
+[--> editor: <<create>>
+activate editor
+editor --> cmdDraw : new DrawCommand(image)
+editor -> menuItem: setCommand(cmdDraw)
+activate menuItem
+deactivate editor
+deactivate menuItem
+
+...
+
+[--> menuItem: executeCommand()
+activate menuItem
+
+menuItem -> cmdDraw: execute()
+activate cmdDraw
+cmdDraw -> image: draw()
+activate image
+deactivate cmdDraw
+
+@enduml
 
 
+<!--
+#### Cliente/Servidor
+
+@startuml
+scale 700 width
+scale 600 height
+
+participant client
+participant anInvoker
+
+box "Server"
+participant aCommand
+participant aServer
+participant aReceiver
+end box
+
+activate client
+client -> aCommand: new ConcreteCommand()
+activate aCommand
+deactivate aCommand
+
+client -> anInvoker: add(aCommmand)
+activate anInvoker
+deactivate client
+
+anInvoker -> aCommand: getData()
+activate aCommand
+
+anInvoker <-- aCommand  : ok
+deactivate aCommand
+
+client <- anInvoker : send(aCommand)
+activate client
+deactivate anInvoker
+
+client -> aServer : accept(aCommand)
+activate aServer
+deactivate client
+
+aCommand <- aServer: execute(this)
+activate aCommand
+
+aCommand -> aReceiver: action()
+activate aReceiver
+
+@enduml
+
+-->
+
+---
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
+
+### [Composite](https://refactoring.guru/es/design-patterns/composite)
+
+![Composite, center](./figuras/guru/composite-mini-2x.png)
+
+<!--
 @startuml
 class Client
 class Component
@@ -581,9 +722,28 @@ generated.
 end note
 @enduml
 
----
-## Adapter
+-->
 
+---
+
+#### Estructura
+
+![h:600 center](./figuras/guru/composite-structure-2x.png)
+
+---
+
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
+
+### [Adapter](https://refactoring.guru/es/design-patterns/adapter)
+
+![Adapter, center](./figuras/guru/adapter-mini-2x.png)
+
+<!--
 @startuml
 class Client
 class Target <<interface>>
@@ -616,11 +776,33 @@ delegated to the
 Adaptee.
 end note
 @enduml
-
+-->
 
 ---
-## Decorator
 
+#### Estructura: Adaptador de objetos
+
+![w:850 center](./figuras/guru/object-adapter-structure-2x.png)
+
+---
+
+#### Estructura: Adaptador de clases
+
+![w:850 center](./figuras/guru/class-adapter-structure-2x.png)
+
+---
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
+
+### [Decorator](https://refactoring.guru/es/design-patterns/decorator)
+
+![Decorator, center](./figuras/guru/decorator-mini-2x.png)
+
+<!--
 @startuml
 skinparam componentStyle uml2
 
@@ -700,13 +882,47 @@ it decorates (the Component the
 Decorator wraps).
 end note
 @enduml
+-->
 
 ---
-## Strategy
+
+#### Estructura
+
+![h:600 center](./figuras/guru/decorator-structure-2x.png)
 
 ---
-## Observer
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
 
+### [Strategy](https://refactoring.guru/es/design-patterns/strategy)
+
+![Strategy, center](./figuras/guru/strategy-mini-2x.png)
+
+---
+
+#### Estructura
+
+![h:500 center](./figuras/guru/strategy-structure-2x.png)
+
+---
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
+
+### [Observer](https://refactoring.guru/es/design-patterns/observer)
+
+![Observer, center](./figuras/guru/observer-mini-2x.png)
+
+---
+
+<!--
 @startuml
 class Client
 class Invoker
@@ -774,9 +990,29 @@ public void execute() {
 
 end note
 @enduml
+-->
+
+#### Estructura
+
+![h:450 center](./figuras/guru/observer-structure-2x.png)
 
 ---
-## Visitor
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
+
+### [Visitor](https://refactoring.guru/es/design-patterns/visitor)
+
+![Visitor, center](./figuras/guru/visitor-mini-2x.png)
+
+---
+
+#### Estructura
+
+![h:600 center](./figuras/guru/visitor-structure-2x.png)
 
 
 ---
@@ -788,10 +1024,10 @@ end note
 
 - Se usa para abstraer y encapsular los accesos a las fuentes de datos, con independencia del soporte concreto de almacenamiento. Su alternativa es el patrón *Active Record*.
 
-![DAO Pattern UML, width:800px](./figuras/dao_uml.webp)
+![width:800px](./figuras/dao_uml.webp)
 
 ---
-![DAO Pattern UML, width:700px](./figuras/dao_code.png)
+![width:700px](./figuras/dao_code.png)
 
 
 ---
@@ -799,10 +1035,10 @@ end note
 
 - Se usa para crear objetos planos (POJO) que puedan ser enviados o recuperados desde servidores remotos en una única invocación. Un DTO no tiene más comportamiento que almacenar y entregar sus propios datos (métodos *getters* y *setters*). 
 
-![DTO Pattern UML, width:800px](./figuras/dto_uml.png)
+![width:800px](./figuras/dto_uml.png)
 
 ---
-![DTO Pattern UML, width:750px](./figuras/dto_code.png)
+![width:750px](./figuras/dto_code.png)
 
 
 ---
