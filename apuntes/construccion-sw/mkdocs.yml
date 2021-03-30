@@ -24,7 +24,7 @@ nav:
     - V. Eventos:
         - Listeners: iiss-evp-1.md
         - Asíncronas: iiss-evp-2.md
-        - Eventos: iiss-evp-3.md
+        - Eventos: iiss-evp-2.md
 theme:
     name: 'material'
 #    logo:
