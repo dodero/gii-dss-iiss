@@ -537,9 +537,9 @@ myList
 
 Los métodos `stream`, `filter`, `map`, `sorted` y `forEach` son parte de las nuevas _interfaces funcionales_ para manejar _streams_, incorporadas a las colecciones (v.g. `List`) del lenguaje desde la versión Java 8. Este tipo de interfaces como la del API de streams de Java se conoce como [_fluent interfaces_](https://en.wikipedia.org/wiki/Fluent_interface).
 
-!!! warning "La programación con streams se tratará en el capítulo sobre [Programación basada en Eventos](iiss-evp.md)"
+!!! warning "La programación con streams se tratará en el capítulo sobre [Programación basada en Eventos](iiss-evp-1.md)"
 
-!!! warning "Las interfaces funcionales se tratarán en el capítulo sobre [Programación Funcional](iiss-fp.md)"
+!!! warning "Las interfaces funcionales se tratarán en el capítulo sobre [Programación Funcional](iiss-fp-1.md)"
 
 
 ##### Críticas a la ley de Demeter

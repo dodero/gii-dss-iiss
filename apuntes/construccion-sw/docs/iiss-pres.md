@@ -43,10 +43,16 @@
     - [Optionals y uso de null](iiss-err.md#null)
 
 - Programación Funcional
-    - Funciones [Anónimas](iiss-fp.md#anonimas)
-    - [Retrollamadas](iiss-fp.md#callbacks)
-    - Cierres y [Lambdas](iiss-fp.md#lambdas)
-    - [Mixins](iiss-fp.md#mixins)
+    - Funciones [Anónimas](iiss-fp-1.md#anonimas)
+    - [Retrollamadas](iiss-fp-2.md#callbacks)
+    - Cierres y [Lambdas](iiss-fp-2.md#lambdas)
+    - [Mixins](iiss-fp-3.md#mixins)
+
+- Programación Asíncrona
+    - [Listeners](iiss-evp-1.md#listeners)
+    - [Continuaciones](iiss-evp-2.md#continuaciones)
+    - [Eventos](iiss-evp-3.md#eventos)
+    
 
 <!--
 - Reflexión
@@ -60,8 +66,8 @@
 1. [Objetos](iiss-oop-1.md)
 2. [Aspectos](iiss-aop.md)
 3. [Contratos](iiss-dbc.md)
-4. [Funciones](iiss-fp.md)
-5. [Eventos](iiss-evp.md)
+4. [Funciones](iiss-fp-1.md)
+5. [Eventos](iiss-evp-1.md)
 
 ---
 

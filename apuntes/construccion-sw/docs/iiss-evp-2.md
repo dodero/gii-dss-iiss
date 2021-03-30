@@ -19,7 +19,7 @@ Las funciones no bloqueantes afectan a:
 <small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
 
 
-### Modelos de paso de continuaciones
+### Modelos de paso de <a id="continuaciones">continuaciones</a>
 
 Aumentar la aridad de la función no bloqueante en 1 argumento adicional, donde se indica la lógica de continuación.
 
@@ -94,7 +94,7 @@ El uso de callbacks hace el código complejo, repetitivo y difícil de entender,
 - Cualquier función en Ruby puede recibir un **bloque** `do`... `end` como argumento adicional (no explícito) a la llamada
 - Un _thunk_ es como un bloque con un `yield` al final
 
-#### Promesas
+#### <a id="promesas">Promesas</a>
 
 Modelo de [futuros y promesas](https://en.wikipedia.org/wiki/Futures_and_promises)
 
@@ -359,24 +359,3 @@ public static void main(String[] args) throws Exception {
 
 > LECTURA recomendada: [Promises/A+](https://promisesaplus.com/): An open standard for sound, interoperable JavaScript promises.
 
-### Modelos de eventos
-
-Las operaciones disparan eventos de diferentes tipos, que son escuchados por los manejadores (_listeners_) de eventos, que los clientes han registrado en un bus de eventos
-
-#### Eventos
-
-![Eventos](./figuras/eventos.png)
-
-<small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
-
-#### Streams
-
-Los datos fluyen por pipelines y se consumen siguiendo modelos _push_ o _pull_
-
-![Streams](./figuras/streams.png)
-
-<small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
-
-#### Observables
-
-> LECTURA recomendada: [The introduction to Reactive Programming you've been missing (by @andrestaltz)](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)
