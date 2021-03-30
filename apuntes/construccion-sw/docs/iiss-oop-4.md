@@ -495,10 +495,10 @@ public interface Quest {
 
 Los métodos de un objeto solo deben hacer llamadas a métodos...
 
-caso 1. __propios__ 
-caso 2. de objetos pasados como __parámetros__
-caso 3. de objetos __creados__ por ellos mismos
-caso 4. de objetos __declarados__ en el mismo método
+1. __propios__ 
+2. de objetos pasados como __parámetros__
+3. de objetos __creados__ por ellos mismos
+1. de objetos __declarados__ en el mismo método
 
 ```java
 class Demeter {
