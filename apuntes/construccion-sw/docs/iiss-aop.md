@@ -321,7 +321,7 @@ aspect MoveTracking {
 - `Line` $\not\dashrightarrow$ `MoveTracking`
 - `Point` $\not\dashrightarrow$ `MoveTracking`
 
-```java 
+```java hl_lines="12 13"
 aspect MoveTracking {
   private boolean flag = false;
   public boolean testAndClear() {
