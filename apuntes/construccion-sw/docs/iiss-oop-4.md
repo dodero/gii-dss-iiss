@@ -384,7 +384,7 @@ Dos componentes A y B son ortogonales ($A \perp B$) si los cambios en uno no afe
 - La base de datos debe ser ortogonal a la interfaz de usuario
 - En un helicóptero, los mandos de control no suelen ser ortogonales
 
-!!! quote "A Nonorthogonal System ([Hunt, 2019](bibliografia.md#pragmatic2))"
+!!! quote "A Nonorthogonal System ([Hunt, 2020](bibliografia.md#pragmatic2))"
     Helicopters have four basic controls. The cyclic is the stick you hold in your right hand. Move it, and the helicopter moves in the corresponding direction. Your left hand holds the collective pitch lever. Pull up on this and you increase the pitch on all the blades, generating lift. At the end of the pitch lever is the throttle. Finally you have two foot pedals, which vary the amount of tail rotor thrust and so help turn the helicopter.
 
     “Easy!,” you think. “Gently lower the collective pitch lever and you’ll descend gracefully to the ground, a hero.” However, when you try it, you discover that life isn’t that simple. The helicopter’s nose drops, and you start to spiral down to the left. Suddenly you discover that you’re flying a system where every control input has secondary effects. Lower the left-hand lever and you need to add compensating backward movement to the right-hand stick and push the right pedal. But then each of these changes affects all of the other controls again. Suddenly you’re juggling an unbelievably complex system, where every change impacts all the other inputs. Your workload is phenomenal: your hands and feet are constantly moving, trying to balance all the interacting forces.
@@ -419,7 +419,7 @@ La ortogonalidad es aplicable a:
 A nivel de _diseño_, los patrones de diseño y las arquitecturas como MVC facilitan la construcción de componentes ortogonales.
 
 !!! note "Lectura recomendada"
-    Leer el [Topic 10: Orthogonality](https://learning-oreilly-com.bibezproxy.uca.es/library/view/the-pragmatic-programmer/9780135956977/f_0028.xhtml#orthogonality) de ([Hunt, 2019](bibliografia.md#pragmatic2)).
+    Leer el [Topic 10: Orthogonality](https://learning-oreilly-com.bibezproxy.uca.es/library/view/the-pragmatic-programmer/9780135956977/f_0028.xhtml#orthogonality) de ([Hunt, 2020](bibliografia.md#pragmatic2)).
 
 #### Técnicas de codificación
 
@@ -452,7 +452,7 @@ __Ejemplo__:
 Refactorización: definir un método `User.hasPermission()`
 
 !!! note "Lectura recomendada"
-    Leer el [Topic 28: Decoupling](https://learning-oreilly-com.bibezproxy.uca.es/library/view/the-pragmatic-programmer/9780135956977/f_0049.xhtml#coupling) de ([Hunt, 2019](bibliografia.md#pragmatic2)).
+    Leer el [Topic 28: Decoupling](https://learning-oreilly-com.bibezproxy.uca.es/library/view/the-pragmatic-programmer/9780135956977/f_0049.xhtml#coupling) de ([Hunt, 2020](bibliografia.md#pragmatic2)).
 
 
 ##### Inyectar el contexto
