@@ -81,7 +81,7 @@ Solo detecta el cambio de los extremos de una línea.
 
 `Line` $\dashrightarrow$ `MoveTracking`
 
-```java
+```java hl_lines="9 13 31"
 class Line {
   private Point p1, p2;
 
@@ -134,7 +134,7 @@ También detecta el cambio de coordenadas de un punto.
 - `Line` $\dashrightarrow$ `MoveTracking`
 - `Point` $\dashrightarrow$ `MoveTracking`
 
-```java
+```java hl_lines="25 29"
 class Line {
   private Point p1, p2;
 
@@ -194,7 +194,7 @@ Mejor monitorizar las figuras que cambian...
 
 Decidimos modificar la implementación: cambiar el método `setFlag` por `collectOne`, indicando la figura que se mueve.
 
-```java
+```java hl_lines="9 13 25 29 34 36 40"
 class Line {
   private Point p1, p2;
 
@@ -321,7 +321,7 @@ aspect MoveTracking {
 - `Line` $\not\dashrightarrow$ `MoveTracking`
 - `Point` $\not\dashrightarrow$ `MoveTracking`
 
-```java
+```java 
 aspect MoveTracking {
   private boolean flag = false;
   public boolean testAndClear() {
@@ -358,7 +358,7 @@ call(public * Figure.* (..))
 
 Versión más ortogonal. Todos los cambios están concentrados en un solo aspecto.
 
-```java
+```java hl_lines="2 3 9 10 16 17"
 aspect MoveTracking {
   private Set movees = new HashSet();
   public Set getmovees() {
