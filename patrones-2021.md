@@ -1024,22 +1024,22 @@ h3 {
 
 - Se usa para abstraer y encapsular los accesos a las fuentes de datos, con independencia del soporte concreto de almacenamiento. Su alternativa es el patrón *Active Record*.
 
-![width:800px](./figuras/dao_uml.webp)
+![w:700 center](./figuras/dao_uml.webp)
 
----
+<!---
 ![width:700px](./figuras/dao_code.png)
-
+-->
 
 ---
 ### Data Transfer Object (DTO)
 
 - Se usa para crear objetos planos (POJO) que puedan ser enviados o recuperados desde servidores remotos en una única invocación. Un DTO no tiene más comportamiento que almacenar y entregar sus propios datos (métodos *getters* y *setters*). 
 
-![width:800px](./figuras/dto_uml.png)
+![w:800 center](./figuras/dto_uml.png)
 
----
+<!---
 ![width:750px](./figuras/dto_code.png)
-
+-->
 
 ---
 
