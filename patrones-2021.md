@@ -1187,9 +1187,107 @@ end note
 @enduml
 -->
 
+#### Observer
+
+- Define una dependencia uno a muchos entre objetos de modo que cuando el estado de un objeto cambia, se les notifica el cambio a todos los que dependen de él y estos se actualizan de forma automática.
+
+---
+
 #### Observer: Estructura
 
 ![h:450 center](./figuras/guru/observer-structure-2x.png)
+
+---
+
+#### Observer: roles
+
+Sin distinguir entre `Observable` y `Subject`:
+- `Publisher` = `Observable` = `Subject`
+- `ConcreteSubscriber` $\dashrightarrow$ `Subject`
+
+Con `Subject` separado: 
+- `Subscriber` = `Observer`
+- Distinguir entre `Observable` y `Subject`
+- Definir `Subscriber.update(Observable, Subject)`
+  - `ConcreteSubscriber` $\dashrightarrow$ `Observable`
+  - `ConcreteSubscriber` $\dashrightarrow$ `Subject`
+
+---
+
+#### Oberver: Comportamiento (síncrono) – disparo externo
+
+@startuml
+scale 450 width
+scale 500 height
+
+participant "anObservable: Publisher" as anObservable
+participant "anObserver: Subscriber" as anObserver
+participant "anotherObserver: Subscriber" as anotherObserver
+
+anObserver -> anObservable : subscribe(this)
+activate anObserver
+deactivate anObserver
+
+anotherObserver -> anObservable : subscribe(this)
+activate anotherObserver
+deactivate anotherObserver
+
+...
+
+?-> anObservable: notify()
+activate anObservable
+
+anObservable -> anObserver : update(this)
+activate anObserver
+anObservable <- anObserver : getState()
+deactivate anObserver
+
+anObservable -> anotherObserver : update(this)
+activate anotherObserver
+anObservable <- anotherObserver : getState()
+deactivate anotherObserver
+
+@enduml
+
+---
+
+#### Oberver: Comportamiento (síncrono) – autodisparo
+
+@startuml
+scale 450 width
+scale 500 height
+
+participant "anObservable: Publisher" as anObservable
+participant "anObserver: Subscriber" as anObserver
+participant "anotherObserver: Subscriber" as anotherObserver
+
+anObserver -> anObservable : subscribe(this)
+activate anObserver
+deactivate anObserver
+
+anotherObserver -> anObservable : subscribe(this)
+activate anotherObserver
+deactivate anotherObserver
+
+...
+
+?-> anObservable : setState()
+activate anObservable
+anObservable -> anObservable: notify()
+
+anObservable -> anObserver : update(this)
+activate anObserver
+anObservable <- anObserver : getState()
+deactivate anObserver
+
+anObservable -> anotherObserver : update(this)
+activate anotherObserver
+anObservable <- anotherObserver : getState()
+deactivate anotherObserver
+
+deactivate anObservable
+
+@enduml
 
 ---
 <style scoped>
