@@ -309,7 +309,7 @@ Laberinto crearLaberinto () {
 
 ---
 
-#### Estructura
+#### Factory method: Estructura
 
 ![w:850 center](./figuras/guru/factory-method-structure-2x.png)
 
@@ -383,7 +383,7 @@ n2 . Product
 
 -->
 
-#### Ventajas
+#### Factory method: Ventajas
 
 - Se evita un acoplamiento fuerte entre el creador y los productos concretos.
 - SRP: Se puede mover el código de creación de producto a un lugar del programa, haciendo que el código sea más fácil de mantener.
@@ -537,13 +537,13 @@ end note
 
 ---
 
-#### Estructura
+#### Command: Estructura
 
 ![w:850 center](./figuras/guru/command-structure-2x.png)
 
 ---
 
-#### Comportamiento
+#### Command: Comportamiento
 
 @startuml
 scale 700 width
@@ -726,7 +726,7 @@ end note
 
 ---
 
-#### Estructura
+#### Composite: Estructura
 
 ![h:600 center](./figuras/guru/composite-structure-2x.png)
 
@@ -780,15 +780,19 @@ end note
 
 ---
 
-#### Estructura: Adaptador de objetos
+#### Adaptador de objetos: Estructura
 
 ![w:850 center](./figuras/guru/object-adapter-structure-2x.png)
 
 ---
 
-#### Estructura: Adaptador de clases
+#### Adaptador de clases: Estructura
 
 ![w:850 center](./figuras/guru/class-adapter-structure-2x.png)
+
+---
+
+####
 
 ---
 <style scoped>
@@ -904,7 +908,7 @@ h3 {
 
 ---
 
-#### Estructura
+#### Strategy: Estructura
 
 ![h:500 center](./figuras/guru/strategy-structure-2x.png)
 
@@ -992,7 +996,7 @@ end note
 @enduml
 -->
 
-#### Estructura
+#### Observer: Estructura
 
 ![h:450 center](./figuras/guru/observer-structure-2x.png)
 
@@ -1010,7 +1014,7 @@ h3 {
 
 ---
 
-#### Estructura
+#### Visitor: Estructura
 
 ![h:600 center](./figuras/guru/visitor-structure-2x.png)
 
