@@ -732,6 +732,19 @@ end note
 
 ---
 
+#### Composite
+
+- Permite construir objetos complejos componiendo de forma recursiva objetos similares en una estructura de **árbol**.
+- Permite manipular **uniformemente** todos los objetos contenidos en el árbol, ya que todos ellos poseen una interfaz común definida en la clase raíz.
+
+**Ventajas:**
+- El cliente trata a todos los objetos de la misma forma
+- La inclusión de nuevos tipos de hojas o compuestos no afecta a la estructura anterior
+
+**Desventajas:**
+- Si se desea restringir el tipo de objetos que pueden formar parte de otros $\Rightarrow$ Necesidad de comprobaciones dinámicas
+---
+
 <style scoped>
 h3 {
   text-align: center;
@@ -792,7 +805,17 @@ end note
 
 ---
 
-####
+#### Adaptador de clases vs. objetos
+
+**Class adapter:**
+
+- No sirve para adaptar una clase y sus subclases
+- Se crea un único objeto, sin indirecciones adicionales
+
+**Object adapter:**
+
+- Un adapter puede funcionar con varios objetos _Service_ o _Adaptee_
+- Es más complicado heredar el comportamiento del objeto adaptado
 
 ---
 <style scoped>
@@ -890,9 +913,156 @@ end note
 
 ---
 
-#### Estructura
+#### Decorator: Estructura
 
 ![h:600 center](./figuras/guru/decorator-structure-2x.png)
+
+---
+
+#### Ejemplo: `EnhancedWriter` original
+
+@startuml
+top to bottom direction
+scale 1024 width
+scale 650 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+abstract class EnhancedWriter {
+  {method} writeLine(line)
+}
+
+class NumberingWriter {
+  {method} writeLine(line)
+}
+
+class TimestampingWriter {
+  {method} writeLine(line)
+}
+
+class ChecksummingWriter {
+  {method} writeLine(line)
+}
+
+EnhancedWriter <|-- NumberingWriter
+EnhancedWriter <|-- TimestampingWriter 
+EnhancedWriter <|-- ChecksummingWriter 
+
+hide members
+show methods
+
+@enduml
+
+---
+
+#### Ejemplo: `EnhancedWriter` ampliado – herencia fuera de control
+
+@startuml
+top to bottom direction
+scale 1024 width
+scale 650 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+abstract class EnhancedWriter {
+  {method} writeLine(line)
+}
+
+class NumberingWriter {
+  {method} writeLine(line)
+}
+
+class TimestampingWriter {
+  {method} writeLine(line)
+}
+
+class ChecksummingWriter {
+  {method} writeLine(line)
+}
+
+EnhancedWriter <|-- NumberingWriter
+EnhancedWriter <|-- TimestampingWriter 
+EnhancedWriter <|-- ChecksummingWriter 
+
+NumberingWriter <|-- NumberingCheksummingWriter
+ChecksummingWriter <|.. NumberingCheksummingWriter
+TimestampingWriter <|-- TimestampingNumberingWriter 
+NumberingWriter <|.. TimestampingNumberingWriter 
+ChecksummingWriter <|-- ChecksummingNumberingWriter 
+NumberingWriter <|.. ChecksummingNumberingWriter 
+
+
+hide members
+show methods
+
+@enduml
+
+---
+
+#### Ejemplo: `EnhancedWriter` ampliado –  herencia fuera de control
+
+@startuml
+top to bottom direction
+scale 1024 width
+scale 650 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+abstract class EnhancedWriter {
+  {method} writeLine(line)
+}
+
+class NumberingWriter {
+  {method} writeLine(line)
+}
+
+class TimestampingWriter {
+  {method} writeLine(line)
+}
+
+class ChecksummingWriter {
+  {method} writeLine(line)
+}
+
+EnhancedWriter <|-- NumberingWriter
+EnhancedWriter <|-- TimestampingWriter 
+EnhancedWriter <|-- ChecksummingWriter 
+
+NumberingWriter <|-- NumberingChecksummingWriter
+ChecksummingWriter <|.. NumberingChecksummingWriter
+TimestampingWriter <|-- TimestampingNumberingWriter 
+NumberingWriter <|.. TimestampingNumberingWriter 
+ChecksummingWriter <|-- ChecksummingNumberingWriter 
+NumberingWriter <|.. ChecksummingNumberingWriter 
+
+NumberingChecksummingWriter <|-- NumberingChecksummingTimestampingWriter
+TimestampingWriter <|.. NumberingChecksummingTimestampingWriter
+
+TimestampingWriter <|-- TimestampingNumberingWriter 
+NumberingWriter <|.. TimestampingNumberingWriter 
+
+ChecksummingNumberingWriter <|-- ChecksummingNumberingTimestampingWriter
+TimestampingWriter <|.. ChecksummingNumberingTimestampingWriter
+
+
+hide members
+show methods
+
+@enduml
+
+---
+
+#### Decorator
+
+- El patrón decorator permite añadir responsabilidades a objetos concretos de forma **dinámica**.
+-Los decoradores ofrecen una **alternativa** más flexible que la herencia para extender funcionalidades.
+
+**Ventajas:**
+- Permite añadir o quitar responsabilidades a los objetos sin afectar a otros objetos
+
+**Desventajas:**
+- Rompe la identidad de objetos: un componente y su decorador no son el mismo objeto
+- Provoca la creación de muchos objetos pequeños y complica la depuración
 
 ---
 <style scoped>
@@ -911,6 +1081,27 @@ h3 {
 #### Strategy: Estructura
 
 ![h:500 center](./figuras/guru/strategy-structure-2x.png)
+
+---
+
+#### Strategy
+
+- Define una familia de algoritmos, encapsula cada uno de ellos y los hace intercambiables
+- Permite que el algoritmo varíe de forma independiente a quienes lo usan (_Context_)
+
+**Ventajas:**
+- Ayuda a sacar factor común (factorizar) funcionalidades
+- La estrategia es sustituible en tiempo de ejecución
+- Alternativa a la herencia estática
+
+**Desventajas:**
+- Sobrecarga de la comunicación _Context_-_Strategy_
+
+---
+
+#### Diferencia entre Strategy y Decorator
+
+El _decorator_ cambia la piel, el _strategy_ cambia las tripas
 
 ---
 <style scoped>
