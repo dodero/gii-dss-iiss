@@ -1303,10 +1303,67 @@ h3 {
 
 ---
 
+#### Visitor
+
+- Representa una **operación** que se lleva a cabo sobre los elementos de una **estructura** de objetos
+- Permite **definir nuevas** operaciones sin modificar las clases de los **elementos** sobre las que opera.
+
+---
+
 #### Visitor: Estructura
 
 ![h:600 center](./figuras/guru/visitor-structure-2x.png)
 
+---
+
+#### Visitor: Comportamiento
+
+@startuml
+scale 450 width
+scale 500 height
+
+participant anObjectStructure
+participant "anElementA: ElementA" as anElementA
+participant "anElementB: ElementB" as anElementB
+participant "aVisitor1: ConcreteVisitor1" as aVisitor1
+
+?-> anObjectStructure : operation()
+activate anObjectStructure
+
+anObjectStructure -> anElementA : accept(aVisitor1)
+activate anElementA
+anElementA -> aVisitor1 : visitElementA(this)
+deactivate anElementA
+activate aVisitor1
+
+anElementA <- aVisitor1 : operationA()
+activate anElementA
+deactivate aVisitor1
+deactivate anElementA
+
+anObjectStructure -> anElementB : accept(aVisitor1)
+activate anElementB
+anElementB -> aVisitor1 : visitElementB(this)
+deactivate anElementB
+activate aVisitor1
+
+anElementB <- aVisitor1 : operationB()
+activate anElementB
+deactivate aVisitor1
+deactivate anElementB
+
+@enduml
+
+---
+
+**Ventajas:**
+- Permite implementar el _double dispatch_: la operación que se ejecuta tras el `accept()` depende del tipo de `Visitor` y del tipo de `Element`
+- Separa los datos y las operaciones de los elementos visitados, facilitando la inclusión de nuevas operaciones sin tener que cambiar las clases
+- Permite acumular el estado de una operación global sobre una estructura
+
+**Desventajas:**
+- Rompe la encapsulación (?)
+- Los tipos de `Element` visitados deben ser estables
 
 ---
 ## Otros patrones específicos
