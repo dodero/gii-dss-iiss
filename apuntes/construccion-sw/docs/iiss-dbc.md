@@ -165,7 +165,7 @@ default:
   assert false : suit;
 ```
 
-o también:
+o también (protección aunque se deshabiliten las aserciones, pero sin coste extra):
 
 ```java
 default:
@@ -332,7 +332,7 @@ end -- class ACCOUNT
 - `feature { NONE }` son privados
 - `make` para definir el constructor
 
-##### Cuenta Bancaria sin contratos
+##### Cuenta Bancaria con contratos
 
 ```eiffel
 class ACCOUNT
