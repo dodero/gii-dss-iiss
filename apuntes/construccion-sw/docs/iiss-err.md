@@ -381,6 +381,9 @@ En Scala, `#!scala Option[T]` es un contenedor de un valor opcional de tipo T.
 - Si el valor de tipo T está presente, `#!scala Option[T]` es una intancia de `#!scala Some[T]` que contiene el valor presente de tipo T.
 - Si el valor está ausente, `#!scala Option[T]` es el objeto `#!scala None`.
 
+!!! note "Valores vacíos en Scala"
+    Conocer las diferencias entre [`Null`, `null`, `Nil`, `Nothing`, `None` y `Unit`](https://www.geeksforgeeks.org/scala-null-null-nil-nothing-none-and-unit/) en Scala
+
 ```scala
 object Demo {
    def main(args: Array[String]) {
