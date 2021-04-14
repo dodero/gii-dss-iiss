@@ -402,7 +402,29 @@ feature
 end -- class ACCOUNT
 ```
 
-#### Ejemplo: Java + iContract
+#### Contratos en los lenguajes
+
+
+!!! note "Contratos en Scala"
+    - Scala permite especificar aserciones (`assert`), precondiciones (`require`), postcondiciones (`ensuring`) e invariantes (`assume`).
+    - Ejemplo:
+    ```scala
+    def divide(x: Int, y: Int): Int = {
+      require(x > y, s"$x > $y")
+      require(y > 0, s"$y > 0")
+
+      x / y
+    } ensuring (_ * y == x)
+    ```
+    - [ ] Seguir el tutorial [Design by Contract](https://madusudanan.com/blog/scala-tutorials-part-29-design-by-contract/)
+
+!!! note "Actividad: ¿Hay contratos en C++?"
+    Aún no hay contratos en C++17 ni en C++20.
+
+    - [ ] Ver el video de J. D. García sobre [Contracts programming after C++17](https://www.youtube.com/watch?v=IBas3S2HtdU): Desde el minuto 4'10''
+
+
+##### Ejemplo: Java + iContract
 
 Java no permite especificar contratos (los _assert_ no son lo mismo). Así que hay que utilizar extensiones como _iContract_
 
@@ -431,7 +453,7 @@ Una postcondición puede necesitar expresarse con parámetros pasados a un méto
 
 Si el método puede cambiar el valor del parámetro pasado (parámetro mutable), el contrato puede incumplirse.
 
-##### Parámetros inmutables
+#### Parámetros inmutables
 
 - Eiffel no permite que se pueda cambiar el valor de un parámetro (es inmutable)
 - En C++ usar `const`
@@ -440,12 +462,12 @@ Si el método puede cambiar el valor del parámetro pasado (parámetro mutable),
     - Usar `variable@pre` de _iContract_
 - Muchos lenguajes funcionales (Lisp, Haskell, Erlang, Clojure, etc.) definen inmutabilidad por defecto
 
-###### ¿Por qué la inmutabilidad?
+##### ¿Por qué la inmutabilidad?
 
 - Por rendimiento (v.g. `String` en Java): si es inmutable, para copiar un objeto basta con copiar la referencia (_interning_)
 - Por _thread-safety_ para código concurrente
 
-##### Código perezoso
+#### Código perezoso
 
 - Se recomienda escribir código "perezoso" para los contratos: ser estricto en lo que se acepta al empezar y prometer lo menos posible al terminar.
 - Si un contrato indica que se acepta cualquier cosa y promete la luna a cambio, habrá que escribir un montón de código!
@@ -545,11 +567,6 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
   public void setFont(final Font f) {
   // ...
 -->
-
-!!! note "Actividad: ¿Hay contratos en C++?"
-    Aún no hay contratos en C++17 ni en C++20.
-
-    - [ ] Ver el video de J. D. García sobre [Contracts programming after C++17](https://www.youtube.com/watch?v=IBas3S2HtdU): Desde el minuto 4'10''
 
 
 #### Aserciones versus contratos en Java

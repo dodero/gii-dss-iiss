@@ -133,11 +133,11 @@ Incluir el __contexto__ de la ejecución:
 - No basta con el *stack trace*
 - Escribir mensajes informativos: operación fallida y tipo de fallo
 
-Usar solamente excepciones __unchecked__
+Los beneficios de las excepciones _checked_ en Java son mínimos: [¿por qué](https://testing.googleblog.com/2009/09/checked-exceptions-i-love-you-but-you.html). Se recomienda usar solamente excepciones __unchecked__.
 
 - C\#, C++, Python o Ruby no ofrecen excepciones _checked_.
-- Los beneficios de las checked en Java son mínimos
-- Se paga el precio de violar el principio OCP (_Open-Closed Principle_): si lanzamos una excepción _checked_ desde un método y el `catch` está tres niveles por encima, hay que declarar la excepción en la signatura de todos los métodos que van entre medias. Esto significa que un cambio en un nivel bajo del software puede forzar cambios en niveles altos
+- Scala no usa excepciones _checked_ como Java: [Scala exception handling](https://madusudanan.com/blog/scala-tutorials-part-24-exception-handling/#Intro)
+- Se paga el precio de violar el principio OCP (_Open-Closed Principle_): si lanzamos una excepción _checked_ desde un método y el `catch` está tres niveles por encima, hay que declarar la excepción en la signatura de todos los métodos que van entre medias. Esto significa que un cambio en un nivel bajo del software puede forzar cambios en niveles altos.
 
 #### Transformación de excepciones
 
