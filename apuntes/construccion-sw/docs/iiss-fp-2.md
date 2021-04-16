@@ -205,44 +205,50 @@ Cuando se usa una inner class, se crea un nuevo ámbito para dicha clase. Se pue
 
 Sin embargo, las expresiones lambda trabajan con el ámbito contenedor. No se pueden ocultar las variables del ámbito contenedor dentro del cuerpo de la expresión lambda. En tal caso, la palabra reservada `this` hace referencia a una instancia de la clase contenedora.
 
-<!--
-En el ejemplo siguiente, ¿qué valor se obtiene en la salida?:
+En el ejemplo siguiente, ¿qué valor devuelve `scopeExperiment()`?:
 
 ```java
-private String valor = "Valor de la contenedora";
+@FunctionalInterface
+public interface ClaseFuncional{
+  String method(String string);
+}
+
+private String variable = "Valor de la contenedora";
 
 //...
 
 public String scopeExperiment() {
-    MiClase unaInnerClass = new MiClase() {
-        String valor = "Valor de la inner class";
 
-        @Override
-        public String method(String string) {
-            return this.valor;
-        }
-    };
-    String resultadoInnerClass = unaInnerClass.method("");
+  ClaseFuncional unaInnerClass = new ClaseFuncional() {
+      String variable = "Valor de la inner class";
+      @Override
+      public String method(String string) {
+          return this.variable;
+            /*  Con o sin this, no hay lambdas ni variables libres */
+      }
+  };
+  String resultadoInnerClass = unaInnerClass.method("");
 
-    MiClase unaLambda = parametro -> {
-        String valor= "Valor de la lambda";
-        return this.valor;
-    };
-    String resultadoLambda = unaLambda.method("");
+  ClaseFuncional unaLambda = parametro -> {
+      String variable= "Valor de la lambda";
+      return this.variable; 
+        /* Con this, el cierre de la variable libre se produce
+           con el valor de ClaseFuncional::variable */
+  };
+  String resultadoLambda = unaLambda.method("");
 
-    return "resultadoInnerClass = " + resultadoInnerClass +
-      ",\nresultadoLambda = " + resultadoLambda;
+  return "resultadoInnerClass = " + resultadoInnerClass +
+    ",\nresultadoLambda = " + resultadoLambda;
 }
 ```
 
-La salida será:
-(No se accede al `valor` de la variable definida en el cuerpo de la expresión lambda)
+El valor será:
 
 ```text
 resultadoInnerClass  = Valor de la inner class,
 resultadoLambda = Valor de la contenedora
 ```
--->
+
 
 #### Funciones anónimas en Ruby
 
