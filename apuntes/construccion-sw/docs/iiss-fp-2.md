@@ -2,9 +2,9 @@
 
 ## Programación funcional
 
-### <a id="lambda">Funciones anónimas o *lambdas*</a>
+### <a id="anonimas">Funciones anónimas</a>
 
-#### <a id="anonimas">Función anónima</a>
+#### <a id="lambda">Funciónes anónimas o *lambdas</a>
 
 - Función o subrutina definida y (posiblemente) llamada sin necesidad de asociarla a un identificador o nombre
 - Se suelen pasar como argumento a funciones de orden superior
@@ -16,7 +16,7 @@
 
 #### Lambdas en los lenguajes
 
-Meanismos de los lenguajes para implementar funciones anónimas:
+Mecanismos de los lenguajes para implementar funciones anónimas:
 
 - En C++: funciones anónimas, objetos función (_functors_) o [funciones lambda](http://en.cppreference.com/w/cpp/language/lambda) (desde C++11)
 - En Java 8: [expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html)
@@ -24,7 +24,7 @@ Meanismos de los lenguajes para implementar funciones anónimas:
 - En C\#: [delegates](https://msdn.microsoft.com/en-us/library/ms173171.aspx) (métodos anónimos y expresiones lambda)
 - En Python: [generators, comprehensions, lambda expressions](https://docs.python.org/2/howto/functional.html)
 
-**Java**:
+##### Java
 
 === "Sintaxis"
 
@@ -40,7 +40,7 @@ Meanismos de los lenguajes para implementar funciones anónimas:
   (String s) -> { System.out.println(s); }
 ```
 
-**Ruby**
+##### Ruby
 
 === "Blocks"
 
@@ -65,7 +65,7 @@ Meanismos de los lenguajes para implementar funciones anónimas:
   # 20
 ```
 
-**C++**
+##### C++
 
 === "Sintaxis"
 
@@ -85,15 +85,19 @@ Meanismos de los lenguajes para implementar funciones anónimas:
 | `[=, &z]` | `z` se captura explícitamente por referencia; el resto, por valor |
 
 
-#### Cierre de funciones (_closures_)
+#### <a id="cierres">Cierres de funciones (_closures_)</a>
 
 - __Cierre__: Función o referencia a función junto con un _entorno de referencia_
+    - La diferencia entre una función normal y un cierre es que un cierre depende de una o varias **variables libres**.
+    - Un cierre permite acceder a las variables libres incluso cuando se invoca desde fuera de su ámbito léxico
 - __Entorno de referencia__: tabla que guarda una referencia a cada una de las variables no locales (_libres_) de la función
-  - __Variable libre__ (_free_): notación lógica matemática que especifica los lugares de una expresión donde tiene lugar una sustitución
-  - __Variable asignada__ (_bound_): variable que era libre previamente pero a la que le ha sido asignado un valor o conjunto de valores
-- Un cierre permite acceder a las variables libres incluso cuando se invoca desde fuera de su ámbito léxico
+    - __Variable libre__ (_free_): notación lógica matemática que especifica los lugares de una expresión donde tiene lugar una sustitución
+    - __Variable asignada__ (_bound_): variable que era libre previamente pero a la que le ha sido asignado un valor o conjunto de valores
 
-#### Funciones anónimas en C++
+!!! note "Closures en Scala"
+    - [ ] Seguir el tutorial sobre [Closures](https://madusudanan.com/blog/scala-tutorials-part-30-closures/)
+
+#### Lambdas y cierres en C++
 
 ```cpp
 std::vector<int> some_list; // assume that contains something
@@ -113,7 +117,7 @@ std::for_each(
 - Un _cierre_ en C++ se expresa mediante la parte [_capture_]
 - El _entorno de referencia_ se expresa por el conjunto de variables externas indicadas dentro del cierre
 - Las variables del entorno de referencia en C++ pueden ser capturadas por valor (`[=]`) o por referencia (`[&]`)
-- Las variables externas capturadas con inmutables por defecto; si no, usar `mutable` después de los (_parameters_)
+- Las variables externas capturadas son inmutables por defecto; si no, usar `mutable` después de los (_parameters_)
 
 
 !!! note "Lectura: Lambdas en C++"
@@ -201,6 +205,7 @@ Cuando se usa una inner class, se crea un nuevo ámbito para dicha clase. Se pue
 
 Sin embargo, las expresiones lambda trabajan con el ámbito contenedor. No se pueden ocultar las variables del ámbito contenedor dentro del cuerpo de la expresión lambda. En tal caso, la palabra reservada `this` hace referencia a una instancia de la clase contenedora.
 
+<!--
 En el ejemplo siguiente, ¿qué valor se obtiene en la salida?:
 
 ```java
@@ -237,7 +242,7 @@ La salida será:
 resultadoInnerClass  = Valor de la inner class,
 resultadoLambda = Valor de la contenedora
 ```
-
+-->
 
 #### Funciones anónimas en Ruby
 
@@ -593,7 +598,7 @@ end
 
 <a id="informes"></a>
 
-#### Ejemplo de interfaces funcionales: Formateo de informes
+##### Ejemplo de interfaces funcionales: Formateo de informes
 
 **Versión en ruby**
 
