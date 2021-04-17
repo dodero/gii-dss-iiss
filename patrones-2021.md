@@ -1087,7 +1087,7 @@ h3 {
 #### Strategy
 
 - Define una familia de algoritmos, encapsula cada uno de ellos y los hace intercambiables
-- Permite que el algoritmo varíe de forma independiente a quienes lo usan (_Context_)
+- Permite que el algoritmo varíe de forma independiente a quienes lo usan (el **Contexto**)
 
 **Ventajas:**
 - Ayuda a sacar factor común (factorizar) funcionalidades
@@ -1098,6 +1098,21 @@ h3 {
 - Sobrecarga de la comunicación _Context_-_Strategy_
 
 ---
+<style scoped>
+h4 {
+  text-align: center;
+  color: red;
+}
+</style>
+
+#### ¿Diferencia entre Strategy y Decorator?
+
+---
+<style scoped>
+h4, p {
+  text-align: center;
+}
+</style>
 
 #### Diferencia entre Strategy y Decorator
 
@@ -1189,7 +1204,7 @@ end note
 
 #### Observer
 
-- Define una dependencia uno a muchos entre objetos de modo que cuando el estado de un objeto cambia, se les notifica el cambio a todos los que dependen de él y estos se actualizan de forma automática.
+- Define una dependencia 1:N entre objetos de modo que cuando el estado de un objeto cambia, se les notifica el cambio a todos los que de él dependen y estos se actualizan de forma automática.
 
 ---
 
@@ -1288,6 +1303,16 @@ deactivate anotherObserver
 deactivate anObservable
 
 @enduml
+
+---
+
+#### Observer: Detalles de implementación
+
+- Los suscriptores necesitan información para hacer la actualización:
+    -  `update(context)` para pasar la información necesaria al suscriptor
+    -  `update(this)` para que el suscriptor extraiga la información necesaria pidiéndosela al publicador
+    -  `ConcreteSubscriber.setPublisher()` para vincularlos permanentemente (opción menos flexible)
+
 
 ---
 <style scoped>
