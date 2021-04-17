@@ -1229,6 +1229,15 @@ Con `Subject` separado:
 
 ---
 
+#### Observer: Detalles de implementación
+
+- ¿Quién dispara la actualización?
+    - El publicador, tras cambiar de estado: menos eficiente si hay muchas notificaciones
+    - El cliente, tras una serie de cambios de estado: si se olvida puede provocar inconsistencias
+
+
+---
+
 #### Oberver: Comportamiento (síncrono) – disparo externo
 
 @startuml
@@ -1312,7 +1321,6 @@ deactivate anObservable
     -  `update(context)` para pasar la información necesaria al suscriptor
     -  `update(this)` para que el suscriptor extraiga la información necesaria pidiéndosela al publicador
     -  `ConcreteSubscriber.setPublisher()` para vincularlos permanentemente (opción menos flexible)
-
 
 ---
 <style scoped>
