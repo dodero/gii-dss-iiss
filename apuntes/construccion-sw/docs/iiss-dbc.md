@@ -393,7 +393,7 @@ feature
       ensure
         balance = old balance + sum
     withdraw (sum: INTEGER) is
-    -- Withdraw sum from the account.
+    -- Withdraw sum from the account.  
       require
         sum >= 0
         sum <= balance - minimum_balance
@@ -406,8 +406,12 @@ end -- class ACCOUNT
 
 #### Contratos en los lenguajes
 
+!!! note "Contratos en Java"
+    - _iContract_, inactiva, recuperada en Java Contract Suite o [JContractS](http://jcontracts.sourceforge.net/)
+    - _Contracts for Java_ o [Cofoja](https://github.com/nhatminhle/cofoja)
+    - Etc.
 
-!!! note "Contratos en Scala"
+!!! note "Actividad: Contratos en Scala"
     - Scala permite especificar aserciones (`assert`), precondiciones (`require`), postcondiciones (`ensuring`) e invariantes (`assume`).
     - Ejemplo:
     ```scala
@@ -584,8 +588,9 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
 
     <cite>Bertrand Meyer</cite>
 
-Métodos de clase declaran *precondiciones* y *postcondiciones* al redefinir una operación en una subclase derivada
+Los métodos de clase declaran *precondiciones* y *postcondiciones* al redefinir una operación en una subclase derivada.
 
-- las **precondiciones** sólo pueden sustituirse por otras más débiles/laxas
-- las **postcondiciones** sólo pueden sustituirse por otras más fuertes/estrictas
+- Las **precondiciones** sólo pueden sustituirse por otras más débiles/laxas. Los métodos pueden redefinirse con implementaciones que _aceptan_ un rango _más amplio_ de entradas.
+- Las **postcondiciones** sólo pueden sustituirse por otras más fuertes/estrictas. Los métodos pueden redefinirse con implementaciones que _generan_ un rango _más estrecho_ de entradas.
+- Las **invariantes** sólo pueden sustituirse por otras más fuertes/estrictas. Las clases e interfaces pueden _derivarse_ para _restringir_ el conjunto de estados válidos. Un objeto debe tener un estado _consistente_ con cualquiera de sus superclases o interfaces.
 
