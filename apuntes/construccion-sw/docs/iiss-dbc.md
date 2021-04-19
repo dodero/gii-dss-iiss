@@ -287,7 +287,7 @@ Si el usuario introduce un número negativo en la consola, es responsabilidad de
 - Emitir una advertencia y leer otro número
 - Pasar el número a complejo (ponerlo  en positivo y añadir una _i_)
 
-Si se llega a pasar un número negativo, Eiffel imprime el error `sqrt_arg_must_be_positive` en tiempo de ejecición y una traza de la pila (En otros lenguajes, como Java, se devolvería un `Nan`).
+Si se llega a pasar un número negativo, Eiffel imprime el error `sqrt_arg_must_be_positive` en tiempo de ejecución y una traza de la pila (En otros lenguajes, como Java, se devolvería un `Nan`).
 
 #### Ejemplo: Cuenta Bancaria
 
