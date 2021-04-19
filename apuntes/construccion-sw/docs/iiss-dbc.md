@@ -591,6 +591,6 @@ Without a contract, all the compiler can do is ensure that a subclass conforms t
 Los métodos de clase declaran *precondiciones* y *postcondiciones* al redefinir una operación en una subclase derivada.
 
 - Las **precondiciones** sólo pueden sustituirse por otras más débiles/laxas. Los métodos pueden redefinirse con implementaciones que _aceptan_ un rango _más amplio_ de entradas.
-- Las **postcondiciones** sólo pueden sustituirse por otras más fuertes/estrictas. Los métodos pueden redefinirse con implementaciones que _generan_ un rango _más estrecho_ de entradas.
+- Las **postcondiciones** sólo pueden sustituirse por otras más fuertes/estrictas. Los métodos pueden redefinirse con implementaciones que _generan_ un rango _más estrecho_ de salidas.
 - Las **invariantes** sólo pueden sustituirse por otras más fuertes/estrictas. Las clases e interfaces pueden _derivarse_ para _restringir_ el conjunto de estados válidos. Un objeto debe tener un estado _consistente_ con cualquiera de sus superclases o interfaces.
 
