@@ -4,7 +4,7 @@
 
 ### <a id="anonimas">Funciones anónimas</a>
 
-#### <a id="lambda">Funciónes anónimas o *lambdas</a>
+#### <a id="lambda">Funciónes anónimas o *lambdas*</a>
 
 - Función o subrutina definida y (posiblemente) llamada sin necesidad de asociarla a un identificador o nombre
 - Se suelen pasar como argumento a funciones de orden superior
@@ -85,7 +85,7 @@ Mecanismos de los lenguajes para implementar funciones anónimas:
 | `[=, &z]` | `z` se captura explícitamente por referencia; el resto, por valor |
 
 
-#### <a id="cierres">Cierres de funciones (_closures_)</a>
+#### <a id="cierres">Cierres de funciones o _closures_</a>
 
 - __Cierre__: Función o referencia a función junto con un _entorno de referencia_
     - La diferencia entre una función normal y un cierre es que un cierre depende de una o varias **variables libres**.
