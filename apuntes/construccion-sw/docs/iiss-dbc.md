@@ -376,6 +376,7 @@ invariant
 end -- class ACCOUNT
 ```
 
+<!--
 __Forma corta__ del contrato:
 
 ```eiffel
@@ -401,6 +402,7 @@ feature
     may_withdraw (...): BOOLEAN is ...
 end -- class ACCOUNT
 ```
+-->
 
 #### Contratos en los lenguajes
 
