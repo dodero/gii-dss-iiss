@@ -29,7 +29,7 @@ Añadir __aserciones__ al código para chequear esas situaciones:
     }
     ...
     for (int i = 0; i < num_entries-1; i++) {
-      assert(sorted[i] <= sorted[i+i]);
+      assert(sorted[i] <= sorted[i+1]);
     }
 ```
 
