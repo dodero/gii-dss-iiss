@@ -372,7 +372,7 @@ El uso de `assert` es una buena forma de documentar, pero no resuelve el problem
 - [TypeScript recomienda usar `undefined`](https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines#null-and-undefined) (algo que no se ha inicializado) en lugar de `null` (algo que no está disponible)
 
 !!! note "Lecturas recomendadas"
-    Leer [Tutorial de `#!scala Option`](https://www.tutorialspoint.com/scala/scala_options.htm) en Scala
+    - [ ] Leer el [Tutorial de `#!scala Option`](https://www.tutorialspoint.com/scala/scala_options.htm) en Scala
 
 ##### Scala `Option`
 
@@ -414,8 +414,9 @@ object Demo {
 
 ##### Java 8 `Optional`
 
-!!! note "Lectura recomendada"
-    Leer [Java 8 Optional in Depth](https://www.mkyong.com/java8/java-8-optional-in-depth/).
+!!! note "Lecturas recomendadas"
+    - [ ] Leer [Java 8 Optional in Depth](https://www.mkyong.com/java8/java-8-optional-in-depth/).
+    - [ ] Leer [Jugando con Optional en Java 8](https://www.adictosaltrabajo.com/2015/03/02/optional-java-8/).
 
 __Ejemplo sin `Optional`__
 
