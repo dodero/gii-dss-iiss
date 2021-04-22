@@ -666,7 +666,7 @@ public class Mobile {
 
 ##### Carencias de Optional
 
-- El tratamiento de errores clásico del lenguaje C (con el que empezábamos este capítulo) se basa en devolver un valor especial (null o -1) y actualizar el valor de una variable `errno` que contiene un código de error que indica qué ha salido mal.
+- El tratamiento de errores clásico del lenguaje C (con el que empezábamos este capítulo) se basa en devolver un valor especial que contiene un _código de error_ (normalmente negativo) que indica qué ha salido mal. Se podrían representar tantos motivos de error como posibles valores devueltos.
 - Los `Optional` no ofrecen la posibilidad de que decir qué es lo que ha salido mal (en caso de que no haya valor a devolver).
 - Por tanto, no son apropiados para métodos en los que pueden salir varias cosas mal y no solo una (que no exista un valor a devolver)
 - Lenguajes como Scala proponen alternativas como `Either` y `Validation`.
