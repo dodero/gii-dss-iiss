@@ -418,6 +418,59 @@ object Demo {
     - [ ] Leer [Java 8 Optional in Depth](https://www.mkyong.com/java8/java-8-optional-in-depth/).
     - [ ] Leer [Jugando con Optional en Java 8](https://www.adictosaltrabajo.com/2015/03/02/optional-java-8/).
 
+__Ejemplo en Java 8 con sintaxis imperativa__
+
+```java
+private static Optional<Double> getDurationOfAlbumWithName(String name) {
+    Album album;
+    Optional<Album> albumOptional = getAlbum(name);
+    if (albumOptional.isPresent()) { // equivalente a albumOptional == null
+        album = albumOptional.get();
+        Optional<List<Track>> tracksOptional = getAlbumTracks(album.getName());
+        double duration = 0;
+        if (tracksOptional.isPresent()) { // equivalente a tracksOptional == null
+            List<Track> tracks = tracksOptional.get();
+            for (Track track : tracks) {
+                duration += track.getDuration();
+            }
+            return Optional.of(duration);
+        } else {
+            return Optional.empty();
+        }
+    } else {
+        return Optional.empty();
+    }
+}
+```
+
+Al ejecutar varias operaciones seguidas que pueden devolver null, el nivel de anidamiento del código aumenta y queda menos claro (se mezcla código funcional con código de gestión de errores). Solución...
+
+__Ejemplo en Java 8 con sintaxis *fluent*__
+
+```java
+Optional<Double> getDurationOfAlbumWithName(String name) {
+    Optional<Double> duration = getAlbum(name)
+            .flatMap((album) -> getAlbumTracks(album.getName()))
+            .map((tracks) -> getTracksDuration(tracks));
+    return duration;
+}
+```
+
+- La función `map` comprueba si el `Optional` que recibe está vacío. Si lo está devuelve un `Optional` vacío y, si no, aplica la función que le hemos pasado por parámetro, pasándole el valor del `Optional`. Es decir, si el `Optional` está vacío, el método map no hace nada, esto es primordial para poder concatenar operaciones sin necesidad de comprobar a cada momento si el `Optional` está vacío.
+- Cuando queremos encadenar distintas operaciones que devuelvan `Optional`, es necesario usar `flatMap`, ya que si no acabaríamos teniendo un `Optional<Optional<Double>>`
+
+```scala
+private static double getDurationOfAlbumWithName(String name) {
+    return getAlbum(name)
+            .flatMap((album) -> getAlbumTracks(album.getName()))
+            .map((tracks) -> getTracksDuration(tracks))
+            .orElse(0.0);
+}
+```
+
+- Podríamos seguir devolviendo `Optional` por toda la aplicación, pero en algún momento tenemos que decidir qué hacer en caso de que el valor que queremos no estuviera presente. Para ello se usa `orElse()` para proporcionar un valor alternativo en caso de que el valor no estuviera presente.
+
+
 __Ejemplo sin `Optional`__
 
 Programa de prueba:
@@ -611,79 +664,32 @@ public class Mobile {
 }
 ```
 
-### Fronteras
+##### Carencias de Optional
 
-Tensión proveedor-cliente
+- El tratamiento de errores clásico del lenguaje C (con el que empezábamos este capítulo) se basa en devolver un valor especial (null o -1) y actualizar el valor de una variable `errno` que contiene un código de error que indica qué ha salido mal.
+- Los `Optional` no ofrecen la posibilidad de que decir qué es lo que ha salido mal (en caso de que no haya valor a devolver).
+- Por tanto, no son apropiados para métodos en los que pueden salir varias cosas mal y no solo una (que no exista un valor a devolver)
+- Lenguajes como Scala proponen alternativas como `Either` y `Validation`.
 
-- Los proveedores de packages y frameworks quieren amplia aplicabilidad
-- Los clientes quieren una interfaz centrada en sus necesidades particulares
+```scala
+object EitherLeftRightExample extends App {
 
-__Ejemplo__: La interfaz [`java.util.Map`](http://docs.oracle.com/javase/6/docs/api/java/util/Map.html)
-
-```java
-clear() void – Map
-containsKey(Object key) boolean – Map
-containsValue(Object value) boolean – Map
-entrySet() Set – Map
-equals(Object o) boolean – Map
-get(Object key) Object – Map
-getClass() Class<? extends Object> – Object
-hashCode() int – Map
-isEmpty() boolean – Map
-keySet() Set – Map
-notify() void – Object
-notifyAll() void – Object
-put(Object key, Object value) Object – Map
-putAll(Map t) void – Map
-remove(Object key) Object – Map
-size() int – Map
-toString() String – Object
-values() Collection – Map
-wait() void – Object
-wait(long timeout) void – Object
-wait(long timeout, int nanos) void – Object
-```
-
-Construimos un `Map` y lo pasamos.
-
-- Diseño A: Ninguno de los receptores deberá poder borrar algo del map. ¡Pero hay un `clear()`!
-- Diseño B: solo algunos tipos de objetos deben poderse guardar. ¡Los tipos no están restringidos!
-
-¿La interfaz `Map` es siempre satisfactoria? ¿seguro que no va a cambiar?
-
-- JDK < 5.0:
-
-  ```java
-  Map sensors = new HashMap();
-  ...
-  Sensor s = (Sensor)sensors.get(sensorId);
-  ```
-
-- JDK $\geq$ 5.0:
-
-  ```java
-  Map<Sensor> sensors = new HashMap<Sensor>();
-  ...
-  Sensor s = sensors.get(sensorId);
-  ```
-
-__Conclusión__: Map<Sensor> ofrece más de lo que necesitamos
-
-```java
-  public class Sensors {
-    private Map sensors = new HashMap();
-    public Sensor getById(String id) {
-      return (Sensor) sensors.get(id);
-    }
-    //...
+  /**
+   * A method to demonstrate how to declare that a method returns an Either,
+   * and code that returns a Left or Right.
+   */
+  def divideXByY(x: Int, y: Int): Either[String, Int] = {
+      if (y == 0) Left("Dude, can't divide by 0")
+      else Right(x / y)
   }
+  
+  // a few different ways to use Either, Left, and Right
+  println(divideXByY(1, 0))
+  println(divideXByY(1, 1))
+  divideXByY(1, 0) match {
+      case Left(s) => println("Answer: " + s)
+      case Right(i) => println("Answer: " + i)
+  }
+
+}
 ```
-
-- La interfaz `Map` queda oculta
-- Filtramos los métodos que no nos sirven
-- Más fácil de hacer evolucionar sin impacto en el resto de la aplicación
-- El casting queda confinado en la clase Sensors, que es más seguro
-
-__Interfaces de frontera__: No todo uso de `Map` o interfaz de
-frontera debe quedar encapsulado. Sólo es un consejo para no ’pasarla’
-con métodos que no vamos a necesitar.
