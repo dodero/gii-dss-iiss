@@ -70,7 +70,7 @@ Mecanismos de los lenguajes para implementar funciones anónimas:
 === "Sintaxis"
 
 ```c++
-[capture](parameters) -> return_type { function_body }`
+[capture](parameters) -> return_type { function_body }
 ```
 
 === "Entorno de referencia"
@@ -97,7 +97,7 @@ Mecanismos de los lenguajes para implementar funciones anónimas:
 !!! note "Closures en Scala"
     - [ ] Seguir el tutorial sobre [Closures](https://madusudanan.com/blog/scala-tutorials-part-30-closures/)
 
-#### Lambdas y cierres en C++
+#### Lambdas y cierres en C++ 
 
 ```cpp
 std::vector<int> some_list; // assume that contains something
