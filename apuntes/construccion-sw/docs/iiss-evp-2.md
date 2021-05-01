@@ -43,6 +43,7 @@ Ejemplos: implementaciones de _listener_ del [ejercicio introductorio](#a-idlist
 - [jQuery](http://devdocs.io/jquery/)
 - [jQuery Callbacks object](http://devdocs.io/jquery-callbacks-object/)
 
+<!--
 ##### Ejemplo: callback en TypeScript
 
 ```typescript
@@ -74,8 +75,47 @@ delayedAfterTimeout
 afterWait
 ```
 
+-->
+
+##### Ejemplo: callback en Javascript
+
+**Versión síncrona**:
+
+```javascript
+// Versión síncrona
+function main() {
+    r1 = serv1(parametros);
+    r2 = serv2(r1);
+    // También se podría haber escrito r2 = serv2(serv1(parametros))
+    console.log("Resultado final: " + r2);
+}
+```
+
+**Ejemplo con _callbacks_**
+
+```javascript
+// Versión asíncrona. Se supone que asinc1() y asinc2() son funciones que admiten 
+// un callback como parámetro, al cual llamarán pasándole el resultado
+function main() {
+    asinc1(parametros, function(r1){
+        // Tenemos el resultado de asinc1
+        asinc2(r1, function(r2) {
+            console.log("Resultado final: " + r2);
+        });
+    });
+}
+```
+
+##### _Callback Hell_:
+
 El uso de callbacks hace el código complejo, repetitivo y difícil de entender, especialmente cuando el tamaño del código crece.
 
+- La anidación empeora si se necesita el resultado de una función para llamar a otra: funciones que son parámetros de otras funciones, que son parámetros de otras, etc.
+- El código fuente se va indentando más y más para luego ir deshaciendo esa indentación a medida que se cierran llaves y paréntesis.
+- La lógica está al revés: las funciones no devuelven resultados, sino que pasan esos resultados como parámetros a otras funciones; las funciones que manejan la respuesta son también pasadas como parámetros
+- El flujo de gestión de errores también se complica y [no pueden usarse excepciones](https://basarat.gitbook.io/typescript/future-javascript/promise).
+
+<!--
 #### Thunks
 
 **[thunk](https://en.wikipedia.org/wiki/Thunk)** = subrutina empleada para inyectar un cómputo adicional en otra subrutina
@@ -94,6 +134,8 @@ El uso de callbacks hace el código complejo, repetitivo y difícil de entender,
 - Cualquier función en Ruby puede recibir un **bloque** `do`... `end` como argumento adicional (no explícito) a la llamada
 - Un _thunk_ es como un bloque con un `yield` al final
 
+-->
+
 #### <a id="promesas">Promesas</a>
 
 Modelo de [futuros y promesas](https://en.wikipedia.org/wiki/Futures_and_promises)
@@ -101,17 +143,53 @@ Modelo de [futuros y promesas](https://en.wikipedia.org/wiki/Futures_and_promise
 - **Futuro**: marcador de posición (_placeholder_), de solo lectura, para una variable que representa el resultado de un cómputo asíncrono
 - **Promesa**: contenedor de una asignación escribible (solo para inicialización), que fija el valor de un _futuro_.
 
-En programación funcional, los futuros y promesas sirven para desacoplar un valor (el futuro) de cómo éste se calculó (la promesa), permitiendo así la paralelización de los cálculos.
+Los futuros y promesas sirven para desacoplar un valor (el futuro) de cómo éste se calculó (la promesa), permitiendo así la paralelización de los cálculos.
 
 ![Promesas](./figuras/promesas.png)
 
 <small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
 
 
-El cliente recibe como respuesta inmediata una abstracción de datos (la promesa) que representa un compromiso de valor futuro, con inyectores (then, catch) para incluir la lógica de continuación.
+El cliente recibe como respuesta inmediata una abstracción de datos (la `Promise`) que representa un compromiso de valor futuro, con inyectores (`then`, `catch`) para incluir la lógica de continuación.
 
 Se pueden encadenar cálculos usando futuros _computables_ o _escuchables_, que sirven para indicar a un thread que ejecute una determinada tarea y, cuando termine, se dirija a hacer otra tarea usando el resultado de la tarea anterior.
 
+##### Promesas en Javascript
+
+**Ejemplo con promesas**:
+
+```javascript
+// Versión con promesas
+// Ahora asinc1 y asinc2 se supone que retornan una promesa
+function main() {
+    asinc1(parametros)
+    .then(function(r1){ return asinc2(r1); })
+    .then(function(r2){
+    console.log("Resultado final: " + r2); 
+    })
+}
+
+// Lo anterior puede escribirse aún más concisamente así:
+function main() {
+    asinc1(parametros)
+    .then(asinc2)
+    .then(function(r2){
+    console.log("Resultado final: " + r2); 
+    })
+}
+```
+
+**Solución al _Callback Hell_**: 
+
+- Las promesas evitan la anidación y hacen más simple el manejo de errores.
+- Una promesa tiene un método `then()`:
+    - `.then()` recibe una función, que será ejecutada automáticamente cuando la promesa se resuelva. Esta función recibirá como parámetro el valor de la promesa (el resultado esperado).
+    - `.then()` devuelve una nueva promesa, que se resolverá cuando se ejecute la función que le habíamos asociado.
+    - Se pueden encadenar varios `.then()` para simular un código secuencial, conforme se van resolviendo promesas.
+
+
+
+<!--
 ##### Lenguajes: TypeScript
 
 En TypeScript, una `Promise<T>` es un objeto que, en su creación, recibe una función (anónima o no) que acepta dos callbacks (`resolve` y `reject`) y devuelve un valor de tipo `T`.
@@ -224,10 +302,38 @@ function usingPromises() {
 }
 ```
 
+-->
+
 ##### Async/await
 
 - El prefijo `await` hace que se espere a que se llame a la función asíncrona antes de continuar con la ejecución del programa.
 - Esto genera un flujo de ejecución de la lógica del programa más fácil de leer y de seguir, pausando la ejecución hasta que se cumpla la promesa.
+
+Async/await son azúcar sintáctico para usar promesas con una nueva sintaxis que las oculta y las hace parecer código síncrono:
+
+  - `await` delante de una llamada a una función entiende que esa función retorna una promesa.
+  - La ejecución se pausa y sólo se reanuda cuando la promesa haya sido resuelta.
+  - Entonces `await` devuelve como resultado el valor de la promesa.
+
+
+###### Lenguajes: Javascript
+
+**Ejemplo con async/await**:
+
+```javascript
+async function main() {
+    r1 = await asinc1(parametros);
+    r2 = await asinc2(r1);
+
+    console.log("Resultado final: " + r2);
+}
+```
+
+Comparar con la versión síncrona inicial.
+
+###### Lenguajes: TypeScript
+
+<!--
 
 ```typescript
 function awaitDelayed(): Promise<void> {
@@ -260,6 +366,9 @@ calling resolve
 after awaitDelayed
 ```
 
+-->
+
+<!--
 ###### Comparación sintaxis then/catch y async/await
 
 Promesas que usan then/catch para definir funciones anónimas a llamar dependiendo del resultado éxito/fracaso de la ejecución:
@@ -293,6 +402,8 @@ async function usingAsyncSyntax() {
     // code here waits for async call
 }
 ```
+
+-->
 
 ##### Lenguajes: Java
 
@@ -355,7 +466,9 @@ public static void main(String[] args) throws Exception {
 }
 ```
 
+<!--
 #### Lenguajes, JavaScript
 
 > LECTURA recomendada: [Promises/A+](https://promisesaplus.com/): An open standard for sound, interoperable JavaScript promises.
 
+-->
