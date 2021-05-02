@@ -428,7 +428,7 @@ En Java hay definida una interfaz explícita para los futuros:
 - Desde Java 5: [`java.util.concurrent.Future`](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Future.html) 
 - Desde Java 8, inspirado por los [`ListenableFuture`](https://github.com/google/guava/wiki/ListenableFutureExplained) de Guava: [`java.util.concurrent.CompletableFuture`](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/CompletableFuture.html)
 
-###### Ejemplo: `Future` en Java
+**Ejemplo: `Future` en Java**
 
 ```java
 // Callable<V> = Interfaz funcional que representa a una operación sin args
@@ -449,7 +449,7 @@ public static void main(String[] args) throws Exception{
 }
 ```
 
-###### Ejemplo: `CompletableFuture` en Java
+**Ejemplo: `CompletableFuture` en Java**
 
 ```java
 // Supplier<T> = Interfaz funcional que representa a una operación sin args
