@@ -94,7 +94,8 @@ function main() {
 **Ejemplo con _callbacks_**
 
 ```javascript
-// Versión asíncrona. Se supone que asinc1() y asinc2() son funciones que admiten 
+// Versión asíncrona.
+// Se supone que asinc1() y asinc2() son funciones que admiten 
 // un callback como parámetro, al cual llamarán pasándole el resultado
 function main() {
     asinc1(parametros, function(r1){
@@ -152,15 +153,23 @@ Los futuros y promesas sirven para desacoplar un valor (el futuro) de cómo ést
 
 El cliente recibe como respuesta inmediata una abstracción de datos (la `Promise`) que representa un compromiso de valor futuro, con inyectores (`then`, `catch`) para incluir la lógica de continuación.
 
+Las promesas se pueden resolver (_resolve_) o rechazar (_reject_):
+
 Se pueden encadenar cálculos usando futuros _computables_ o _escuchables_, que sirven para indicar a un thread que ejecute una determinada tarea y, cuando termine, se dirija a hacer otra tarea usando el resultado de la tarea anterior.
 
 ##### Promesas en Javascript
+
+```javascript
+const promise = new Promise((resolve, reject) => {
+    // las funciones resolve/reject controlan el destino de la promesa
+});
+```
 
 **Ejemplo con promesas**:
 
 ```javascript
 // Versión con promesas
-// Ahora asinc1 y asinc2 se supone que retornan una promesa
+// Ahora asinc1 y asinc2 se supone que devuelven una promesa
 function main() {
     asinc1(parametros)
     .then(function(r1){ return asinc2(r1); })
@@ -169,7 +178,7 @@ function main() {
     })
 }
 
-// Lo anterior puede escribirse aún más concisamente así:
+// Lo anterior puede escribirse más conciso:
 function main() {
     asinc1(parametros)
     .then(asinc2)
@@ -182,11 +191,18 @@ function main() {
 **Solución al _Callback Hell_**: 
 
 - Las promesas evitan la anidación y hacen más simple el manejo de errores.
+- La ventaja de las promesas es que se pueden [encadenar](https://basarat.gitbook.io/typescript/future-javascript/promise#chain-ability-of-promises).
 - Una promesa tiene un método `then()`:
+
     - `.then()` recibe una función, que será ejecutada automáticamente cuando la promesa se resuelva. Esta función recibirá como parámetro el valor de la promesa (el resultado esperado).
     - `.then()` devuelve una nueva promesa, que se resolverá cuando se ejecute la función que le habíamos asociado.
     - Se pueden encadenar varios `.then()` para simular un código secuencial, conforme se van resolviendo promesas.
+  
+- Una promesa tiene un método `catch()`:
 
+    - Se puede agregar la gestión de errores de cualquier parte de la cadena de llamadas asíncronas con un solo `.catch()`
+    - `.catch()` devuelve una promesa nueva, creando una cadena de promesas
+    - Cualquier error síncrono generado en un `then` o un `catch` hace que la promesa se rechace, y se llame al `catch` más apropiado
 
 
 <!--
@@ -304,12 +320,12 @@ function usingPromises() {
 
 -->
 
-##### Async/await
+##### Sintaxis `async`/`await`
 
 - El prefijo `await` hace que se espere a que se llame a la función asíncrona antes de continuar con la ejecución del programa.
 - Esto genera un flujo de ejecución de la lógica del programa más fácil de leer y de seguir, pausando la ejecución hasta que se cumpla la promesa.
 
-Async/await son azúcar sintáctico para usar promesas con una nueva sintaxis que las oculta y las hace parecer código síncrono:
+`async`/`await` es azúcar sintáctico para usar promesas con una nueva sintaxis que las oculta y las hace parecer código síncrono:
 
   - `await` delante de una llamada a una función entiende que esa función retorna una promesa.
   - La ejecución se pausa y sólo se reanuda cuando la promesa haya sido resuelta.
@@ -329,7 +345,7 @@ async function main() {
 }
 ```
 
-Comparar con la versión síncrona inicial.
+Comparar esta versión asíncrona con la versión síncrona inicial.
 
 ###### Lenguajes: TypeScript
 
