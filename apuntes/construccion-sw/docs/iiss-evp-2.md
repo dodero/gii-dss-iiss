@@ -31,7 +31,7 @@ La lógica de continuación se indica mediante una función de **retrollamada** 
 <small>figura por <cite>Javier Vélez Reyes, [Programación asíncrona en JavaScript](https://github.com/javiervelezreyes/Talleres.uca.programacion-asincrona)</cite></small>
 
 
-Ejemplos: implementaciones de _listener_ del [ejercicio introductorio](#a-idlistenersejercicio-introductorio---listenersa)
+Ejemplos: implementaciones de _listener_ del [ejercicio introductorio](../iiss-evp-1/)
 
 - Con clases anónimas
 - Con adaptadores
