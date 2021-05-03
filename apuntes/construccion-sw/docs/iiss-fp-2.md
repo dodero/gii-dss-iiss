@@ -197,6 +197,49 @@ public class ComparatorTest {
 !!! note "Ejercicio"
     [Mejorando código con expresiones lambda](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html\#section3)
 
+##### Captura de variables en lambdas
+
+Una expresión lambda en Java puede **capturar** (o no) variables de instancia no locales (atributos de la clase contenedora) y variables locales (declaradas o no `final`, pero cuyo valor no es modificado) del ámbito contenedor.
+
+- Ejemplo: Lambda que captura variables locales `final`:
+```java
+final BigDecimal bd = new BigDecimal(1);
+final BigDecimal x = new BigDecimal(2);
+Function<BigDecimal, BigDecimal> func = (a) -> bd.multiply(a).add(x);
+
+for (int j = 0; j < 999999999; j++) {
+      func.apply(new BigDecimal(j));
+}
+```
+
+-  Ejemplo: Lambda que captura variables locales no declaradas `final` pero cuyo valor no es modificado:
+```java 
+BigDecimal bd = new BigDecimal(1);
+BigDecimal x = new BigDecimal(2);
+ // Se puede consultar x pero no se podría cambiar el valor de x:
+Function<BigDecimal, BigDecimal> func = (a) -> { bd.multiply(a).add(x); /* x = new BigDecimal(0); */ };
+
+for (int j = 0; j < 999999999; j++) {
+      func.apply(new BigDecimal(j));
+}
+```
+
+- Ejemplo: Lambda que captura variables de instancia de la clase contenedora:
+```java
+public class LambdaInstanceCapturing implements Runnable {
+    private BigDecimal bd = new BigDecimal(1);
+
+    @Override
+    public void run() {
+        Function<BigDecimal, BigDecimal> func = (a) -> bd.multiply(a);
+
+        for (int j = 0; j < 999999999; j++) {
+            func.apply(new BigDecimal(j));
+        }
+    }
+}
+```
+
 ##### Lambdas y clases anónimas internas
 
 En Java, una expresión lambda y una clase anónima interna (_inner class_) tienen un propósito similar, pero son diferentes en un aspecto: el **ámbito** (_scope_) de la definición de las variables locales.
