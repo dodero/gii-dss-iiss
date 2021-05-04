@@ -7,8 +7,9 @@
 En POO, un __mixin__ es una clase con métodos disponibles para otras clases sin tener que ser madre de estas otras (es decir, sin usar la herencia)
 
 - Es una alternativa a la herencia múltiple
-- Es una interfaz con métodos ya implementados
+- Incluye una __interfaz__ con métodos ya implementados
 - No se _heredan_ sino que se __incluyen__
+- Un mixin es una (sub)clase, luego define un comportamiento y un __estado__
 - Es una forma de implementar el principio de inversión de dependencias (DIP)
 
 #### <a id="modules">Ruby modules</a>
@@ -214,10 +215,18 @@ end
 
 ### <a id="traits">Scala Traits</a>
 
-Los `#!scala trait`de Scala son similares a las interfaces de Java.
+Un __trait__ es una forma de separar las dos principales responsabilidades de una clase: definir el __estado__ de sus instancias y definir su __comportamiento__.
 
-- Las clases y los objetos pueden extender un `#!scala trait`
+- Las clases y los objetos en Scala pueden extender un `#!scala trait`
+- Los `#!scala trait`de Scala son similares a las `#!java interface` de Java.
+
+!!! note "Java default methods"
+    - Desde Java 8, las interfaces pueden incorporar [métodos por defecto](https://www.baeldung.com/java-static-default-methods) que hacen que las interfaces de Java se comporten más como un trait.
+    - Sirven para implementar herencia múltiple
+
 - Los `#!scala trait` no pueden instanciarse
+- Los métodos definidos en una clase tienen precedencia sobre los de un `#!scala trait`
+- Los `#!scala trait` no tienen estado propio, sino el del objeto o la instancia de la clase a la que se aplica
 
 #### Ejemplo: Iterador como un `#!scala trait`
 
