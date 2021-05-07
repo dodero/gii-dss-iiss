@@ -383,24 +383,22 @@ function usingPromises() {
   - Entonces `await` devuelve como resultado el valor de la promesa.
 
 
-###### Lenguajes: Javascript
-
-**Ejemplo con async/await**:
+**Ejemplo con async/await en Javascript**
 
 ```javascript
 async function main() {
-    r1 = await asinc1(parametros);
+    r1 = await asinc1("datos iniciales");
     r2 = await asinc2(r1);
-
-    console.log("Resultado final: " + r2);
+    console.log("Resultado final: { " + r2 + " }");
 }
 ```
 
 Comparar esta versión asíncrona con la versión síncrona inicial.
 
+<!--
+
 ###### Lenguajes: TypeScript
 
-<!--
 
 ```typescript
 function awaitDelayed(): Promise<void> {
@@ -472,7 +470,9 @@ async function usingAsyncSyntax() {
 
 -->
 
-##### Lenguajes: Java
+#### Futuros
+
+##### Futuros en Java
 
 En Java hay definida una interfaz explícita para los futuros:
 
