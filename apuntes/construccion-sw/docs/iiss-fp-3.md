@@ -81,9 +81,11 @@ s3.between?(s1,s2) #true
 ```
 
 - La clase que incluye el módulo `Comparable` tiene que implementar:
-  - el método `<=>`: es un método que incluye los siguientes operadores/métodos: `<, <=, ==, >, >=, between?` 
-  - el atributo-criterio de comparación
-  - En `x <=> y`, `x` es el receptor del mensaje/método e `y` es el argumento
+ 
+    - el método `<=>`: es un método que incluye los siguientes operadores/métodos: `<, <=, ==, >, >=, between?` 
+    - el atributo-criterio de comparación
+
+- En `x <=> y`, `x` es el receptor del mensaje/método e `y` es el argumento
 
 ##### Ejemplo: Adaptador de interfaz en Ruby
 
