@@ -84,10 +84,18 @@ afterWait
 ```javascript
 // Versión síncrona
 function main() {
-    r1 = serv1(parametros);
+    r1 = serv1("datos iniciales");
     r2 = serv2(r1);
-    // También se podría haber escrito r2 = serv2(serv1(parametros))
-    console.log("Resultado final: " + r2);
+    // También se podría haber escrito r2 = serv2(serv1("datos iniciales"))
+    console.log("Resultado final: { " + r2 + " }");
+}
+
+function serv1(parametros) {
+    return "Tardo en calcular r1 a partir de { " + parametros + " }";
+}
+
+function serv2(resultado1) {
+    return "Tardo en calcular r2 a partir de { " + resultado1 + " }";
 }
 ```
 
@@ -95,15 +103,25 @@ function main() {
 
 ```javascript
 // Versión asíncrona.
-// Se supone que asinc1() y asinc2() son funciones que admiten 
-// un callback como parámetro, al cual llamarán pasándole el resultado
+// Las funciones asinc1() y asinc2() admiten un callback
+// como segundo parámetro, al cual llamarán pasándole el resultado del cómputo
 function main() {
-    asinc1(parametros, function(r1){
+    asinc1("datos iniciales", function(r1){
         // Tenemos el resultado de asinc1
         asinc2(r1, function(r2) {
-            console.log("Resultado final: " + r2);
+            console.log("Resultado final: { " + r2 + " }");
         });
     });
+}
+
+function asinc1(parametros, callback) {
+    r1 = "Tardo en calcular r1 a partir de { " + parametros + " }";
+    callback(r1);
+}
+
+function asinc2(resultado1, callback) {
+    r2 = "Tardo en calcular r2 a partir de { " + resultado1 + " }";
+    callback(r2);
 }
 ```
 
@@ -169,24 +187,57 @@ const promise = new Promise((resolve, reject) => {
 
 ```javascript
 // Versión con promesas
-// Ahora asinc1 y asinc2 se supone que devuelven una promesa
+// Ahora asinc1 y asinc2 se supone que devuelven una promesa (que solo resuelve)
 function main() {
-    asinc1(parametros)
+    asinc1("datos iniciales")
     .then(function(r1){ return asinc2(r1); })
     .then(function(r2){
-    console.log("Resultado final: " + r2); 
-    })
+        console.log("Resultado final: " + r2); 
+    }).catch(function(err){
+        console.log("Error: "+ err.message)
+    });
 }
 
 // Lo anterior puede escribirse más conciso:
 function main() {
-    asinc1(parametros)
+    asinc1("datos iniciales")
     .then(asinc2)
     .then(function(r2){
-    console.log("Resultado final: " + r2); 
-    })
+        console.log("Resultado final: " + r2); 
+    }).catch(function(err){
+        console.log("Error: "+ err.message)
+    });
 }
+
+function asinc1(parametros) {
+    return new Promise((resolve, reject) => {
+        resolve("Tardo en calcular r1 a partir de { " + parametros + " }");
+    });
+}
+
+function asinc2(resultado1) {
+    return new Promise((resolve, reject) => {
+        resolve("Tardo en calcular r2 a partir de { " + resultado1 + " }");
+    });
+}
+
+// Si asinc2 devolviera un error
+function asinc2(resultado1) {
+    return new Promise((resolve, reject) => {
+        reject( new Error("Ha habido un error en el cálculo de r2 a partir de { " + resultado1 + " }"));
+    });
+}
+// Salida => "Error: Ha habido un error en el cálculo de r2 a partir de { Tardo en calcular r1 a partir de { datos iniciales } }"
+
+// Si asinc1 devolviera un error
+function asinc1(parametros) {
+    return new Promise((resolve, reject) => {
+        reject( new Error("Ha habido un error en el cálculo de r1 a partir de { " + parametros + " }"));
+    });
+}
+// Salida => "Error: Ha habido un error en el cálculo de r1 a partir de { datos iniciales }"
 ```
+
 
 **Solución al _Callback Hell_**: 
 
