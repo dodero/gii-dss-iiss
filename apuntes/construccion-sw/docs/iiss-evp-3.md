@@ -13,7 +13,7 @@ Las operaciones disparan eventos de diferentes tipos, que son escuchados por los
 
 **Ventajas**:
 
-- Aplicación más interactivas
+- Aplicaciones más interactivas
 - Mejor uso de los recursos
 
 **Estrategias**:
