@@ -482,55 +482,64 @@ En Java hay definida una interfaz explícita para los futuros:
 **Ejemplo: `Future` en Java**
 
 ```java
-// Callable<V> = Interfaz funcional que representa a una operación sin args
-// y que devuelve un resultado de tipo V (permite checked exceptions)
-public static class MyCallable implements Callable<Integer> {
-    @Override
-    public Integer call() throws Exception {
-        Thread.sleep(1000);
-        return 1;
-    }
-}
+import java.util.concurrent.*;
 
-public static void main(String[] args) throws Exception{
-    ExecutorService exec = Executors.newSingleThreadExecutor();
-    Future<Integer> f = exec.submit(new MyCallable());
-    System.out.println(f.isDone()); //False
-    System.out.println(f.get()); //Waits until the task is done, then prints 1
+public class Main {
+    // Callable<V> = Interfaz funcional que representa a una operación sin args
+    // y que devuelve un resultado de tipo V (permite checked exceptions)
+    public static class MyCallable implements Callable<Integer> {
+        @Override
+        public Integer call() throws Exception {
+            Thread.sleep(1000);
+            return 1;
+        }
+    }
+
+    public static void main(String[] args) throws Exception{
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        Future<Integer> f = exec.submit(new MyCallable());
+        System.out.println(f.isDone()); //False
+        System.out.println(f.get()); //Waits until the task is done, then prints 1
+    }
 }
 ```
 
 **Ejemplo: `CompletableFuture` en Java**
 
 ```java
-// Supplier<T> = Interfaz funcional que representa a una operación sin args
-// y que devuelve un resultado de tipo T (no permite checked exceptions)
-public static class MySupplier implements Supplier<Integer> {
-    @Override
-    public Integer get() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            //Do nothing
+import java.util.concurrent.*;
+import java.util.function.*;
+
+public class Main {
+    // Supplier<T> = Interfaz funcional que representa a una operación sin args
+    // y que devuelve un resultado de tipo T (no permite checked exceptions)
+    public static class MySupplier implements Supplier<Integer> {
+        @Override
+        public Integer get() {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                //Do nothing
+            }
+            return 1;
         }
-        return 1;
     }
-}
 
-public static class PlusOne implements Function<Integer, Integer> {
-    @Override
-    public Integer apply(Integer x) {
-        return x + 1;
+    public static class PlusOne implements Function<Integer, Integer> {
+        @Override
+        public Integer apply(Integer x) {
+            return x + 1;
+        }
     }
-}
 
-public static void main(String[] args) throws Exception {
-    ExecutorService exec = Executors.newSingleThreadExecutor();
-    CompletableFuture<Integer> f = CompletableFuture.supplyAsync(new MySupplier(), exec);
-    System.out.println(f.isDone()); // False
-    CompletableFuture<Integer> f2 = f.thenApply(new PlusOne());
-    System.out.println(f2.get()); // Waits until the "calculation" is done, then prints 2
-}
+    public static void main(String[] args) throws Exception {
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        CompletableFuture<Integer> f = CompletableFuture.supplyAsync(new MySupplier(), exec);
+        System.out.println(f.isDone()); // False
+        CompletableFuture<Integer> f2 = f.thenApply(new PlusOne());
+        System.out.println(f2.get()); // Waits until the "calculation" is done, then prints 2
+    }
+}    
 ```
 
 <!--
