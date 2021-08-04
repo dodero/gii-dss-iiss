@@ -190,6 +190,86 @@ Hay diversas técnicas para ocultar la implementación...
 >
 > -- <cite>[Bruce Eckel](bibliografia.md#eckel)</cite>
 
+#### Overriding
+
+En general, en un lenguaje OO es posible sobreescribir o redefinir (_override_) los métodos heredados de una superclase. En algunos lenguajes es obligatorio (en otros es recomendado) especificar explícitamente cuándo un método es redefinido.
+
+##### Ejemplo en Scala
+
+```scala hl_lines="4"
+class Complejo(real: Double, imaginaria: Double) {
+  def re = real
+  def im = imaginaria
+  override def toString() =
+    "" + re + (if (im < 0) "" else "+") + im + "i"
+}
+```
+
+##### Ejemplo en Java
+
+¿Qué sucede si no ponemos `@Override` a los métodos redefinidos?
+
+!!! warning "Disclaimer"
+
+    Este ejemplo en Java es realmente la implementación de un diseño incorrecto, pues hay una doble dependencia entre las clases `Real` y `Complejo`. La frontera entre Diseño e Implementación queda aquí un poco difusa.
+
+```java hl_lines="28 32"
+class Real {
+  double re;
+  public Real(double real) {
+      re = real;
+  }
+  public double getRe() { return re; }
+  /* Probar a comentar el siguiente método y mantener el
+     Override de Complejo::sum(Real other) */
+  public Real sum(Real other) {
+    return new Real(re + other.getRe());
+  }
+  /* Probar a comentar el siguiente método y mantener el
+     Override de Complejo::sum(Complejo other) */
+  public Complejo sum(Complejo other) {
+    return new Complejo( re + other.getRe(), other.getIm() );
+  }
+  public String toString() {
+    return String.format("%.1f", re);
+  }
+}
+
+class Complejo extends Real {
+  double im;
+  public Complejo(double real, double imaginaria) {
+    super(real);
+    im = imaginaria;
+  }
+  @Override
+  public Complejo sum(Real other) {
+    return new Complejo( re + other.getRe(), im );
+  }
+  @Override
+  public Complejo sum(Complejo other) {
+    return new Complejo( re + other.getRe(), im + other.getIm() );
+  }
+  public Double getIm() { return im; }
+  public String toString() {
+    return String.format("%.1f", re) + ((im < 0)? "" : "+") + String.format("%.1f", im) + "i";
+  }    
+}
+
+public class MyClass {
+  public static void main(String args[]) {
+      Real r = new Real(7.6);
+      Complejo c = new Complejo(1.2, 3.4);
+      System.out.println("Número real: " + r);
+      System.out.println("Número complejo: " + c);
+      System.out.println("Número complejo: " + c.sum(r) );
+      System.out.println("Número complejo: " + r.sum(c) );
+  }    
+}
+```
+Si no se añade `@Override`, podemos llegar a confundirnos y hacer sobrecarga cuando queríamos haber hecho sobreescritura.
+
+### Casting
+
 #### Ejemplo: Aventura v0.1
 
 ```java
