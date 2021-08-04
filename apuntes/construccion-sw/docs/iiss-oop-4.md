@@ -363,6 +363,46 @@ public class Line {
 }
 ```
 
+##### Ejemplo: acceso uniforme en Scala
+
+Llamadas a métodos con paréntesis:
+
+```scala
+class Complejo(real: Double, imaginaria: Double) {
+  def re() = real
+  def im() = imaginaria
+  override def toString() =
+    "" + re() + (if (im() < 0) "" else "+") + im() + "i"
+}
+
+object NumerosComplejos {
+  def main(args: Array[String]) : Unit = {
+    val c = new Complejo(1.2, 3.4)
+    println("Número complejo: " + c.toString())
+    println("Parte imaginaria: " + c.im())
+  }
+}
+```
+
+Llamadas a métodos sin paréntesis, igual que si fueran atributos:
+
+```scala
+class Complejo(real: Double, imaginaria: Double) {
+  def re = real
+  def im = imaginaria
+  override def toString() =
+    "" + re + (if (im < 0) "" else "+") + im + "i"
+}
+
+object NumerosComplejos {
+  def main(args: Array[String]) : Unit = {
+    val c = new Complejo(1.2, 3.4)
+    println("Número complejo: " + c)
+    println("Parte imaginaria: " + c.im)
+  }
+}
+```
+
 #### Duplicación por impaciencia
 
 - Los peligros del *copy&paste*

@@ -1,7 +1,7 @@
 site_name: Implementación e Implantación de Sistemas Software
 site_description: Apuntes de Implementación e Implantación de Sistemas Software – Grado en Ingeniería Informática
 site_author: Juan Manuel Dodero
-site_dir: 
+site_dir: /Users/dodero/Github/dodero.github.io/iiss/
 nav:
     - Inicio: index.md
     - Asignatura:
