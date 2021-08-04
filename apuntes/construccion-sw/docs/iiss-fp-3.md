@@ -47,6 +47,47 @@ ph.whoAmI?  # => "Phonograph (#70315984363660): West End Blues"
 et.whoAmI?  # => "EightTrack (#70315996611260): Surrealistic Pillow"
 ```
 
+##### Ejemplo: Comparable en scala
+
+En Scala se puede implementar el equivalente a la interfaz `Comparable` de Java mediante traits:
+
+```scala
+trait Ord {
+  def < (that: Any): Boolean 
+  def <=(that: Any): Boolean =  (this < that) || (this == that)
+  def > (that: Any): Boolean = !(this <= that)
+  def >=(that: Any): Boolean = !(this < that)
+}
+
+class Fecha(d: Int, m: Int, a: Int) extends Ord {
+  def anno = a
+  def mes = m
+  def dia = d
+  override def toString(): String = s"$dia-$mes-$anno"
+  override def equals(that: Any): Boolean =
+    that.isInstanceOf[Fecha] && {
+      val o = that.asInstanceOf[Fecha]
+      o.dia== dia && o.mes == mes && o.anno== anno
+    }
+  def <(that: Any): Boolean = {
+    if (!that.isInstanceOf[Fecha])
+      sys.error("no se puede comparar" + that + " y una fecha")
+    val o = that.asInstanceOf[Fecha]
+    (anno < o.anno) ||
+    (anno== o.anno && (mes < o.mes ||
+                       (mes == o.mes && dia < o.dia)))
+  }  
+}
+
+object MiApp {
+  def main(args: Array[String]) : Unit = {
+    val f1 = new Fecha(12,4,2009)
+    val f2 = new Fecha(12,4,2019)
+    println(s"$f1 es posterior a $f2? ${f1>=f2}")
+  }
+}
+```
+
 ##### Ejemplo: Comparable en ruby
 
 Una manera de implementar un `Comparable` en ruby mediante el módulo [Comparable](https://ruby-doc.org/core-2.2.3/Comparable.html):
