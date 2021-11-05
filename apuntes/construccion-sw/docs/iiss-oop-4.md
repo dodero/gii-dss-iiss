@@ -376,7 +376,7 @@ class Complejo(real: Double, imaginaria: Double) {
 }
 
 object NumerosComplejos {
-  def main(args: Array[String]) : Unit = {
+  def main() : Unit = {
     val c = new Complejo(1.2, 3.4)
     println("Número complejo: " + c.toString())
     println("Parte imaginaria: " + c.im())
@@ -395,7 +395,7 @@ class Complejo(real: Double, imaginaria: Double) {
 }
 
 object NumerosComplejos {
-  def main(args: Array[String]) : Unit = {
+  def main() : Unit = {
     val c = new Complejo(1.2, 3.4)
     println("Número complejo: " + c)
     println("Parte imaginaria: " + c.im)

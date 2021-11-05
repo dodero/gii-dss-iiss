@@ -459,7 +459,7 @@ Optional<Double> getDurationOfAlbumWithName(String name) {
 - La función `map` comprueba si el `Optional` que recibe está vacío. Si lo está devuelve un `Optional` vacío y, si no, aplica la función que le hemos pasado por parámetro, pasándole el valor del `Optional`. Es decir, si el `Optional` está vacío, el método `map` no hace nada. Esto sirve para concatenar operaciones sin necesidad de comprobar en cada momento si el `Optional` está vacío.
 - Cuando queremos encadenar distintas operaciones que devuelvan `Optional`, es necesario usar `flatMap`, ya que si no acabaríamos teniendo un `Optional<Optional<Double>>`.
 
-```scala
+```java
 private static double getDurationOfAlbumWithName(String name) {
     return getAlbum(name)
             .flatMap((album) -> getAlbumTracks(album.getName()))
