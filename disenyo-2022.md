@@ -1,7 +1,7 @@
 ---
 marp: false
-title: Apuntes DSS 2021
-description: Apuntes de Diseño de Sistemas Software, curso 2020/21
+title: Apuntes DSS 2022
+description: Apuntes de Diseño de Sistemas Software, curso 2021/22
 ---
 
 <!-- size: 16:9 -->
@@ -87,20 +87,41 @@ h4 {
 
 _¿De qué fecha data cada paradigma?_ 
 _¿Cuál es el más antiguo?_
+_¿Ejemplo de lenguaje de programación de cada paradigma?_
+_¿Características más relevante de cada uno?_
 
 ---
 
-#### Respuesta
+#### Respuesta (I)
 
-_¿De qué fecha data cada paradigma?_
+_¿De qué fecha data cada paradigma/ejemplo de lenguaje?_
 
-- Estructurado (E. W. Dijsktra, 1968)
-- Objetos (O. J. Dahl & K. Nygaard, 1966)
-- Funcional (J. McCarthy, 1958)
-- Aspectos (G. Kiczales, 1997)
-- Eventos
+- Estructurado (E. W. Dijsktra, 1968 / Pascal)
+- Objetos (O. J. Dahl & K. Nygaard, 1966 / Java)
+- Funcional (J. McCarthy, 1958 / Lisp)
+- Aspectos (G. Kiczales, 1997 / AspectJ)
+- Eventos (VisualBasic)
 
 ---
+
+
+
+#### Respuesta (II)
+
+_¿Características más relevante de cada uno?_
+
+- Estructurado: Uso de estructuras básicas (secuencias, selección e iteración) y subrutinas
+- Objetos: Modelado de entidades como clases (atributos +  métodos)
+- Funcional: Programación declarativa con funciones (lambdas)
+- Aspectos: Modularización de aplicaciones, separación de responsabilidades (logging)
+- Eventos: Estructura y ejecución del programa determinados por sucesos (eventos) ocurridos en el sistema
+
+<!--http://www.rosettacode.org/wiki/Fibonacci_sequence -->
+
+<!--http://jarble.github.io/transpiler/ -->
+
+---
+
 
 ### Bloques
 
@@ -321,6 +342,18 @@ h2 {
 
 - __Reutilización__: Construir software fácil de reutilizar sin tener que cambiar los módulos ya escritos (afecta a la fase de __desarrollo__)
 - __Flexibilidad__: Adaptarse a cambios de requisitos y construir software fácil de cambiar (afecta a la fase de __mantenimiento adaptativo__)
+
+
+---
+
+### El ciclo de vida del software
+
+![Ciclo de vida del software, width:600px](./figuras/ciclos-de-vida-del-software.jpg)
+
+
+
+
+
 
 ---
 
