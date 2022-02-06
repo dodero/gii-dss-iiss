@@ -275,7 +275,8 @@ h2, h3 {
   }
 
   /**
-   * Ejemplo de handler concreto (de tipo numérico)	
+   * Ejemplo de handler concreto (de tipo numérico)
+   */	
   class IdentificadorNumerico implements Handler {
     private int id;
     
