@@ -56,10 +56,10 @@ h2 {
 
 ### Técnicas
 
-- Refactoring
+- [Refactoring](https://codegym.cc/groups/posts/196-how-refactoring-works-in-java)
 - Bibliotecas y frameworks
-- Contratos
-- Inyección de dependencias
+- [Contratos](https://blog.frankel.ch/programming-by-contract-jvm/)
+- [Inyección de dependencias](https://www.journaldev.com/2394/java-dependency-injection-design-pattern-example-tutorial)
 - Patrones
 
 ---
@@ -110,11 +110,11 @@ _¿De qué fecha data cada paradigma/ejemplo de lenguaje?_
 
 _¿Características más relevante de cada uno?_
 
-- Estructurado: Uso de estructuras básicas (secuencias, selección e iteración) y subrutinas
+- [Estructurado:](https://safeswisscloud.com/wp-content/uploads/2019/01/LagrangePAS.jpg) Uso de estructuras básicas (secuencias, selección e iteración) y subrutinas
 - Objetos: Modelado de entidades como clases (atributos +  métodos)
-- Funcional: Programación declarativa con funciones (lambdas)
-- Aspectos: Modularización de aplicaciones, separación de responsabilidades (logging)
-- Eventos: Estructura y ejecución del programa determinados por sucesos (eventos) ocurridos en el sistema
+- [Funcional](http://www.lee-mac.com/lisp/gifs/style1.png): Programación declarativa con funciones (lambdas)
+- [Aspectos](https://www.researchgate.net/profile/Erika-Madariaga/publication/327401137/figure/fig4/AS:666769157017602@1535981563702/AspectJ-HelloWorld-example.png): Modularización de aplicaciones, separación de responsabilidades (logging)
+- [Eventos](https://upload.wikimedia.org/wikipedia/commons/c/cb/Event_driven_programming_Simply_Explained.jpg): Estructura y ejecución del programa determinados por sucesos (eventos) ocurridos en el sistema
 
 <!--http://www.rosettacode.org/wiki/Fibonacci_sequence -->
 
@@ -274,18 +274,35 @@ h2, h3 {
       int compareTo(Handler otro);
   }
 
+  /**
+   * Ejemplo de handler concreto (de tipo numérico)	
   class IdentificadorNumerico implements Handler {
     private int id;
+    
     IdentificadorNumerico (String id) throws NumberFormatException {
       this.id = new Integer(id).intValue();
     }
+    
+    IdentificadorNumerico (Handler otro) throws NumberFormatException {
+      this.id = new Integer(otro.toString()).intValue();
+    }
+    
     public String toString() {
       return new Integer(id).toString();
+      
     }
     public int compareTo(Handler otro) {
       return toString().compareTo(otro.toString());
     }
   }
+  
+  class Identifiable {
+    private Handler _id;
+    public Identifiable(String id) { 
+         _id = new IdentificadorNumerico(id); 
+    }
+}
+  
 ```
 
 ---
