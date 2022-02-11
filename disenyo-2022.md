@@ -186,7 +186,7 @@ h2, h3 {
 
 ### Pregunta
 
-¿Cómo diseñar la identificación de los empleados de una empresa? 
+¿Cómo diseñar la identificación de los empleados de una empresa? (¡incluyendo métodos para comparar dichos idenificadores!)
 
 ---
 
@@ -195,10 +195,13 @@ h2, h3 {
 ```java
   class Empleado {
     private int dni;
+    
     Empleado (String dni) throws NumberFormatException {
-      this.dni = new Integer(dni).intValue();
+      // this.id = new Integer(id).intValue(); // Integer constructor
+                                               // deprecated since Java 9 
+      this.dni = Integer.valueOf(dni);
     }
-    int getDni() {
+    int getDni() {    // obsérvese que no tiene modif. de acceso
       return dni;
     }
     public String toString() {
@@ -224,6 +227,7 @@ h2, h3 {
 ```java
   class Empleado {
     private String nif;
+    
     Empleado (String nif) {
       this.nif = nif
     }
@@ -280,16 +284,16 @@ h2, h3 {
   class IdentificadorNumerico implements Handler {
     private int id;
     
-    IdentificadorNumerico (String id) throws NumberFormatException {
-      this.id = new Integer(id).intValue();
+    IdentificadorNumerico (String id) throws NumberFormatException {      
+      this.dni = Integer.valueOf(dni);
     }
     
     IdentificadorNumerico (Handler otro) throws NumberFormatException {
-      this.id = new Integer(otro.toString()).intValue();
+      this.id = Integer.valueOf(otro.toString());
     }
     
     public String toString() {
-      return new Integer(id).toString();
+      return id.toString();
       
     }
     public int compareTo(Handler otro) {
@@ -347,7 +351,7 @@ Cómo implementar la interfaz de comparación de un Handler en C++
    int compareTo(const Handler&); // member function
 ```
 
-Ver __[stackoverflow](https://stackoverflow.com/questions/20005392/is-there-a-compareto-method-in-c-similar-to-java-where-you-can-use-opera)__
+Ver __[stackoverflow](https://stackoverflow.com/questions/20005392/is-there-a-compareto-method-in-c-similar-to-java-where-you-can-use-opera)__ y ver __[Overloading C++ operators (sección "Comparsion operators"](https://en.cppreference.com/w/cpp/language/operators)__
 
 ---
 <style scoped>
