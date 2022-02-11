@@ -277,7 +277,6 @@ h2, h3 {
       String toString();
       int compareTo(Handler otro);
   }
-
   /**
    * Ejemplo de handler concreto (de tipo numérico)
    */	
@@ -287,7 +286,6 @@ h2, h3 {
     IdentificadorNumerico (String id) throws NumberFormatException {      
       this.dni = Integer.valueOf(dni);
     }
-    
     IdentificadorNumerico (Handler otro) throws NumberFormatException {
       this.id = Integer.valueOf(otro.toString());
     }
@@ -307,7 +305,6 @@ h2, h3 {
          _id = new IdentificadorNumerico(id); 
     }
 }
-  
 ```
 
 ---
@@ -351,7 +348,7 @@ Cómo implementar la interfaz de comparación de un Handler en C++
    int compareTo(const Handler&); // member function
 ```
 
-Ver __[stackoverflow](https://stackoverflow.com/questions/20005392/is-there-a-compareto-method-in-c-similar-to-java-where-you-can-use-opera)__ y ver __[Overloading C++ operators (sección "Comparsion operators"](https://en.cppreference.com/w/cpp/language/operators)__
+Ver __[stackoverflow](https://stackoverflow.com/questions/20005392/is-there-a-compareto-method-in-c-similar-to-java-where-you-can-use-opera)__ y ver __[Overloading C++ operators (sección "Comparsion operators")](https://en.cppreference.com/w/cpp/language/operators)__
 
 ---
 <style scoped>
