@@ -407,7 +407,7 @@ p {
 
 ---
 
-### ¿Cómo probar `Saludo.java`?
+### ¿Cómo probar `Saludo.java`?  (sin jUnit)
 
 ```java
 class Saludo {
@@ -445,7 +445,7 @@ Incluir un método `main` que pruebe la funcionalidad de la clase:
 
 ---
 
-#### Pegas
+#### Críticas
 
 - Cuanto más grande sea la interfaz de la clase, mayor será el `main`
 
@@ -480,7 +480,7 @@ Incluir un método `main` que pruebe la funcionalidad de la clase:
 
 ---
 
-#### Ejecución de los tests:
+#### Ejecución de los tests (en clases diferentes):
 
 ```java
 import org.junit.runner.JUnitCore;
@@ -530,7 +530,31 @@ public class SaludoTest extends TestCase {
 
 ---
 
-### Diseño del framework jUnit
+
+---
+
+#### Ejecución de los test con jUnit 3 
+
+
+```java
+import junit.framework.*; 
+
+public class MyTestRunnerjU3 { 
+      public static void main(String[] a) { 
+         TestResult result = new TestResult(new SaludoTest("testSaludar"); 
+         result.run(); 
+         System.out.println("Was it successful? " +    	 
+                             result.wasSuccessful());
+          
+      } 
+}
+```
+
+---
+
+
+
+### Diseño del framework jUnit 
 
 #### Estructura de clases:
 
@@ -665,6 +689,9 @@ public class EcommerceTestSuite extends TestSuite {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         suite.addTest(ShoppingCartTest.suite());
+        suite.addTest(CreditCardTest.suite()); // otra test suite para
+                                               // credit cart
+        // etc.
         return suite;
     }
 }
@@ -795,7 +822,7 @@ p, h3 {
 
 ### Ejercicio propuesto: CreditCardTest
 
-Diseñar y codificar una suite de casos de prueba unitaria para `CreditCard` usando jUnit 4.
+Diseñar y codificar una suite de casos de prueba unitaria para `CreditCard` usando jUnit4.
 
 ---
 
