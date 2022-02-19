@@ -517,7 +517,7 @@ import junit.framework.TestCase;
 import junit.framework.Assert;
   
 public class SaludoTest extends TestCase {
-    public SaludoTest(String nombre) {
+    public SaludoTest(String nombre) {  
       super(nombre);
     }
     public void testSaludar() {
@@ -531,8 +531,6 @@ public class SaludoTest extends TestCase {
 ---
 
 
----
-
 #### Ejecución de los test con jUnit 3 
 
 
@@ -541,7 +539,7 @@ import junit.framework.*;
 
 public class MyTestRunnerjU3 { 
       public static void main(String[] a) { 
-         TestResult result = new TestResult(new SaludoTest("testSaludar"); 
+         TestResult result = new TestResult(new SaludoTest("testSaludar")); 
          result.run(); 
          System.out.println("Was it successful? " +    	 
                              result.wasSuccessful());
@@ -562,11 +560,15 @@ public class MyTestRunnerjU3 {
 
 ---
 
+<!--
+
 #### Ejecución de casos de prueba:
 
 ![Clases del framework jUnit, width:600px](./figuras/junit-design-2.png)
 
 ---
+
+-->
 
 ### Ejemplo: aplicación de comercio electrónico
 
@@ -631,7 +633,7 @@ public class ShoppingCartTest extends TestCase {
 
 ---
 
-```java  
+```java
   public void testProductAdd() {
       Product book = new Product("Refactoring", 53.95);
       bookCart.addItem(book);
