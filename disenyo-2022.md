@@ -1432,6 +1432,7 @@ SRP es lo mismo que el principio de __cohesión__ de [DeMarco](bibliografia.html
 
 <!-- Los módulos enmarañados que nunca cambian no son problemáticos-->
 
+
 SRP es aplicación directa de la [ley de Conway](http://www.melconway.com/Home/Conways_Law.html):
 > Any organization that designs a system (...) will produce a design whose structure is a copy of the organization's communication structure.
 > –– M. Conway, _Datamation_, April 1968
@@ -1521,7 +1522,7 @@ h4 {
 #### Respuestas
 
 - Dos responsabilidades: geometría computacional + dibujo en pantalla
-- Todas las figuras tienen métodos `draw` y `toString` (dibujar en pantalla) además del método `area` que calcula el área (geometría computacional) $\rightarrow$ Violación del SRP
+- Todas las figuras tienen métodos `draw` (dibujar en pantalla) además del método `area` que calcula el área (geometría computacional) $\rightarrow$ Violación del SRP
 
 #### Solución
 
