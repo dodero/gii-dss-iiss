@@ -2187,7 +2187,8 @@ class Ellipse extends ClosedCurve {
 
 ---
 
-- Las funcionalidades para pintar (`draw`) y para imprimir (`toString`) pueden descohesionar las clases y atentar contra OCP y SRP.
+- Las funcionalidades para pintar (`draw`) y para imprimir (`toString`) pueden descohesionar las clases y atentar contra OCP y SRP
+- Pero solucionar uno (SRP) me hace violar otro (OCP) y viceversa.
 - Saquémoslas fuera utilizando **aspectos**...
 
 ---
@@ -2214,7 +2215,7 @@ La __orientación a aspectos__ (_AOD_/_AOP_) es un paradigma cuyo objetivo es in
 
 ---
 
-### Ejemplo: Shapes versión 2 (misma versión que en OCP), pero con aspectos
+### Ejemplo 3 ISP: Shapes en JAVA versión 2 (misma versión que en OCP), pero con aspectos
 
 ```aspectj
 // Ficheros <X>ToString.aj (uno por aspecto)
