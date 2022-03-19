@@ -2336,7 +2336,7 @@ public class Square: Shape {
 
 #### Problemas: 
 
-- `DrawShape` viola claramente el OCP
+- `DrawShape()` viola claramente el OCP
 - Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` (violación del LSP)
 - Esta violación de LSP es la que provoca la violación de OCP en `DrawShape`
 - A continuación, una violación más sutil del LSP...
