@@ -2051,7 +2051,7 @@ __Delegación__ a través del patrón adapter (de objetos o de clases)
 
 ---
 
-### Example: Shapes and Circles (1 de 2)
+### Example: Shapes and Circles (1 de 2) en C++
 
 ```cpp
 class Circle;
@@ -2080,7 +2080,7 @@ class Shape
 
 ---
 
-### Example: Shapes and Circles (2 de 2)
+### Example: Shapes and Circles (2 de 2) en C++
 
 ```cpp
 class Circle : public Shape
