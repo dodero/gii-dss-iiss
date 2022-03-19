@@ -2051,7 +2051,7 @@ __Delegación__ a través del patrón adapter (de objetos o de clases)
 
 ---
 
-### Example 2 ISP: Shapes and Circles (1 de 2) en C++
+### Ejemplo 2 ISP: Shapes and Circles (1 de 2) en C++
 
 ```cpp
 class Circle;
@@ -2080,7 +2080,16 @@ class Shape
 
 ---
 
-### Example 2 ISP: Shapes and Circles (2 de 2) en C++
+- `DrawStrategy` ofrece una interfaz para recoger todos los métodos relacionados con dibujar figuras.
+- Aquellas clases que implementen esta interfaz ofreceran sus versiones específicas para dibujar dichas figuras (e.g. usando sus propias librerias).
+- La interfaz `Shape` mantiene el método `draw()` pero las clases que hereden no tendrán una implementación específica ¿Por qué?
+- Porque este método `draw()` llamará a los métodos de una clase tipo `DrawStrategy` inyectada como dependencia.
+
+---
+
+
+
+### Ejemplo 2 ISP: Shapes and Circles (2 de 2) en C++
 
 ```cpp
 class Circle : public Shape
@@ -2099,7 +2108,7 @@ class Circle : public Shape
 
     void translate ( Vector3D const& ) override;
     void rotate ( Quaternion const& ) override;
-    void draw () const override;  // call ds.draw(*this) here!
+    void draw () const override;  // call drawing.draw(*this) here!
 
   private:
     double radius;
@@ -2115,9 +2124,9 @@ class Square: public Shape
 
 ---
 
-## Aplicación de OCP y SRP
+## Recordando: Resultado de aplicación de SRP y OCP sobre figuras
 
-### Ejemplo: Shapes versión 1 en Java (misma versión que en SRP)
+### Ejemplo 3 ISP: Shapes en Java (cumple OCP pero no SRP)
 
 ```java
 interface Shape {
@@ -2138,10 +2147,12 @@ abstract class Polygon implements Shape {
 
 class Triangle extends Polygon {
   double area() {...}
+  void draw() {...}
 }
 
 abstract class RectParallelogram extends Polygon {
   double area() {...}
+  void draw() {...}
 }
 ```
 
