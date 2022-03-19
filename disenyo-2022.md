@@ -2236,16 +2236,17 @@ aspect EllipseToString {
   String Ellipse.toString() {...}
 }
 
-// Drawable.java
-package drawing;
-interface Drawable {
-  void draw();
-}
 ```
 
 ---
 
 ```aspectj
+// Drawable.java
+package drawing;
+interface Drawable {
+  void draw();
+}
+
 // Ficheros Drawable<X>.aj
 package shapes.drawing; // para todos los draw()...
 import drawing.Drawable;
@@ -2272,6 +2273,30 @@ aspect DrawableEllipse extends DrawableShape {
 ```
 
 ---
+
+```java
+interface Shape {
+  double area();
+  // draw() removed
+}
+
+// Point class is not modified
+
+abstract class Polygon implements Shape {
+  Point getVertex(index i) {...}
+  // draw() & toString() methods removed
+}
+
+class Circle extends ClosedCurve {
+  double getRadius() {...}
+  Point getCenter() {...}
+  double Area() {...}
+  // draw() & toString() methods removed
+}
+```
+
+---
+
 <style scoped>
 h3 {
   color: blue;
