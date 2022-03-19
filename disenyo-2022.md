@@ -1975,7 +1975,7 @@ h3 {
 
 ---
 
-### Ejemplo: puertas de seguridad
+### Ejemplo ISP: puertas de seguridad
 
 Una implementación de puertas de seguridad con temporizador (`TimedDoor`) que hace sonar una alarma cuando la puerta está abierta durante un cierto tiempo.
 
@@ -2051,7 +2051,7 @@ __Delegación__ a través del patrón adapter (de objetos o de clases)
 
 ---
 
-### Example: Shapes and Circles (1 de 2) en C++
+### Example 2 ISP: Shapes and Circles (1 de 2) en C++
 
 ```cpp
 class Circle;
@@ -2080,7 +2080,7 @@ class Shape
 
 ---
 
-### Example: Shapes and Circles (2 de 2) en C++
+### Example 2 ISP: Shapes and Circles (2 de 2) en C++
 
 ```cpp
 class Circle : public Shape
@@ -2099,7 +2099,7 @@ class Circle : public Shape
 
     void translate ( Vector3D const& ) override;
     void rotate ( Quaternion const& ) override;
-    void draw () const override;
+    void draw () const override;  // call ds.draw(*this) here!
 
   private:
     double radius;
