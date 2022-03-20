@@ -2081,7 +2081,7 @@ class Shape
 ---
 
 - `DrawStrategy` ofrece una interfaz para recoger todos los métodos relacionados con dibujar figuras.
-- Aquellas clases que implementen esta interfaz ofreceran sus versiones específicas para dibujar dichas figuras (e.g. usando sus propias librerias).
+- Aquellas clases que implementen esta interfaz ofreceran sus versiones específicas para dibujar dichas figuras (e.g. usando sus propias librerías).
 - La interfaz `Shape` mantiene el método `draw()` pero las clases que hereden no tendrán una implementación específica ¿Por qué?
 - Porque este método `draw()` llamará a los métodos de una clase tipo `DrawStrategy` inyectada como dependencia.
 
@@ -2123,6 +2123,13 @@ class Square: public Shape
 ```
 
 ---
+
+- Críticas a esta solución
+   - Todas las clases que implementen `DrawStrategy` están obligadas a saber dibujar todas las figuras indicadas en la interfaz. ¿Tiene sentido?
+   - El método `draw()` sigue ofreciéndose en la interfaz de Shape (y en su jerarquía) y es posible que haya clientes que no lo usen
+   - ¿Seguiríamos el mismo enfoque para otros aspectos de la clase, e.g. `serlize()`?
+---
+
 
 ## Recordando: Resultado de aplicación de SRP y OCP sobre figuras
 
