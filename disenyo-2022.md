@@ -2310,9 +2310,6 @@ class Circle extends ClosedCurve {
 - Los métodos `toString()` y `draw()` se han trasladado a aspectos separados, en los que las declaraciones intertipo (ITD) se utilizan para extender las clases de `Shape` con los nuevos métodos.
    - Para los métodos `draw()` hemos necesitado la interfaz `Drawable` para mantener el OCP gracias al polimorfismo y uso de métodos plantilla (template method).
    - ¿Por qué no hemos necesitado una interfaz `Stringeable` para los métodos `toString()`?
-- **SRP**: Está mejor soportado por esta refactorización, ya que las clases de `Shape` se centran ahora en sus propiedades estructurales y comportamientos esenciales.
-- **OCP**: Podemos extender el comportamiento de la jerarquía `Shape` sin modificar las clases originales originales. Las declaraciones de intertipos (ITD) se utilizan para introducir nuevos métodos en las clases sin modificar el código de las figuras.
-- **Desventajas**: El estado y el comportamiento de una clase ya no se definen en un solo lugar. De hecho, este enfoque es algo radical para los lenguajes de tipado estático, se necesitan herramientas para su manejo.
 
 ---
 
