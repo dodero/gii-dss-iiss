@@ -2472,12 +2472,12 @@ Nota: [Diferencia entre `new` y `override` en C#](https://docs.microsoft.com/en-
 
   ```csharp
   Square s = new Square();
-  s.SetWidth(1);   // fija ambos
-  s.SetHeight(2);  // fija ambos
+  s.Width = 1;   // fija ambos lados a 1
+  s.Height = 2;  // fija ambos lados a 2, machacando el valor anterior
 
   void f(Rectangle r)
   {
-    r.SetWidth(32); // calls Rectangle.SetWidth
+    r.Width=32; // llama a Rectangle.SetWidth
   }
   ```
 
@@ -2497,12 +2497,12 @@ public class Rectangle
   private Point topLeft;
   private double width;
   private double height;
-  public virtual double Width
+  public virtual double Width  // ahora marcado como virtual
   {
     get { return width; }
     set { width = value; }
   }
-  public virtual double Height
+  public virtual double Height  // ahora marcado como virtual
   {
     get { return height; }
     set { height = value; }
@@ -2517,7 +2517,7 @@ Nota: [Métodos redefinibles con `virtual` en C#](https://docs.microsoft.com/en-
 ```csharp
 public class Square: Rectangle
 {
-  public override double Width
+  public override double Width  // ahora no es new, hacemos override
   {
     set {
       base.Width = value;
@@ -2563,7 +2563,9 @@ void g(Rectangle r)
 
 ---
 
-¿Qué pasa si llamamos a `g(new Square(3))`?
+¿Qué pasa si llamamos a `g(new Square())`?
+   - El area devuelta será 16 != 20...!!! ¿Por qué?
+   - El `r.Height = 4`, siendo ahora `r` un cuadrado, cambia ambos lados a tamaño 4
 
 El autor de `g` asumió que cambiar el ancho de un rectángulo deja intacto el alto. Si pasamos un cuadrado esto no es así 
 
