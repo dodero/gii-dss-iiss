@@ -296,7 +296,7 @@ Laberinto crearLaberinto () {
 
 #### Críticas
 
-- Creación poco flexible: instancias concretas cableadas
+- Creación poco flexible: instancias concretas cableadas.
 - Supongamos $\exists$ SalaHechizada, PuertaHechizada. ¿Cómo cambiamos `crearLaberinto`?
 
 ---
