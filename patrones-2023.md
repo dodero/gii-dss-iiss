@@ -1,7 +1,7 @@
 ---
 marp: true
-title: Apuntes DSS 2022 - Patrones de Diseño
-description: Apuntes de Diseño de Sistemas Software, curso 2021/22 - Patrones de diseño
+title: Apuntes DSS - Patrones de Diseño
+description: Apuntes de Diseño de Sistemas Software - Patrones de diseño
 ---
 
 <!-- size: 16:9 -->
