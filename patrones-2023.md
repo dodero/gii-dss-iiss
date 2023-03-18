@@ -325,6 +325,12 @@ Laberinto crearLaberinto () {
 
 ---
 
+<style>
+section > img {
+  align-self: flex-start;
+}
+</style>
+
 <!--
 
 @startuml
