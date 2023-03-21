@@ -7,6 +7,8 @@ description: Apuntes de Diseño de Sistemas Software - Patrones de diseño
 <!-- size: 16:9 -->
 <!-- theme: default -->
 
+<!-- paginate: false -->
+
 <style>
 h1 {
   text-align: center;
@@ -49,9 +51,12 @@ h2 {
 3. Otros patrones específicos
 
 ---
+<!-- paginate: true -->
+
 ## Introducción
 
 ---
+
 ### Origen de los patrones de diseño
 
 - Los patrones de diseño surgen a partir del libro *A Pattern Language: Towns, Buildings, Construction* de Cristopher Alexander.
@@ -62,8 +67,6 @@ h2 {
 
 - El libro recomienda que las decisiones sobre la construcción de edificios se tomen de acuerdo al ambiente preciso de cada proyecto. 
 
- 
-
 ---
 ### Diseño de software con patrones
 
@@ -72,7 +75,6 @@ h2 {
 - Un grupo de expertos (_Gang of Four_) se basó en el trabajo de Alexander y lo aplicó al diseño de software, presentando el libro *Design Patterns* con un total de 23 patrones.
 
 ![w:150 center](./figuras/patronesGOF.jpg)
-
 
 ---
 ### Patrones de diseño
@@ -90,6 +92,7 @@ h2 {
 - Han surgido nuevos patrones **específicos** de dominio: patrones de interfaces de usuario, patrones para la integración de aplicaciones empresariales, patrones de flujos de trabajo BPMN, patrones de concurrencia, etc.
 
 ---
+
 ## Patrones del Gang of Four
 
 ![w:200 center](./figuras/patronesGOF.jpg)
@@ -104,6 +107,7 @@ Corresponden a patrones de diseño de software que solucionan problemas de creac
 - Abstract Factory
 
 Pero hay más...
+
 - *Prototype*
 - *Builder*
 - *Singleton*
@@ -119,14 +123,16 @@ Son los patrones de diseño software que solucionan problemas de composición/ag
 - Adapter
 
 Pero hay más...
+
 - *Facade*
 - *Bridge*
 - *Flyweight*
 - *Proxy*
 
-
 ---
+
 ### Patrones de comportamiento
+
 Son los relativos a la interacción y responsabilidades entre clases y objetos. Vamos a ver:
 
 - Command
@@ -135,9 +141,9 @@ Son los relativos a la interacción y responsabilidades entre clases y objetos. 
 - Visitor
 
 Pero hay más...
+
 - *Template method*, *Chain of Responsibility*, *Interpreter*
 - *Iterator*, *Mediator*, *Memento*, *State*
-
 
 ---
 <style scoped>
@@ -152,6 +158,11 @@ h3 {
 ![Factory Method, center](./figuras/guru/factory-method-mini-2x.png)
 
 ---
+<style>
+section > img {
+  align-self: flex-start;
+}
+</style>
 
 #### Ejemplo: Juego de laberinto
 
@@ -200,11 +211,11 @@ class Laberinto{
   {method} getSalaNum(int)
 }
 
-JuegoLaberinto .up.> Laberinto
+JuegoLaberinto .down.> Laberinto
 
-Sala "lados" *-down-> Sitio
-Sitio <|-down- Pared
-Sitio <|-down- Puerta
+Sala "lados" *-up-> Sitio
+Sitio <|-left- Pared
+Sitio <|-right- Puerta
 Sitio <|-down- Sala
 Laberinto "salas" *-right-> Sala
 
@@ -219,7 +230,7 @@ show Puerta members
 ---
 
 ```java
-public interface Direccion {   // Cuando no existían "enumarate" en Java
+public interface Direccion {   // Cuando no existía "enumerate" en Java
     int NORTE = 0;             // se implementaban así :-)
     int ESTE = 1;
     int SUR = 2;
@@ -466,6 +477,49 @@ h3 {
 }
 </style>
 
+### [Strategy](https://refactoring.guru/es/design-patterns/strategy)
+
+![Strategy, center](./figuras/guru/strategy-mini-2x.png)
+
+---
+
+#### Strategy: Estructura
+
+![h:500 center](./figuras/guru/strategy-structure-2x.png)
+
+---
+
+#### Strategy
+
+- Define una familia de algoritmos, encapsula cada uno de ellos y los hace intercambiables
+- Permite que el algoritmo varíe de forma independiente a quienes lo usan (el **Contexto**)
+
+**Ventajas:**
+
+- Ayuda a sacar factor común (factorizar) funcionalidades
+- La estrategia es sustituible en tiempo de ejecución
+- Alternativa a la herencia estática
+
+**Desventajas:**
+
+- Sobrecarga de la comunicación _Context_-_Strategy_
+
+---
+<style scoped>
+h4 {
+  text-align: center;
+  color: red;
+}
+</style>
+
+---
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
+
 ### [Command](https://refactoring.guru/es/design-patterns/command)
 
 ![Command, center](./figuras/guru/command-mini-2x.png)
@@ -632,6 +686,80 @@ activate aReceiver
 -->
 
 ---
+
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
+
+### [Adapter](https://refactoring.guru/es/design-patterns/adapter)
+
+![Adapter, center](./figuras/guru/adapter-mini-2x.png)
+
+<!--
+@startuml
+class Client
+class Target <<interface>>
+class Adapter
+class Adaptee
+Target : request()
+Adapter : request()
+Adaptee : specificRequest()
+
+Client -> Target
+Target <|.. Adapter
+Adapter -> Adaptee
+note on link
+Adapter is composed
+with the Adapter.
+end note
+
+note bottom of Client
+The client sees only the
+Target interface
+end note
+
+note “The Adapter implements\nthe Target interface.” as n1
+Target .. n1
+n1 .. Adapter
+
+note bottom of Adaptee
+All requests get
+delegated to the
+Adaptee.
+end note
+@enduml
+-->
+
+---
+
+#### Adaptador de objetos: Estructura
+
+![w:850 center](./figuras/guru/object-adapter-structure-2x.png)
+
+---
+
+#### Adaptador de clases: Estructura
+
+![w:850 center](./figuras/guru/class-adapter-structure-2x.png)
+
+---
+
+#### Adaptador de clases vs. objetos
+
+**Class adapter:**
+
+- No sirve para adaptar una clase y sus subclases
+- Se crea un único objeto, sin indirecciones adicionales
+
+**Object adapter:**
+
+- Un adapter puede funcionar con varios objetos _Service_ o _Adaptee_
+- Es más complicado heredar el comportamiento del objeto adaptado
+
+---
 <style scoped>
 h3 {
   text-align: center;
@@ -744,84 +872,13 @@ end note
 - Permite manipular **uniformemente** todos los objetos contenidos en el árbol, ya que todos ellos poseen una interfaz común definida en la clase raíz.
 
 **Ventajas:**
+
 - El cliente trata a todos los objetos de la misma forma
 - La inclusión de nuevos tipos de hojas o compuestos no afecta a la estructura anterior
 
 **Desventajas:**
+
 - Si se desea restringir el tipo de objetos que pueden formar parte de otros $\Rightarrow$ Necesidad de comprobaciones dinámicas
----
-
-<style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
-</style>
-
-### [Adapter](https://refactoring.guru/es/design-patterns/adapter)
-
-![Adapter, center](./figuras/guru/adapter-mini-2x.png)
-
-<!--
-@startuml
-class Client
-class Target <<interface>>
-class Adapter
-class Adaptee
-Target : request()
-Adapter : request()
-Adaptee : specificRequest()
-
-Client -> Target
-Target <|.. Adapter
-Adapter -> Adaptee
-note on link
-Adapter is composed
-with the Adapter.
-end note
-
-note bottom of Client
-The client sees only the
-Target interface
-end note
-
-note “The Adapter implements\nthe Target interface.” as n1
-Target .. n1
-n1 .. Adapter
-
-note bottom of Adaptee
-All requests get
-delegated to the
-Adaptee.
-end note
-@enduml
--->
-
----
-
-#### Adaptador de objetos: Estructura
-
-![w:850 center](./figuras/guru/object-adapter-structure-2x.png)
-
----
-
-#### Adaptador de clases: Estructura
-
-![w:850 center](./figuras/guru/class-adapter-structure-2x.png)
-
----
-
-#### Adaptador de clases vs. objetos
-
-**Class adapter:**
-
-- No sirve para adaptar una clase y sus subclases
-- Se crea un único objeto, sin indirecciones adicionales
-
-**Object adapter:**
-
-- Un adapter puede funcionar con varios objetos _Service_ o _Adaptee_
-- Es más complicado heredar el comportamiento del objeto adaptado
 
 ---
 <style scoped>
@@ -1069,47 +1126,6 @@ show methods
 **Desventajas:**
 - Rompe la identidad de objetos: un componente y su decorador no son el mismo objeto
 - Provoca la creación de muchos objetos pequeños y complica la depuración
-
----
-<style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
-</style>
-
-### [Strategy](https://refactoring.guru/es/design-patterns/strategy)
-
-![Strategy, center](./figuras/guru/strategy-mini-2x.png)
-
----
-
-#### Strategy: Estructura
-
-![h:500 center](./figuras/guru/strategy-structure-2x.png)
-
----
-
-#### Strategy
-
-- Define una familia de algoritmos, encapsula cada uno de ellos y los hace intercambiables
-- Permite que el algoritmo varíe de forma independiente a quienes lo usan (el **Contexto**)
-
-**Ventajas:**
-- Ayuda a sacar factor común (factorizar) funcionalidades
-- La estrategia es sustituible en tiempo de ejecución
-- Alternativa a la herencia estática
-
-**Desventajas:**
-- Sobrecarga de la comunicación _Context_-_Strategy_
-
----
-<style scoped>
-h4 {
-  text-align: center;
-  color: red;
-}
-</style>
 
 #### ¿Diferencia entre Strategy y Decorator?
 
