@@ -506,14 +506,6 @@ h3 {
 
 ---
 <style scoped>
-h4 {
-  text-align: center;
-  color: red;
-}
-</style>
-
----
-<style scoped>
 h3 {
   text-align: center;
   color: blue;
@@ -634,7 +626,6 @@ activate image
 deactivate cmdDraw
 
 @enduml
-
 
 <!--
 #### Cliente/Servidor
@@ -1126,6 +1117,14 @@ show methods
 **Desventajas:**
 - Rompe la identidad de objetos: un componente y su decorador no son el mismo objeto
 - Provoca la creación de muchos objetos pequeños y complica la depuración
+
+---
+<style scoped>
+h4 {
+  text-align: center;
+  color: red;
+}
+</style>
 
 #### ¿Diferencia entre Strategy y Decorator?
 
