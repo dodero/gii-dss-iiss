@@ -872,6 +872,23 @@ end note
 - Si se desea restringir el tipo de objetos que pueden formar parte de otros $\Rightarrow$ Necesidad de comprobaciones dinámicas
 
 ---
+
+<style scoped>
+h3 {
+  text-align: center;
+  color: blue;
+}
+</style>
+
+### [State](https://refactoring.guru/design-patterns/state)
+
+![Adapter, center](./figuras/guru/state-mini-2x.png)
+
+---
+
+![h:600 center](./figuras/guru/state-structure.png)
+
+---
 <style scoped>
 h3 {
   text-align: center;
