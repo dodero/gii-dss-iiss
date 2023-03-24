@@ -882,11 +882,56 @@ h3 {
 
 ### [State](https://refactoring.guru/design-patterns/state)
 
-![Adapter, center](./figuras/guru/state-mini-2x.png)
+![State, center](./figuras/guru/state-mini-2x.png)
 
 ---
 
+#### State: Ejemplo
+
+![h:600 center](./figuras/guru/state-example.png)
+
+---
+
+```scala
+class Document {
+  var state: String = _
+  var expirationDate: Date = _
+  // ...
+
+  def publish(currentUser: User): Unit = state match {
+    case "draft" =>
+      if (currentUser.role == "admin") {
+        state = "published"
+      } else {
+        state = "moderation"
+      }
+    case "moderation" =>
+      if (currentUser.role == "admin") {
+        state = "published"
+      }
+    case "published" =>
+      if (new Date().after(expirationDate)) {
+        state = "draft"
+      }
+    case _ =>
+      // Handle any unexpected state.
+      throw new IllegalStateException(s"Invalid document state: $state")
+  }
+}
+```
+
+---
+
+#### State: Estructura
+
 ![h:600 center](./figuras/guru/state-structure.png)
+
+---
+
+#### Diferencia con Strategy
+
+- Cada estado puede ser consciente de la existencia de otros estados e iniciar transiciones de estado
+- Cada estrategia desconoce a las otras
 
 ---
 <style scoped>
