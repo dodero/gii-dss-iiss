@@ -47,6 +47,8 @@ h2 {
 - Reutilización
 - Flexibilidad
 
+---
+
 ### Principios
 
 - Ocultación: OCP, ISP, LSP
@@ -73,6 +75,8 @@ h2 {
 - Funcional (J. McCarthy)
 - Aspectos (G. Kiczales)
 - Eventos
+
+---
 
 <style scoped>
 p {
