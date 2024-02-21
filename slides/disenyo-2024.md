@@ -234,7 +234,7 @@ h2, h3 {
 
 ## Patrón Handler
 
-![Diseño de un handler](./figuras/handler.png)
+![Diseño de un handler](./img/handler.png)
 
 ---
 
@@ -327,7 +327,7 @@ h2 {
 
 ### El árbol de la Calidad del Software (_SQA tree_)
 
-![Reutilización vs flexibilidad, width:600px](./figuras/sqa-tree.png)
+![Reutilización vs flexibilidad, width:600px](./img/sqa-tree.png)
 
 ---
 
@@ -481,7 +481,7 @@ public class SaludoTest extends TestCase {
 
 ### Diseño del framework jUnit
 
-<!-- ![Clases del framework jUnit, width:600px](./figuras/junit-design-1.png)-->
+<!-- ![Clases del framework jUnit, width:600px](./img/junit-design-1.png)-->
 
 <style>
 section > img {
@@ -556,7 +556,7 @@ Diseño de pruebas unitarias de `ShoppingCart` para:
 
 #### Utilización del framework jUnit
 
-<!-- ![Utilización del framework jUnit, width:600px](./figuras/junit-design-2.png) -->
+<!-- ![Utilización del framework jUnit, width:600px](./img/junit-design-2.png) -->
 
 @startuml
 left to right direction
@@ -820,7 +820,7 @@ Diseñar y codificar una suite de casos de prueba unitaria para `CreditCard` usa
 
 ### Arquitectura del framework jUnit
 
-![Clases del framework jUnit, width:700px](./figuras/junit-patterns.png)
+![Clases del framework jUnit, width:700px](./img/junit-patterns.png)
 
 En la arquitectura del framework se observan diversos patrones: Composite, Command, Adapter, Factory, Decorator, etc.
 
@@ -836,14 +836,14 @@ h2 {
 
 #### Flujo de control en una biblioteca
 
-![Flujo de control en una biblioteca, width:800px](./figuras/biblioteca.png)
+![Flujo de control en una biblioteca, width:800px](./img/biblioteca.png)
 
 ---
 
 
 #### Flujo de control en un framework
 
-![Flujo de control en una framework, width:1200px](./figuras/framework.png)
+![Flujo de control en una framework, width:1200px](./img/framework.png)
 
 ---
 <style scoped>
@@ -1245,7 +1245,7 @@ injector2 -> ":Knight" : setQuest(killDragonQuest)
 
 @enduml
 
-<!--![width:800px](./figuras/di-knight.png) -->
+<!--![width:800px](./img/di-knight.png) -->
 
 ---
 
@@ -1272,7 +1272,7 @@ h2 {
 
 ## Inyección de dependencias
 
-![Inyección de dependencias, width:500px](./figuras/dep-injection.png)
+![Inyección de dependencias, width:500px](./img/dep-injection.png)
 
 -->
 
@@ -1327,11 +1327,11 @@ h2 {
 
 ### Factorizar una función
 
-![Reutilización de una función, width:700px](./figuras/misuse-reuse-1.png)
+![Reutilización de una función, width:700px](./img/misuse-reuse-1.png)
 
 ---
 
-![Reutilización de una función, width:700px](./figuras/misuse-reuse-2.png)
+![Reutilización de una función, width:700px](./img/misuse-reuse-2.png)
 
 ### Ventajas (supuestas) de reutilizar:
 
@@ -1341,7 +1341,7 @@ __Ahorro__: Si $\exists$ $s$ sistemas $\wedge ~ coste(Function~1) = c$ $\Rightar
 
 ### Amenazas (reales) a la reutilización:
 
-![Reutilización de una función, width:500px](./figuras/misuse-reuse-3.png)
+![Reutilización de una función, width:500px](./img/misuse-reuse-3.png)
 
 ---
 
@@ -1384,15 +1384,15 @@ Problemas de la aplicación heredada:
 
 ### Una aplicación heredada
 
-![Guitar e Inventory, width:700px](./figuras/guitar_m1b.png)
+![Guitar e Inventory, width:700px](./img/guitar_m1b.png)
 
 ---
 
-![Guitar, width:400px](./figuras/uml_guitar_m1.png)
+![Guitar, width:400px](./img/uml_guitar_m1.png)
 
 ---
 
-![Inventory, width:1100px](./figuras/uml_inventory_m1.png)
+![Inventory, width:1100px](./img/uml_inventory_m1.png)
 
 ---
 
@@ -2176,7 +2176,7 @@ Una implementación de puertas de seguridad con temporizador (`TimedDoor`) que h
 #### Diseño:
 
 <!--
-![Puertas de seguridad, width:400px](./figuras/isp-timer-door.png)
+![Puertas de seguridad, width:400px](./img/isp-timer-door.png)
 -->
 
 @startuml
@@ -2274,13 +2274,13 @@ __Delegación__ a través del patrón adapter (de objetos o de clases)
 
 - Versión adaptador de clases (por herencia):
 
-   ![Puertas de seguridad - adaptador de clases, width:700px](./figuras/isp-timer-door-class-adapter.png)
+   ![Puertas de seguridad - adaptador de clases, width:700px](./img/isp-timer-door-class-adapter.png)
 
 ---
 
 - Versión adaptador de objetos (por composición):
 
-  ![Puertas de seguridad - adaptador de objetos, width:700px](./figuras/isp-timer-door-object-adapter.png)  
+  ![Puertas de seguridad - adaptador de objetos, width:700px](./img/isp-timer-door-object-adapter.png)  
 
 ---
 
@@ -2423,7 +2423,7 @@ h3 {
 
 La __orientación a aspectos__ (_AOD_/_AOP_) es un paradigma cuyo objetivo es incrementar la modularidad (__ortogonalidad__) de los componentes mediante la separación de aspectos __transversales__ (_cross-cutting concerns_).
 
-![terminología sobre AOP](./figuras/aspectj-terminology.png)
+![terminología sobre AOP](./img/aspectj-terminology.png)
 
 ---
 
@@ -2813,7 +2813,7 @@ Ambos deben depender de abstracciones.
 
 __Diseño inicial__:
 
-![estructura en capas, width:600px](./figuras/dip-1.png)
+![estructura en capas, width:600px](./img/dip-1.png)
 
 - Las dependencias son transitivas
 - _Policy_ depende de todo lo que depende _Mechanism_. 
@@ -2822,7 +2822,7 @@ __Diseño inicial__:
 
 __Diseño invertido__:
 
-![capas invertidas, width:600px](./figuras/dip-2.png)
+![capas invertidas, width:600px](./img/dip-2.png)
 
 ---
 
