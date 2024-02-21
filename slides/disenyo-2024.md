@@ -13,30 +13,41 @@ title: Principios de Diseño
 <style>
 h1 {
   text-align: center;
+  color: #005877;
 }
 h2 {
-  color: darkblue;
-  text-align: center;
+  color: #E87B00;
+}
+h3 {
+  color: #005877;
+}
+
+img[alt~="center"] {
+  display: block;
+  margin: 0 auto;
+}
+
+emph {
+  color: #E87B00;
 }
 </style>
 
 # DISEÑO DE SISTEMAS SOFTWARE
 
-<style scoped>
-h2 {
-  text-align: left;
-}
-</style>
-
 ---
 
 <!-- paginate: false -->
+<style scoped>
+section { text-align: center; }
+</style>
 
 ## INTRODUCCIÓN
 
 ---
 
 <!-- paginate: true -->
+
+![bg left:50% Problemas](./img/design-problems.png)
 
 ### Problemáticas
 
@@ -49,14 +60,17 @@ h2 {
 
 ---
 
+![bg right:50% Principios](./img/design-principles.png)
+
 ### Principios
 
 - Ocultación: OCP, ISP, LSP
 - Cohesión: SRP
 - Ortogonalidad: DIP
-- Delegación
 
 ---
+
+![bg left:50% Técnicas](./img/design-techniques.png)
 
 ### Técnicas
 
@@ -91,7 +105,7 @@ h4 {
 #### Preguntas
 
 _¿De qué fecha data cada paradigma?_
-_¿Cuál es el más antiguo?_
+_Ordenar cronológicamente_
 
 ---
 
@@ -99,9 +113,9 @@ _¿Cuál es el más antiguo?_
 
 _¿De qué fecha data cada paradigma?_
 
-- Estructurado (E. W. Dijsktra, 1968)
-- Objetos (O. J. Dahl & K. Nygaard, 1966)
 - Funcional (J. McCarthy, 1958)
+- Objetos (O. J. Dahl & K. Nygaard, 1966)
+- Estructurado (E. W. Dijsktra, 1968)
 - Aspectos (G. Kiczales, 1997)
 - Eventos
 
