@@ -1207,7 +1207,7 @@ KnightOfTheRoundTableTest ..> HolyGrail #red
 
 #### Pegas:
 
-- El `Knight` aún depende de un tipo específico de `Quest` obtenido mediante `new`
+- El `KnightOfTheRoundTable` aún depende de un tipo específico de `Quest` (i.e. `HolyGrailQuest`) obtenido mediante `new`
 
 <style scoped>
 p {
@@ -1273,6 +1273,8 @@ p {
   text-align: center;
 }
 </style>
+
+- Parece que no hay dependencia entre `KnightOfTheRoundTable` y `HolyGrail` porque `embark()` se ha definido como que devuelve un `Object`
 
 Ejercicio: Discutir el tipo de retorno `Object` de `embarkOnQuest`:
 
