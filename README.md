@@ -24,5 +24,4 @@ Se recomienda instalar los paquetes y sus dependencias en la carpeta `marp/`
 
 `marp/html-build [FILENAME]`
 
-Los PDF se generan por defecto en la carpeta `pdf/`. Los ficheros HTML e imágenes se generan por defecto en la carpeta `html/`
-
+Los PDF se generan por defecto en la carpeta `pdf/`. Los ficheros HTML e imágenes se generan por defecto en la carpeta `html/`. Estas carpetas deben crearse antes de generar los ficheros.
