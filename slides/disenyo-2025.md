@@ -6,6 +6,7 @@ date: Febrero 2025
 subject: Diseño de Sistemas Software, curso 2024/25
 title: Principios de Diseño
 description: Apuntes de Diseño de Sistemas Software - Principios de diseño
+mermaid: true 
 ---
 
 <!-- size: 16:9 -->
@@ -86,10 +87,10 @@ section { text-align: center; }
 ### Paradigmas
 
 - Estructurado (E. W. Dijsktra)
-- Objetos (O. J. Dahl & K. Nygaard)
+- Orientado a Objetos (O. J. Dahl & K. Nygaard)
 - Funcional (J. McCarthy)
-- Aspectos (G. Kiczales)
-- Eventos
+- Orientado a Aspectos (G. Kiczales)
+- [Orientado a Datos](https://www.dataorienteddesign.com/dodbook/) (R. Fabian)
 
 ---
 
@@ -112,13 +113,15 @@ _Ordenar cronológicamente_
 
 #### Respuesta
 
+![bg left:45% 85% Timeline de paradigmas](./img/timeline_paradigmas.png)
+
 _¿De qué fecha data cada paradigma?_
 
-- Funcional (J. McCarthy, 1958)
-- Objetos (O. J. Dahl & K. Nygaard, 1966)
-- Estructurado (E. W. Dijsktra, 1968)
-- Aspectos (G. Kiczales, 1997)
-- Eventos
+- Funcional (1958)
+- Orientado a Objetos (1966)
+- Estructurado (1968)
+- Orientado a Aspectos (1997)
+- Orientado a Datos (2018)
 
 ---
 
