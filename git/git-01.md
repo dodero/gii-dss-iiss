@@ -6,7 +6,7 @@ emph {
 }
 </style>
 
-![width:200](img/Git-logo-200.png)
+![width:200](img/Git-logo.png)
 
 ## SCV
 
