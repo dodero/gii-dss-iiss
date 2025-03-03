@@ -1,28 +1,4 @@
----
-title: Prácticas de Sistemas de Control de Versiones
-description: Asignaturas del grado en Ingeniería Informática 
----
-
 <style>
-h1 {
-  text-align: center;
-  color: #005877;
-}
-h2 {
-  color: #E87B00;
-}
-h3 {
-  color: #005877;
-}
-
-img[alt~="center"] {
-  display: block;
-  margin: 0 auto;
-}
-img[alt~="float"] {
-  display: float;
-  margin: 8px 5px 0 5px;
-}
 emph {
   color: #E87B00;
 }
