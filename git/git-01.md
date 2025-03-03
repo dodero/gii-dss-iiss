@@ -1,12 +1,12 @@
 # Sistema de Control de Versiones (SCV)
 
+![width:200](img/Git-logo-200.png)
+
 <style>
 emph {
   color: #E87B00;
 }
 </style>
-
-![width:200](img/Git-logo.png)
 
 ## SCV
 
@@ -325,7 +325,7 @@ Una vez resueltos los conflictos, se puede fusionar la rama con la rama actual.
 6. Añadir el archivo al repositorio local y hacer un commit
 7. Fusionar la rama `prueba1` con la rama `main`
 
-![width:450](img/conflicto-200.png)
+![width:450](img/conflicto.png)
 
 ### Solucionar conflictos entre ramas
 
