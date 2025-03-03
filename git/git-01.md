@@ -1,12 +1,12 @@
+# Sistema de Control de Versiones (SCV)
+
 <style>
 emph {
   color: #E87B00;
 }
 </style>
 
-# Sistema de Control de Versiones (SCV)
-
-![width:200 center](img/Git-logo-200.png)
+![width:200](img/Git-logo-200.png)
 
 ## SCV
 
@@ -52,7 +52,7 @@ Git fue creado por Linus Torvalds en 2005 y se ha convertido en uno de los SCV m
 
 ## Plataformas en la nube
 
-![width:960 center](img/combined-logos.png)
+![width:960](img/combined-logos.png)
 
 Alojamiento de repositorios (y más cosas) en la nube como GitHub, GitLab y Bitbucket.
 
@@ -229,7 +229,7 @@ Una rama es una línea de desarrollo independiente que permite trabajar en un co
 
 Las ramas se pueden fusionar entre sí para combinar los cambios realizados en cada una de ellas.
 
-![width:600 center](img/Git_branch.svg)
+![width:600](img/Git_branch.svg)
 
 [Ejemplo de ramas en un repositorio de Git](https://www.atlassian.com/git/tutorials/using-branches)
 
@@ -237,7 +237,7 @@ Las ramas se pueden fusionar entre sí para combinar los cambios realizados en c
 
 Una rama se crea a partir de otra rama existente
 
-![width:300 center](img/Git_branch_new.png)
+![width:300](img/Git_branch_new.png)
 
 - `git branch` muestra las ramas existentes
 - Podemos ver la rama actual con `git branch` y con `git status`.
@@ -298,7 +298,7 @@ Guardar/esconder los cambios realizados en la rama actual para poder cambiar de 
 
 Siempre que se fusionan dos ramas, se crea en la rama actual un nuevo commit que contiene los cambios de ambas ramas:
 
-![width:700 center](img/branch-merge.png)
+![width:700](img/branch-merge.png)
 
 [Ejemplo de fusión de ramas en un repositorio de Git](https://www.atlassian.com/es/git/tutorials/using-branches/git-merge)
 
@@ -325,7 +325,7 @@ Una vez resueltos los conflictos, se puede fusionar la rama con la rama actual.
 6. Añadir el archivo al repositorio local y hacer un commit
 7. Fusionar la rama `prueba1` con la rama `main`
 
-![width:450 center](img/conflicto.png)
+![width:450](img/conflicto-200.png)
 
 ### Solucionar conflictos entre ramas
 
@@ -352,7 +352,7 @@ Rebase soluciona el mismo problema que la fusión de ramas, pero de forma muy di
 - `merge` crea un nuevo commit que contiene los cambios de ambas ramas
 - `rebase` mueve los commits de una rama a otra
 
-![width:500 center](img/rebase.png)
+![width:500](img/rebase.png)
 
 [Ejemplo de rebase de ramas en un repositorio de Git](https://www.atlassian.com/es/git/tutorials/merging-vs-rebasing)
 
