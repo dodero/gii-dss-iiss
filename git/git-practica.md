@@ -20,12 +20,12 @@ La práctica debe hacerse en parejas.
 ## Preparación
 
 1. Elegir un nombre de un grupo para la realización de las prácticas. La actividad para elección está disponible en el Campus Virtual.
-2. Añadir a los estudiantes a la organización `https://github.com/uca-iiss`: Invitar a los estudiantes a unirse a `uca-iiss` para poder gestionar permisos y el acceso a los repositorios.
+2. Añadir a los estudiantes a la organización `https://github.com/uca-dss`: Invitar a los estudiantes a unirse a `uca-dss` para poder gestionar permisos y el acceso a los repositorios.
 3. Gestionar los permisos de acceso: Controlar quién tiene acceso a cada repositorio, dando permisos de escritura a los estudiantes que deban colaborar en un repositorio específico.
-4. Un estudiante crea un repositorio privado en `uca-iiss` llamado `GRUPO-practica-git`, donde GRUPO es el nombre oficial de un grupo de prácticas.
+4. Un estudiante crea un repositorio privado en `uca-dss` llamado `GRUPO-practica-git`, donde GRUPO es el nombre oficial de un grupo de prácticas.
 5. El profesor o el estudiante creador del repositorio puede invitar al otro compañero/a como colaborador con permisos de escritura.
 
-Los repositorios para realizar las prácticas por todos los estudiantes serán privados y deben pertentecer a la organización `uca-iiss`.
+Los repositorios para realizar las prácticas por todos los estudiantes serán privados y deben pertentecer a la organización `uca-dss`.
 
 ## Ejercicios
 
