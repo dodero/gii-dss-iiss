@@ -279,7 +279,7 @@ Para activarlo:
 mvn package -Pproduccion
 ```
 
-## ENTREGABLE
+# Ejercicio Entregable
 
 Crea un proyecto Maven con la solución al ejercicio propuesto en las clases de teoría **CreditCardTest**.
 
