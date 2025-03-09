@@ -72,7 +72,7 @@ Ejecuta el siguiente comando para generar un proyecto Java básico:
 mvn archetype:generate -DgroupId=com.example \
   -DartifactId=demo \
   -DarchetypeArtifactId=maven-archetype-quickstart \
-  -DinteractiveMode=false` \
+  -DinteractiveMode=false
 ```
 
 Estructura generada:
@@ -89,7 +89,7 @@ demo/
 
 ### Código de `App.java`
 
-Usa el siguiente código de ejemplo para el proyecto:
+El comando mvn anterior genera el siguiente código de ejemplo para el proyecto:
 
 ```java
 package com.example;
@@ -121,7 +121,7 @@ Un **artifact** es un componente generado a partir del código fuente, como una 
 
 ### ¿Cómo se gestionan las dependencias en `pom.xml`?
 
-Las dependencias se definen en la sección `<dependencies>`, donde se especifican:
+Las dependencias se definen en la sección `<dependencies>`, donde se especifica cada una con una sección `<dependency>`. Por ejemplo, para agregar JUnit como dependencia:
 
 ```xml
 <dependency>
@@ -151,6 +151,19 @@ Para compilar el código fuente, usa:
 mvn compile
 ```
 
+Tras compilar, es posible que se genere un _warning_ indicando que no se ha definido el _encoding_ del archivo y que se está usando la codificación por defecto de la plataforma (por ejemplo, _UTF-8_).
+
+La construcción de un artefacto es dependiente de la plataforma. Así que se recomienda incluir la siguiente configuración del Encoding UTF-8 en el archivo `pom.xml` para evitar problemas con caracteres especiales y asegurar que el proyecto use UTF-8:
+
+```xml
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+</properties>
+```
+
+Esto garantizará que tanto la compilación como la generación de informes usen la codificación adecuada.
+
 ---
 
 ## 4. Pruebas con JUnit
@@ -161,7 +174,7 @@ JUnit es un framework de pruebas unitarias para Java que permite verificar el co
 
 ### Código de `AppTest.java`
 
-Usa el siguiente código de ejemplo para las pruebas:
+El comando mvn inicial genera un archivo de prueba `AppTest.java` siguiente:
 
 ```java
 package com.example;
