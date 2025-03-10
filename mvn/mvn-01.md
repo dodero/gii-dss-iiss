@@ -1,5 +1,7 @@
 # Guía Práctica: Introducción a Apache Maven
 
+**Apache Maven** es una herramienta de automatización de la construcción (_build_) y gestión de proyectos, basada en el concepto de configuración por convención. Está diseñada principalmente para proyectos en Java y permite gestionar dependencias, compilar código, ejecutar pruebas y generar artefactos para su distribución, todo mediante un solo archivo de configuración (`pom.xml`). Gracias a su sistema de repositorios, Maven simplifica la incorporación de bibliotecas externas y garantiza la coherencia en los proyectos a gran escala.
+
 ## Objetivo
 
 Esta práctica te permitirá familiarizarte con **Apache Maven**, una herramienta de gestión y construcción de proyectos Java. Aprenderás a configurar un proyecto, gestionar dependencias, construir artefactos, ejecutar pruebas con [JUnit](https://junit.org/junit5/) y empaquetar tu aplicación para su distribución.
@@ -130,6 +132,77 @@ Las dependencias se definen en la sección `<dependencies>`, donde se especifica
     <version>4.13.2</version>
     <scope>test</scope>
 </dependency>
+```
+
+### Manejo de Conflictos de versiones
+
+Cuando un proyecto Maven utiliza múltiples dependencias, es posible que algunas de ellas requieran diferentes versiones de una misma biblioteca. Maven resuelve automáticamente estos conflictos utilizando la regla de **mayor profundidad** (más cercana en el árbol de dependencias), pero en algunos casos puede ser necesario forzar una versión específica.
+
+El bloque `<dependencyManagement>` en `pom.xml` permite definir versiones específicas de dependencias para garantizar la coherencia en el proyecto.
+
+Ejemplo:
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.3.20</version>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+Para excluir dependencias no deseadas:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <version>2.7.3</version>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+```
+
+### Análisis de Dependencias con Maven
+
+Para mostrar el **árbol de dependencias**:
+
+```bash
+mvn dependency:tree
+```
+
+Ejemplo de salida:
+
+```text
+...
+[INFO] com.example:demo:jar:1.0-SNAPSHOT
+[INFO] \- junit:junit:jar:4.13.2:test
+[INFO]    \- org.hamcrest:hamcrest-core:jar:1.3:test
+...
+```
+
+Para resolver dependencias:
+
+```bash
+mvn dependency:resolve
+```
+
+Ejemplo de salida:
+
+```text
+...
+[INFO] The following files have been resolved:
+[INFO]    junit:junit:jar:4.13.2:test -- module junit [auto]
+[INFO]    org.hamcrest:hamcrest-core:jar:1.3:test -- module hamcrest.core (auto)
+[INFO] 
+...
 ```
 
 ---
