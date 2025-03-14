@@ -1,4 +1,5 @@
 package es.uca.dss;
+
 public class Product {
     private String name;
     private double price;
