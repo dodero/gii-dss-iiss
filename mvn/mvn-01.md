@@ -210,6 +210,7 @@ Ejemplo de salida:
 ## 3. Construcción del Proyecto
 
 Antes de continuar, incluye en `pom.xml` (dentro del bloque `<dependency>`) un nuevo bloque `<properties>` con el siguiente contenido:
+
 ```xml
 <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
