@@ -411,6 +411,119 @@ Para activarlo:
 mvn package -Pproduccion
 ```
 
+## 8. Creación de casos de prueba unitaria con jUnit
+
+En esta sección, aprenderemos cómo aplicar **JUnit 4** para realizar pruebas unitarias a una aplicación de comercio electrónico. Utilizaremos `TestCase` y `TestSuite` para estructurar nuestros casos de prueba.
+
+### Dependencias en pom.xml
+
+Asegúrate de que tienes la dependencia de JUnit 4 definida en tu `pom.xml`:
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+### Estructura de clases
+
+Las clases de la aplicación de comercio electrónico incluyen:
+
+- `ShoppingCart`: Representa un carrito de compras.
+- `Product`: Representa un producto en el carrito.
+- `ProductNotFoundException`: Excepción lanzada cuando un producto no se encuentra en el carrito.
+
+#### Código del carrito de la compra (`ShoppingCart.java`)
+
+```java
+package es.uca;
+import java.util.ArrayList;
+
+public class ShoppingCart {
+    private ArrayList<Product> items;
+    public ShoppingCart() {
+        items = new ArrayList<>();
+    }
+    public double getBalance() { 
+        double balance = 0.0;
+        for (int i = 0; i < items.size(); i++) {
+            Product p = items.get(i);
+            balance += p.getPrice();
+        }
+        return balance;
+    }
+    public void addItem(Product p) {
+        items.add(p);
+    }
+    public void removeItem(Product p) throws ProductNotFoundException {
+        try {
+            items.remove(p);
+        } catch (Exception e) {
+            throw new ProductNotFoundException("Product not found");
+        }
+    }
+    public int getItemCount() {
+        return items.size();
+    }
+    public void empty() {
+        items.clear();
+    }
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+}
+```
+
+#### Código del producto (`Product.java`)
+
+```java
+package es.uca;
+
+public class Product {
+    private String name;
+    private double price;
+    public Product(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+    public String getName() {
+        return name;
+    }
+    public double getPrice() {
+        return price;
+    }
+    public boolean equals(Object obj) {
+        if (obj instanceof Product) {
+            Product p = (Product) obj;
+            return p.getName().equals(name);
+        }
+        return false;
+    }
+    public int hashCode() {
+        return name.hashCode();
+    }
+    public String toString() {
+        return name + ":" + price;
+    }
+}
+```
+
+#### Código de la excepción (`ProductNotFoundException.java`)
+
+```java
+package es.uca.dss;
+public class ProductNotFoundException extends Exception {
+    public ProductNotFoundException(String message) {
+        super(message);
+    }
+}
+```
+
 # Ejercicio Entregable
 
 Crea un proyecto Maven con la solución al ejercicio propuesto en las clases de teoría **CreditCardTest**.
@@ -420,9 +533,10 @@ En este ejercicio se debe emplear el framework jUnit con el objetivo de apreciar
 Se pide:
 
 - Codificar en Java una clase `CreditCard` que simule la interfaz y el comportamiento de una tarjeta de crédito. Podéis inspiraros en Github copilot, Codeium.io, ChatGPT, Gemini o herramientas similares para proponer una versión de dicha clase.
-- Diseñar y codificar una suite de casos de prueba unitaria de nombre CreditCardTest para la clase CreditCard creada anteriormente. Usar jUnit 4 y/o jUnit 3 para codificarla.
+- Diseñar y codificar casos de pruebas unitarias de nombre `CreditCardTest` para la clase `CreditCard` creada anteriormente. Usar jUnit 4 para codificarlos.
+- Codificar una suite de casos de pruebas unitarias de nombre `EcommerceTestSuite` que incluya todos los casos de pruebas unitarias de `ShoppingCartTest`, `Product` y `CreditCardTest`. Configurar maven para que pase solo los casos de prueba unitaria indicados en la suite y no todos los casos de prueba unitaria incluidos en el proyecto.
 
-El ejercicio se debe alojar en un repositorio github creado a tal efecto e indicar la URL del repositorio en la entrega.
+El ejercicio se debe alojar en un repositorio github creado a tal efecto e indicar la URL del repositorio en la entrega. En la entrega se debe incluir la configuración de mvn para compilar y pasar las pruebas unitarias del ejercicio.
 
 Usad el archivo `README.md` en formato [markdown](https://docs.github.com/es/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) del repositorio para incluir cualquier explicación y/o diagrama de diseño ilustrativo de la solución al ejercicio. Para confeccionar diagramas UML e incluirlos en el fichero .md podéis usar [Mermaid](https://mermaid.js.org/) o [PlantUML](https://plantuml.com/).
 

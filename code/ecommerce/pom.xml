@@ -12,6 +12,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+    <runSuite>**/EcommerceTestSuite.class</runSuite>
   </properties>
   <dependencies>
     <dependency>
@@ -30,6 +31,16 @@
         <configuration>
           <source>11</source>
           <target>11</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
+        <configuration>
+            <includes>
+                <include>${runSuite}</include>
+            </includes>
         </configuration>
       </plugin>
     </plugins>
