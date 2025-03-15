@@ -296,12 +296,6 @@ mvn package
 
 El archivo resultante estará en `target/demo-1.0-SNAPSHOT.jar`.
 
-Para ejecutarlo:
-
-```bash
-java -jar target/demo-1.0-SNAPSHOT.jar
-```
-
 ### ¿Por qué tiene ese nombre el artefacto generado?
 
 En Maven, el sufijo SNAPSHOT indica que el artefacto es una versión en desarrollo y aún no es una versión final estable. Esto permite a Maven gestionar actualizaciones automáticas de la versión más reciente del artefacto dentro de un mismo ciclo de desarrollo, sin necesidad de cambiar manualmente el número de versión. Cuando el proyecto está listo para una versión estable, se elimina el sufijo SNAPSHOT y se publica con un número de versión fijo, por ejemplo, 1.0.0.
@@ -336,7 +330,43 @@ Esto requiere configurar credenciales en `settings.xml` y usar herramientas como
 
 Los **plugins** amplían las capacidades de Maven, permitiendo realizar tareas adicionales como análisis de código o generación de reportes.
 
-Un ejemplo de plugin ampliamente utilizado en [Spring Boot](https://spring.io/projects/spring-boot) es [spring-boot-maven-plugin](https://docs.spring.io/spring-boot/maven-plugin/index.html), que facilita la ejecución y empaquetado de aplicaciones Spring Boot:
+#### Plugin para crear un ejecutable
+
+Un ejemplo de plugin es el **maven-jar-plugin**, que permite crear un `.jar` ejecutable.
+
+Si intentamos ejecutar el `.jar` generado, obtendremos un error indicando que _no hay ningún atributo de manifiesto principal en jar_.
+
+```bash
+$ java -jar target/demo-1.0-SNAPSHOT.jar
+no hay ningún atributo de manifiesto principal en target/demo-1.0-SNAPSHOT.jar
+```
+
+Esto es debido a que el paquete creado por maven no se ha configurado bien como ejecutable. Para solucionarlo, añade el siguiente plugin en `pom.xml`:
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.2.0</version>
+            <configuration>
+                <archive>
+                    <manifest>
+                        <mainClass>com.example.App</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+Ahora, tras ejecutar `mvn package`, el `.jar` generado será ejecutable.
+
+#### Plugin para Spring Boot
+
+Otro ejemplo de plugin ampliamente utilizado en [Spring Boot](https://spring.io/projects/spring-boot) es [spring-boot-maven-plugin](https://docs.spring.io/spring-boot/maven-plugin/index.html), que facilita la ejecución y empaquetado de aplicaciones Spring Boot:
 
 ```xml
 <build>
