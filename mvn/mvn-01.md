@@ -362,7 +362,12 @@ Esto es debido a que el paquete creado por maven no se ha configurado bien como 
 </build>
 ```
 
-Ahora, tras ejecutar `mvn package`, el `.jar` generado será ejecutable.
+Ahora, tras ejecutar `mvn package`, el `.jar` generado será ejecutable:
+
+```bash
+mvn clean package
+java -jar target/demo-1.0-SNAPSHOT.jar
+```
 
 #### Plugin para Spring Boot
 
